@@ -45,16 +45,16 @@ public class V1 extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		{
-			btnhola = new JButton("hola");
-			btnhola.setBounds(10, 11, 89, 23);
+			btnhola = new JButton("boton 1 ejemplo");
+			btnhola.setBounds(10, 11, 183, 23);
 			btnhola.addActionListener(this);
 			contentPane.setLayout(null);
 			contentPane.add(btnhola);
 		}
 		{
-			btnNewButton = new JButton("gg");
+			btnNewButton = new JButton("boton 2 ejemplo");
 			btnNewButton.addActionListener(this);
-			btnNewButton.setBounds(73, 69, 89, 23);
+			btnNewButton.setBounds(10, 45, 183, 23);
 			contentPane.add(btnNewButton);
 		}
 
@@ -75,6 +75,6 @@ public class V1 extends JFrame implements ActionListener {
 	}
 	protected void do_btnNewButton_actionPerformed(ActionEvent e) {
 		Clase1 cl=new Clase1();
-	    cl.Imprimir();
+	    cl.Imprimir2();
 	}
 }
