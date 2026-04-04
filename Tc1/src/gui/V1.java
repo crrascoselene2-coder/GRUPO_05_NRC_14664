@@ -17,6 +17,7 @@ public class V1 extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JButton btnhola;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -43,17 +44,26 @@ public class V1 extends JFrame implements ActionListener {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
 		{
 			btnhola = new JButton("hola");
-			btnhola.addActionListener(this);
 			btnhola.setBounds(10, 11, 89, 23);
+			btnhola.addActionListener(this);
+			contentPane.setLayout(null);
 			contentPane.add(btnhola);
+		}
+		{
+			btnNewButton = new JButton("gg");
+			btnNewButton.addActionListener(this);
+			btnNewButton.setBounds(73, 69, 89, 23);
+			contentPane.add(btnNewButton);
 		}
 
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnNewButton) {
+			do_btnNewButton_actionPerformed(e);
+		}
 		if (e.getSource() == btnhola) {
 			do_btnhola_actionPerformed(e);
 		}
@@ -62,5 +72,9 @@ public class V1 extends JFrame implements ActionListener {
 	protected void do_btnhola_actionPerformed(ActionEvent e) {	
     Clase1 cl=new Clase1();
     cl.Imprimir();
+	}
+	protected void do_btnNewButton_actionPerformed(ActionEvent e) {
+		Clase1 cl=new Clase1();
+	    cl.Imprimir();
 	}
 }
