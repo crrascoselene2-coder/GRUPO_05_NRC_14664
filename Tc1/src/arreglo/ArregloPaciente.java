@@ -8,4 +8,8 @@ public ArregloPaciente() {
 	paci=new ArrayList<Paciente>();
 	
 }
+public void adicionar(Paciente x) {
+	paci.add(x);
+}
+
 }
