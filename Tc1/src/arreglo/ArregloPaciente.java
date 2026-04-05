@@ -11,5 +11,7 @@ public ArregloPaciente() {
 public void adicionar(Paciente x) {
 	paci.add(x);
 }
-
+public int Tamaño() {
+	return paci.size();
+}
 }
