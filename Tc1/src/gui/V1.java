@@ -5,13 +5,21 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+<<<<<<< HEAD
 import javax.swing.JLabel;
+=======
+import javax.swing.JButton;
+>>>>>>> 2893f46f2cc41a0b90c8b78a38597ce94268001a
 
 public class V1 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+<<<<<<< HEAD
 	private JLabel lblNewLabel;
+=======
+	private JButton btnNewButton;
+>>>>>>> 2893f46f2cc41a0b90c8b78a38597ce94268001a
 
 	/**
 	 * Launch the application.
@@ -40,9 +48,15 @@ public class V1 extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		{
+<<<<<<< HEAD
 			lblNewLabel = new JLabel("Nombre:");
 			lblNewLabel.setBounds(10, 24, 44, 12);
 			contentPane.add(lblNewLabel);
+=======
+			btnNewButton = new JButton("New button");
+			btnNewButton.setBounds(10, 11, 89, 23);
+			contentPane.add(btnNewButton);
+>>>>>>> 2893f46f2cc41a0b90c8b78a38597ce94268001a
 		}
 
 	}
