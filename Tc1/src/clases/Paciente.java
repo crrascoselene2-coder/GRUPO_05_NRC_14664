@@ -38,8 +38,9 @@ public Date getHora() {
 public void setHora(Date hora) {
 	this.hora = hora;
 }
-public void Bienvenida () {
-	System.out.println("Bienvenido al Sistema del Hospital!"); 
+public String Bienvenida () {
+	String Mensaje="Bienvenido al Sistema del Hospital!";
+	return Mensaje;
 }
 
 }
