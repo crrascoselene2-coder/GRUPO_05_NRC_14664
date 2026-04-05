@@ -38,5 +38,4 @@ public Date getHora() {
 public void setHora(Date hora) {
 	this.hora = hora;
 }
-
 }
