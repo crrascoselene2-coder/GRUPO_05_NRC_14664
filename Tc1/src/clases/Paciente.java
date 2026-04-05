@@ -14,33 +14,5 @@ public Paciente(String dni, String nom, String cita, Date hora) {
 	this.cita = cita;
 	this.hora = hora;
 }
-public String getDni() {
-	return dni;
-}
-public void setDni(String dni) {
-	this.dni = dni;
-}
-public String getNom() {
-	return nom;
-}
-public void setNom(String nom) {
-	this.nom = nom;
-}
-public String getCita() {
-	return cita;
-}
-public void setCita(String cita) {
-	this.cita = cita;
-}
-public Date getHora() {
-	return hora;
-}
-public void setHora(Date hora) {
-	this.hora = hora;
-}
-public String Bienvenida () {
-	String Mensaje="Bienvenido al Sistema del Hospital!";
-	return Mensaje;
-}
 
 }
