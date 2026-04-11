@@ -5,14 +5,13 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
+import javax.swing.JButton;
 
 public class V1 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JLabel lblNewLabel;
-	private JLabel lblNewLabel_1;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -35,20 +34,15 @@ public class V1 extends JFrame {
 	 */
 	public V1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 600);
+		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		{
-			lblNewLabel = new JLabel("New label");
-			lblNewLabel.setBounds(10, 11, 46, 14);
-			contentPane.add(lblNewLabel);
-		}
-		{
-			lblNewLabel_1 = new JLabel("New label");
-			lblNewLabel_1.setBounds(10, 36, 46, 14);
-			contentPane.add(lblNewLabel_1);
+			btnNewButton = new JButton("New button");
+			btnNewButton.setBounds(10, 34, 89, 23);
+			contentPane.add(btnNewButton);
 		}
 
 	}
