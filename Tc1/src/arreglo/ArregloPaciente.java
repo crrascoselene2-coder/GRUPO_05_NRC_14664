@@ -22,4 +22,10 @@ public int Tamaño() {
 public Paciente Obtener(int x) {
 	return paci.get(x);
 }
+public Paciente BuscarPorDni(String dni) {
+	for(int i=0; i<Tamaño(); i++) {
+		if(Obtener(i).getDni().equals(dni)) return Obtener(i);
+	}
+	return null;
+}
 }

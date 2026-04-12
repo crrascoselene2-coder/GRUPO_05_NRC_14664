@@ -11,6 +11,8 @@ import clases.Paciente;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
@@ -151,6 +153,14 @@ Listado();
 		
 	}
 	protected void do_btnbuscar_actionPerformed(ActionEvent e) {
+			String dni = textField_1.getText();
+			Paciente resultado = ap.BuscarPorDni(dni);
+			 if (resultado != null) {
+				 JOptionPane.showMessageDialog(this, "Paciente encontrado:\n" + resultado.getNom()+"\nMotivo de cita:\n" + resultado.getCita());
+		
+			    } else {
+			    	JOptionPane.showMessageDialog(this, "No se encontró paciente con DNI: " + dni);
+			    }
 	}
 	protected void do_btnreportar_actionPerformed(ActionEvent e) {
 		txts.setText("");
