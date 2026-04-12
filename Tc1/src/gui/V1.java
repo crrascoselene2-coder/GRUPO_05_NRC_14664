@@ -130,6 +130,10 @@ Listado();
 	}
 	void Listado() {
 		Imprimir("Dni\tNombre\t\tMotivo de Consulta");
+		for(int i = 0; i < ap.Tamaño(); i++)
+		{
+			Imprimir("" + ap.Obtener(i).getDni() + "\t" + ap.Obtener(i).getNom() + "\t\t" + ap.Obtener(i).getCita());
+		}
 	}
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnreportar) {

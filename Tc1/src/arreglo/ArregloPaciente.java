@@ -7,12 +7,19 @@ public class ArregloPaciente {
 private ArrayList<Paciente>paci;
 public ArregloPaciente() {
 	paci=new ArrayList<Paciente>();
-    adicionar(null);
+    adicionar(new Paciente("75242678", "María", "Resfriado"));
+    adicionar(new Paciente("78465534", "Andrea", "Fractura"));
+    adicionar(new Paciente("89624352", "Enrique", "Dolor de cabeza"));
+    adicionar(new Paciente("28364527", "Fiorella", "Náuseas"));
 }
 public void adicionar(Paciente x) {
 	paci.add(x);
 }
 public int Tamaño() {
 	return paci.size();
+}
+
+public Paciente Obtener(int x) {
+	return paci.get(x);
 }
 }
