@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import arreglo.ArregloPaciente;
+import clases.Paciente;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -152,5 +153,14 @@ Listado();
 	protected void do_btnbuscar_actionPerformed(ActionEvent e) {
 	}
 	protected void do_btnreportar_actionPerformed(ActionEvent e) {
+		txts.setText("");
+		Listado();
+		for(int i = 0; i < ap.Tamaño(); i ++)
+		{
+			Paciente p = ap.Obtener(i);
+			Imprimir(p.getDni() + "\t" + p.getNom() + "\t" + p.getCita());
+		}
+		
+		Imprimir ("\nLa cantidad de pacientes es: " + ap.Tamaño());
 	}
 }
