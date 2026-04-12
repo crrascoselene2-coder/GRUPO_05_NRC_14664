@@ -27,9 +27,9 @@ public class V1 extends JFrame implements ActionListener {
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
 	private JLabel lblNewLabel_2;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField txtNom;
+	private JTextField txtDni;
+	private JTextField txtConsulta;
 	private JButton btnbuscar;
 	private JButton btnreportar;
 	private JTextArea txts;
@@ -86,25 +86,25 @@ public class V1 extends JFrame implements ActionListener {
 			contentPane.add(lblNewLabel_2);
 		}
 		{
-			textField = new JTextField();
-			textField.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			textField.setBounds(72, 28, 257, 26);
-			contentPane.add(textField);
-			textField.setColumns(10);
+			txtNom = new JTextField();
+			txtNom.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtNom.setBounds(72, 28, 257, 26);
+			contentPane.add(txtNom);
+			txtNom.setColumns(10);
 		}
 		{
-			textField_1 = new JTextField();
-			textField_1.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			textField_1.setColumns(10);
-			textField_1.setBounds(48, 60, 257, 26);
-			contentPane.add(textField_1);
+			txtDni = new JTextField();
+			txtDni.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtDni.setColumns(10);
+			txtDni.setBounds(48, 60, 257, 26);
+			contentPane.add(txtDni);
 		}
 		{
-			textField_2 = new JTextField();
-			textField_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			textField_2.setColumns(10);
-			textField_2.setBounds(144, 94, 257, 26);
-			contentPane.add(textField_2);
+			txtConsulta = new JTextField();
+			txtConsulta.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtConsulta.setColumns(10);
+			txtConsulta.setBounds(144, 94, 257, 26);
+			contentPane.add(txtConsulta);
 		}
 		{
 			btnbuscar = new JButton("Buscar");
@@ -150,10 +150,17 @@ Listado();
 		}
 	}
 	protected void do_btnadicionar_actionPerformed(ActionEvent e) {
+		Paciente p1 = ap.BuscarPorDni(txtDni.getText());
+		if(p1 == null) {
+			Paciente p11 = new Paciente(txtDni.getText(),txtNom.getText(),txtConsulta.getText());
+			ap.adicionar(p11);
+		}else {
+			JOptionPane.showMessageDialog(this, "El paciente ya existe");
+		}
 		
 	}
 	protected void do_btnbuscar_actionPerformed(ActionEvent e) {
-			String dni = textField_1.getText();
+			String dni = txtDni.getText();
 			Paciente resultado = ap.BuscarPorDni(dni);
 			 if (resultado != null) {
 				 JOptionPane.showMessageDialog(this, "Paciente encontrado:\n" + resultado.getNom()+"\nMotivo de cita:\n" + resultado.getCita());
