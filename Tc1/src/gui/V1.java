@@ -55,7 +55,7 @@ public class V1 extends JFrame implements ActionListener {
 	 */
 	public V1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 670, 501);
+		setBounds(100, 100, 739, 560);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -125,9 +125,61 @@ public class V1 extends JFrame implements ActionListener {
 			txts.setBounds(10, 181, 607, 254);
 			contentPane.add(txts);
 		}
+		{
+			lblNewLabel_3 = new JLabel("Estudiante a Modificar");
+			lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblNewLabel_3.setBounds(539, 0, 151, 35);
+			contentPane.add(lblNewLabel_3);
+		}
+		{
+			lblNewLabel_4 = new JLabel("Nombre");
+			lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			lblNewLabel_4.setBounds(428, 29, 146, 23);
+			contentPane.add(lblNewLabel_4);
+		}
+		{
+			labeldni = new JLabel("DNI");
+			labeldni.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			labeldni.setBounds(428, 63, 146, 23);
+			contentPane.add(labeldni);
+		}
+		{
+			lblNewLabel_6 = new JLabel("Motivo de Consulta");
+			lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			lblNewLabel_6.setBounds(428, 97, 146, 23);
+			contentPane.add(lblNewLabel_6);
+		}
+		{
+			txtnombremod = new JTextField();
+			txtnombremod.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtnombremod.setColumns(10);
+			txtnombremod.setBounds(497, 29, 216, 26);
+			contentPane.add(txtnombremod);
+		}
+		{
+			txtdnimod = new JTextField();
+			txtdnimod.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtdnimod.setColumns(10);
+			txtdnimod.setBounds(473, 61, 240, 26);
+			contentPane.add(txtdnimod);
+		}
+		{
+			txtplanmod = new JTextField();
+			txtplanmod.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtplanmod.setColumns(10);
+			txtplanmod.setBounds(569, 95, 144, 26);
+			contentPane.add(txtplanmod);
+		}
 Listado();
 	}
 	ArregloPaciente ap=new ArregloPaciente();
+	private JLabel lblNewLabel_3;
+	private JLabel lblNewLabel_4;
+	private JLabel labeldni;
+	private JLabel lblNewLabel_6;
+	private JTextField txtnombremod;
+	private JTextField txtdnimod;
+	private JTextField txtplanmod;
 	void Imprimir(String s) {
 		txts.append(s+"\n");
 	}
