@@ -170,6 +170,16 @@ public class V1 extends JFrame implements ActionListener {
 			txtplanmod.setBounds(569, 95, 144, 26);
 			contentPane.add(txtplanmod);
 		}
+		
+		JButton btnModificar = new JButton("Modificar");
+		btnModificar.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnModificar.setBounds(334, 146, 98, 26);
+		contentPane.add(btnModificar);
+		
+		JButton btnEliminar = new JButton("Eliminar");
+		btnEliminar.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnEliminar.setBounds(442, 147, 98, 24);
+		contentPane.add(btnEliminar);
 Listado();
 	}
 	ArregloPaciente ap=new ArregloPaciente();
