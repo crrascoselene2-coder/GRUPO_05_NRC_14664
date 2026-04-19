@@ -80,7 +80,7 @@ public class V1 extends JFrame implements ActionListener {
 			contentPane.add(lblNewLabel_1);
 		}
 		{
-			lblNewLabel_2 = new JLabel("Motivo de Consulta");
+			lblNewLabel_2 = new JLabel("Plan");
 			lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			lblNewLabel_2.setBounds(10, 97, 146, 23);
 			contentPane.add(lblNewLabel_2);
@@ -103,7 +103,7 @@ public class V1 extends JFrame implements ActionListener {
 			txtConsulta = new JTextField();
 			txtConsulta.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtConsulta.setColumns(10);
-			txtConsulta.setBounds(144, 94, 257, 26);
+			txtConsulta.setBounds(48, 96, 257, 26);
 			contentPane.add(txtConsulta);
 		}
 		{
@@ -144,7 +144,7 @@ public class V1 extends JFrame implements ActionListener {
 			contentPane.add(labeldni);
 		}
 		{
-			lblNewLabel_6 = new JLabel("Motivo de Consulta");
+			lblNewLabel_6 = new JLabel("Plan");
 			lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			lblNewLabel_6.setBounds(428, 97, 146, 23);
 			contentPane.add(lblNewLabel_6);
@@ -167,7 +167,7 @@ public class V1 extends JFrame implements ActionListener {
 			txtplanmod = new JTextField();
 			txtplanmod.setFont(new Font("Tahoma", Font.PLAIN, 15));
 			txtplanmod.setColumns(10);
-			txtplanmod.setBounds(569, 95, 144, 26);
+			txtplanmod.setBounds(473, 96, 240, 26);
 			contentPane.add(txtplanmod);
 		}
 		
@@ -198,7 +198,7 @@ Listado();
 		txts.append(s+"\n");
 	}
 	void Listado() { txts.setText("");
-		Imprimir("Dni\tNombre\t\tMotivo de Consulta");
+		Imprimir("Dni\tNombre\t\tTipo de Plan");
 		for(int i = 0; i < ap.Tamaño(); i++)
 		{
 			Imprimir("" + ap.Obtener(i).getDni() + "\t" + ap.Obtener(i).getNom() + "\t\t" + ap.Obtener(i).getCita());
