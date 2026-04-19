@@ -195,7 +195,7 @@ Listado();
 	void Imprimir(String s) {
 		txts.append(s+"\n");
 	}
-	void Listado() {
+	void Listado() { txts.setText("");
 		Imprimir("Dni\tNombre\t\tMotivo de Consulta");
 		for(int i = 0; i < ap.Tamaño(); i++)
 		{
@@ -257,5 +257,7 @@ Listado();
 		}
 
 		else JOptionPane.showMessageDialog(this, "El paciente no existe en el registro.");
+		
+		Listado();
 	}
 }
