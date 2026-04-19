@@ -171,7 +171,8 @@ public class V1 extends JFrame implements ActionListener {
 			contentPane.add(txtplanmod);
 		}
 		
-		JButton btnModificar = new JButton("Modificar");
+		btnModificar = new JButton("Modificar");
+		btnModificar.addActionListener(this);
 		btnModificar.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnModificar.setBounds(334, 146, 98, 26);
 		contentPane.add(btnModificar);
@@ -192,6 +193,7 @@ Listado();
 	private JTextField txtdnimod;
 	private JTextField txtplanmod;
 	private JButton btnEliminar;
+	private JButton btnModificar;
 	void Imprimir(String s) {
 		txts.append(s+"\n");
 	}
@@ -203,6 +205,9 @@ Listado();
 		}
 	}
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnModificar) {
+			do_btnModificar_actionPerformed(e);
+		}
 		if (e.getSource() == btnEliminar) {
 			do_btnEliminar_actionPerformed(e);
 		}
@@ -258,6 +263,21 @@ Listado();
 
 		else JOptionPane.showMessageDialog(this, "El paciente no existe en el registro.");
 		
+		Listado();
+	}
+	protected void do_btnModificar_actionPerformed(ActionEvent e) {
+		String dni= txtdnimod.getText().trim();
+		Paciente resultado = ap.BuscarPorDni(dni);
+		if(resultado!=null){
+		resultado.setNom(txtnombremod.getText());
+		resultado.setDni(txtdnimod.getText());
+		resultado.setCita(txtplanmod.getText());
+		ap.actualizar(resultado);
+		JOptionPane.showMessageDialog(this, "Paciente modificado con éxito");
+		}
+		else {
+		JOptionPane.showMessageDialog(this, "El paciente no existe en el registro");
+	}
 		Listado();
 	}
 }
