@@ -28,4 +28,8 @@ public Paciente BuscarPorDni(String dni) {
 	}
 	return null;
 }
+
+public void Eliminar(Paciente x)
+{ paci.remove(x);
+	}
 }

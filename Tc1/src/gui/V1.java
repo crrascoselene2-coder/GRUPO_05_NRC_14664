@@ -176,7 +176,8 @@ public class V1 extends JFrame implements ActionListener {
 		btnModificar.setBounds(334, 146, 98, 26);
 		contentPane.add(btnModificar);
 		
-		JButton btnEliminar = new JButton("Eliminar");
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.addActionListener(this);
 		btnEliminar.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnEliminar.setBounds(442, 147, 98, 24);
 		contentPane.add(btnEliminar);
@@ -190,6 +191,7 @@ Listado();
 	private JTextField txtnombremod;
 	private JTextField txtdnimod;
 	private JTextField txtplanmod;
+	private JButton btnEliminar;
 	void Imprimir(String s) {
 		txts.append(s+"\n");
 	}
@@ -201,6 +203,9 @@ Listado();
 		}
 	}
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnEliminar) {
+			do_btnEliminar_actionPerformed(e);
+		}
 		if (e.getSource() == btnreportar) {
 			do_btnreportar_actionPerformed(e);
 		}
@@ -241,5 +246,16 @@ Listado();
 		}
 		
 		Imprimir ("\nLa cantidad de pacientes es: " + ap.Tamaño());
+	}
+	protected void do_btnEliminar_actionPerformed(ActionEvent e) {
+		
+		String dni = txtDni.getText();
+		Paciente resultado = ap.BuscarPorDni(dni);
+				
+		if(resultado!=null) { ap.Eliminar(resultado);
+		JOptionPane.showMessageDialog(this, "Paciente eliminado correctamente.");		
+		}
+
+		else JOptionPane.showMessageDialog(this, "El paciente no existe en el registro.");
 	}
 }
