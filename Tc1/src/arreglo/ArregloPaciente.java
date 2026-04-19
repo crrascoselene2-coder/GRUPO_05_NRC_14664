@@ -32,4 +32,23 @@ public Paciente BuscarPorDni(String dni) {
 public void Eliminar(Paciente x)
 { paci.remove(x);
 	}
+
+
+public void actualizar (Paciente x)
+
+{
+	for(int i = 0; i < Tamaño(); i++)
+	{
+		if (Obtener(i).getDni().equals(x.getDni()))
+		{
+			Obtener(i).setNom(x.getNom());
+			Obtener(i).setCita(x.getCita());
+			break; 	
+		}
+	}
+
 }
+
+
+}
+
