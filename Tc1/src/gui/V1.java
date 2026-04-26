@@ -266,18 +266,39 @@ Listado();
 		Listado();
 	}
 	protected void do_btnModificar_actionPerformed(ActionEvent e) {
-		String dni= txtdnimod.getText().trim();
-		Paciente resultado = ap.BuscarPorDni(dni);
-		if(resultado!=null){
-		resultado.setNom(txtnombremod.getText());
-		resultado.setDni(txtdnimod.getText());
-		resultado.setCita(txtplanmod.getText());
-		ap.actualizar(resultado);
-		JOptionPane.showMessageDialog(this, "Paciente modificado con éxito");
+		
+		try {
+			
+			String dni = txtdnimod.getText().trim();
+			String nuevoNombre = txtnombremod.getText().trim();
+			String nuevaCita = txtplanmod.getText().trim();
+			
+			
+			if (dni.isEmpty() || nuevoNombre.isEmpty() || nuevaCita.isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Ingresa todos los datos a modificar.");
+				return; 
+			}
+			
+		
+			Paciente resultado = ap.BuscarPorDni(dni);
+	        
+			if (resultado != null) {
+			
+				resultado.setNom(nuevoNombre);
+				resultado.setDni(dni);
+				resultado.setCita(nuevaCita);
+	            
+				ap.actualizar(resultado);
+				JOptionPane.showMessageDialog(this, "Alumno modificado con éxito");
+			} else {
+				JOptionPane.showMessageDialog(this, "El alumno no existe en el registro");
+			}
+	        
+			Listado();
+	        
+		} catch (Exception ex) {
+			
+			JOptionPane.showMessageDialog(this, "Ingresa todos los datos a modificar.");
 		}
-		else {
-		JOptionPane.showMessageDialog(this, "El paciente no existe en el registro");
-	}
-		Listado();
 	}
 }
