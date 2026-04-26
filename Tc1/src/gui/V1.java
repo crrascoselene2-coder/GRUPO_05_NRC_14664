@@ -221,13 +221,26 @@ Listado();
 			do_btnadicionar_actionPerformed(e);
 		}
 	}
-	protected void do_btnadicionar_actionPerformed(ActionEvent e) {
-		Paciente p1 = ap.BuscarPorDni(txtDni.getText());
-		if(p1 == null) {
-			Paciente p11 = new Paciente(txtDni.getText(),txtNom.getText(),txtConsulta.getText());
-			ap.adicionar(p11);
-		}else {
-			JOptionPane.showMessageDialog(this, "El paciente ya existe");
+	protected void do_btnadicionar_actionPerformed(ActionEvent e) {		
+		try {
+			
+			if(txtDni.getText().isEmpty() || txtNom.getText().isEmpty() || txtConsulta.getText().isEmpty()) {			            	           
+				JOptionPane.showMessageDialog(this,"Complete todos los campos requeridos","Error",JOptionPane.WARNING_MESSAGE);
+			            return;				
+			}
+			
+			Paciente p1 = ap.BuscarPorDni(txtDni.getText());	
+			if(p1 == null) {			
+				Paciente p11 = new Paciente(txtDni.getText(),txtNom.getText(),txtConsulta.getText());
+				ap.adicionar(p11);
+				}
+			else {							
+				JOptionPane.showMessageDialog(this, "El paciente ya existe");		
+				}			
+		}
+		
+		catch(Exception e1)	{
+			JOptionPane.showMessageDialog(this,"Ocurrió un error inesperado","Error",JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}

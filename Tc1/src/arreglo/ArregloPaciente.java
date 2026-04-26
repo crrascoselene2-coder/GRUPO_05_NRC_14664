@@ -24,7 +24,8 @@ public Paciente Obtener(int x) {
 }
 public Paciente BuscarPorDni(String dni) {
 	for(int i=0; i<Tamaño(); i++) {
-		if(Obtener(i).getDni().equals(dni)) return Obtener(i);
+		if(Obtener(i).getDni().equals(dni)) 
+			return Obtener(i);
 	}
 	return null;
 }
