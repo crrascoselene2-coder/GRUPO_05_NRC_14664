@@ -256,12 +256,7 @@ Listado();
 	}
 	protected void do_btnreportar_actionPerformed(ActionEvent e) {
 		txts.setText("");
-		Listado();
-		for(int i = 0; i < ap.Tamaño(); i ++)
-		{
-			Paciente p = ap.Obtener(i);
-			Imprimir(p.getDni() + "\t" + p.getNom() + "\t" + p.getCita());
-		}
+		Listado();			
 		
 		Imprimir ("\nLa cantidad de pacientes es: " + ap.Tamaño());
 	}
