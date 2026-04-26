@@ -245,7 +245,17 @@ Listado();
 		
 	}
 	protected void do_btnbuscar_actionPerformed(ActionEvent e) {
-			String dni = txtDni.getText();
+		try {	
+		String dni = txtDni.getText();
+		if (dni.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Por favor, ingrese DNI", "Sin DNI", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		else if (!dni.matches("[0-9]{8}")) {
+			JOptionPane.showMessageDialog(this, "Error: El DNI debe tener exactamente 8 dígitos numéricos.","Formato incorrecto", JOptionPane.ERROR_MESSAGE);	
+			return;
+		}
+		
 			Paciente resultado = ap.BuscarPorDni(dni);
 			 if (resultado != null) {
 				 JOptionPane.showMessageDialog(this, "Paciente encontrado:\n" + resultado.getNom()+"\nMotivo de cita:\n" + resultado.getCita());
@@ -253,6 +263,9 @@ Listado();
 			    } else {
 			    	JOptionPane.showMessageDialog(this, "No se encontró paciente con DNI: " + dni);
 			    }
+		}	 catch (Exception x) {
+		JOptionPane.showMessageDialog(this,"Ocurrió un error inesperado","Error",JOptionPane.ERROR_MESSAGE);
+	}
 	}
 	protected void do_btnreportar_actionPerformed(ActionEvent e) {
 		txts.setText("");
