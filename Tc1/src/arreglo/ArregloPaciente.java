@@ -15,6 +15,10 @@ public ArregloPaciente() {
 public void adicionar(Paciente x) {
 	paci.add(x);
 }
+public void adicionar(String dni, String nom, String cita) {
+    Paciente nuevoPaciente = new Paciente(dni, nom, cita);
+    paci.add(nuevoPaciente);
+}
 public int Tamaño() {
 	return paci.size();
 }
