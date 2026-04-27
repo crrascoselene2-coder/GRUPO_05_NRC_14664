@@ -8,7 +8,6 @@ private String nom;
 private String cita;
 private Date hora;
 public Paciente(String dni, String nom, String cita) {
-	super();
 	this.dni = dni;
 	this.nom = nom;
 	this.cita = cita;

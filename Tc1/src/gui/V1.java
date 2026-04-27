@@ -221,18 +221,41 @@ Listado();
 			do_btnadicionar_actionPerformed(e);
 		}
 	}
-	protected void do_btnadicionar_actionPerformed(ActionEvent e) {
-		Paciente p1 = ap.BuscarPorDni(txtDni.getText());
-		if(p1 == null) {
-			Paciente p11 = new Paciente(txtDni.getText(),txtNom.getText(),txtConsulta.getText());
-			ap.adicionar(p11);
-		}else {
-			JOptionPane.showMessageDialog(this, "El paciente ya existe");
+	protected void do_btnadicionar_actionPerformed(ActionEvent e) {		
+		try {
+			
+			if(txtDni.getText().isEmpty() || txtNom.getText().isEmpty() || txtConsulta.getText().isEmpty()) {			            	           
+				JOptionPane.showMessageDialog(this,"Complete todos los campos requeridos","Error",JOptionPane.WARNING_MESSAGE);
+			            return;				
+			}
+			
+			Paciente p1 = ap.BuscarPorDni(txtDni.getText());	
+			if(p1 == null) {			
+				Paciente p11 = new Paciente(txtDni.getText(),txtNom.getText(),txtConsulta.getText());
+				ap.adicionar(p11);
+				}
+			else {							
+				JOptionPane.showMessageDialog(this, "El paciente ya existe");		
+				}			
+		}
+		
+		catch(Exception e1)	{
+			JOptionPane.showMessageDialog(this,"Ocurrió un error inesperado","Error",JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}
 	protected void do_btnbuscar_actionPerformed(ActionEvent e) {
-			String dni = txtDni.getText();
+		try {	
+		String dni = txtDni.getText();
+		if (dni.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Por favor, ingrese DNI", "Sin DNI", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		else if (!dni.matches("[0-9]{8}")) {
+			JOptionPane.showMessageDialog(this, "Error: El DNI debe tener exactamente 8 dígitos numéricos.","Formato incorrecto", JOptionPane.ERROR_MESSAGE);	
+			return;
+		}
+		
 			Paciente resultado = ap.BuscarPorDni(dni);
 			 if (resultado != null) {
 				 JOptionPane.showMessageDialog(this, "Paciente encontrado:\n" + resultado.getNom()+"\nMotivo de cita:\n" + resultado.getCita());
@@ -240,15 +263,13 @@ Listado();
 			    } else {
 			    	JOptionPane.showMessageDialog(this, "No se encontró paciente con DNI: " + dni);
 			    }
+		}	 catch (Exception x) {
+		JOptionPane.showMessageDialog(this,"Ocurrió un error inesperado","Error",JOptionPane.ERROR_MESSAGE);
+	}
 	}
 	protected void do_btnreportar_actionPerformed(ActionEvent e) {
 		txts.setText("");
-		Listado();
-		for(int i = 0; i < ap.Tamaño(); i ++)
-		{
-			Paciente p = ap.Obtener(i);
-			Imprimir(p.getDni() + "\t" + p.getNom() + "\t" + p.getCita());
-		}
+		Listado();			
 		
 		Imprimir ("\nLa cantidad de pacientes es: " + ap.Tamaño());
 	}
@@ -272,18 +293,39 @@ Listado();
 		Listado();
 	}
 	protected void do_btnModificar_actionPerformed(ActionEvent e) {
-		String dni= txtdnimod.getText().trim();
-		Paciente resultado = ap.BuscarPorDni(dni);
-		if(resultado!=null){
-		resultado.setNom(txtnombremod.getText());
-		resultado.setDni(txtdnimod.getText());
-		resultado.setCita(txtplanmod.getText());
-		ap.actualizar(resultado);
-		JOptionPane.showMessageDialog(this, "Paciente modificado con éxito");
+		
+		try {
+			
+			String dni = txtdnimod.getText().trim();
+			String nuevoNombre = txtnombremod.getText().trim();
+			String nuevaCita = txtplanmod.getText().trim();
+			
+			
+			if (dni.isEmpty() || nuevoNombre.isEmpty() || nuevaCita.isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Ingresa todos los datos a modificar.");
+				return; 
+			}
+			
+		
+			Paciente resultado = ap.BuscarPorDni(dni);
+	        
+			if (resultado != null) {
+			
+				resultado.setNom(nuevoNombre);
+				resultado.setDni(dni);
+				resultado.setCita(nuevaCita);
+	            
+				ap.actualizar(resultado);
+				JOptionPane.showMessageDialog(this, "Alumno modificado con éxito");
+			} else {
+				JOptionPane.showMessageDialog(this, "El alumno no existe en el registro");
+			}
+	        
+			Listado();
+	        
+		} catch (Exception ex) {
+			
+			JOptionPane.showMessageDialog(this, "Ingresa todos los datos a modificar.");
 		}
-		else {
-		JOptionPane.showMessageDialog(this, "El paciente no existe en el registro");
-	}
-		Listado();
 	}
 }

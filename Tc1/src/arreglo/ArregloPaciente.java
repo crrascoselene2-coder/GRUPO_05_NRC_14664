@@ -15,6 +15,10 @@ public ArregloPaciente() {
 public void adicionar(Paciente x) {
 	paci.add(x);
 }
+public void adicionar(String dni, String nom, String cita) {
+    Paciente nuevoPaciente = new Paciente(dni, nom, cita);
+    paci.add(nuevoPaciente);
+}
 public int Tamaño() {
 	return paci.size();
 }
@@ -24,7 +28,8 @@ public Paciente Obtener(int x) {
 }
 public Paciente BuscarPorDni(String dni) {
 	for(int i=0; i<Tamaño(); i++) {
-		if(Obtener(i).getDni().equals(dni)) return Obtener(i);
+		if(Obtener(i).getDni().equals(dni)) 
+			return Obtener(i);
 	}
 	return null;
 }
