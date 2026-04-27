@@ -235,7 +235,7 @@ Listado();
 				ap.adicionar(p11);
 				}
 			else {							
-				JOptionPane.showMessageDialog(this, "El paciente ya existe");		
+				JOptionPane.showMessageDialog(this, "El alumno ya existe");		
 				}			
 		}
 		
@@ -258,10 +258,10 @@ Listado();
 		
 			Paciente resultado = ap.BuscarPorDni(dni);
 			 if (resultado != null) {
-				 JOptionPane.showMessageDialog(this, "Paciente encontrado:\n" + resultado.getNom()+"\nMotivo de cita:\n" + resultado.getCita());
+				 JOptionPane.showMessageDialog(this, "Alumno encontrado:\n" + resultado.getNom()+"\nPlan:\n" + resultado.getCita());
 		
 			    } else {
-			    	JOptionPane.showMessageDialog(this, "No se encontró paciente con DNI: " + dni);
+			    	JOptionPane.showMessageDialog(this, "No se encontró alumno con DNI: " + dni);
 			    }
 		}	 catch (Exception x) {
 		JOptionPane.showMessageDialog(this,"Ocurrió un error inesperado","Error",JOptionPane.ERROR_MESSAGE);
@@ -271,7 +271,7 @@ Listado();
 		txts.setText("");
 		Listado();			
 		
-		Imprimir ("\nLa cantidad de pacientes es: " + ap.Tamaño());
+		Imprimir ("\nLa cantidad de alumnos es: " + ap.Tamaño());
 	}
 	protected void do_btnEliminar_actionPerformed(ActionEvent e) {
 		String dni = txtDni.getText();
@@ -281,9 +281,9 @@ Listado();
 				
 		if(resultado!=null) { 
 			ap.Eliminar(resultado);
-		JOptionPane.showMessageDialog(this, "Paciente eliminado correctamente.");		
+		JOptionPane.showMessageDialog(this, "Alumno eliminado correctamente.");		
 		}else {
-			JOptionPane.showMessageDialog(this, "El paciente no existe en el registro.");
+			JOptionPane.showMessageDialog(this, "El alumno no existe en el registro.");
 		}
 		}
 		catch(Exception ex) {
