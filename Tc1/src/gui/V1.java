@@ -253,15 +253,21 @@ Listado();
 		Imprimir ("\nLa cantidad de pacientes es: " + ap.Tamaño());
 	}
 	protected void do_btnEliminar_actionPerformed(ActionEvent e) {
-		
 		String dni = txtDni.getText();
+		try {	
+		
 		Paciente resultado = ap.BuscarPorDni(dni);
 				
-		if(resultado!=null) { ap.Eliminar(resultado);
+		if(resultado!=null) { 
+			ap.Eliminar(resultado);
 		JOptionPane.showMessageDialog(this, "Paciente eliminado correctamente.");		
+		}else {
+			JOptionPane.showMessageDialog(this, "El paciente no existe en el registro.");
 		}
-
-		else JOptionPane.showMessageDialog(this, "El paciente no existe en el registro.");
+		}
+		catch(Exception ex) {
+			JOptionPane.showMessageDialog(this, "Error inesperado al eliminar.");
+		}
 		
 		Listado();
 	}
