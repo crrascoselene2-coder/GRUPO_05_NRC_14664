@@ -6,8 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import arreglo.ArregloPaciente;
-import clases.Paciente;
+import arreglo.ArregloAlumno;
+import clases.Alumno;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -18,6 +18,9 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 
 public class V1 extends JFrame implements ActionListener {
 
@@ -32,7 +35,6 @@ public class V1 extends JFrame implements ActionListener {
 	private JTextField txtConsulta;
 	private JButton btnbuscar;
 	private JButton btnreportar;
-	private JTextArea txts;
 
 	/**
 	 * Launch the application.
@@ -55,7 +57,7 @@ public class V1 extends JFrame implements ActionListener {
 	 */
 	public V1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 739, 560);
+		setBounds(100, 100, 863, 681);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -64,7 +66,7 @@ public class V1 extends JFrame implements ActionListener {
 			btnadicionar = new JButton("Adicionar");
 			btnadicionar.addActionListener(this);
 			btnadicionar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			btnadicionar.setBounds(226, 145, 98, 26);
+			btnadicionar.setBounds(226, 218, 98, 26);
 			contentPane.add(btnadicionar);
 		}
 		{
@@ -110,25 +112,20 @@ public class V1 extends JFrame implements ActionListener {
 			btnbuscar = new JButton("Buscar");
 			btnbuscar.addActionListener(this);
 			btnbuscar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			btnbuscar.setBounds(118, 145, 98, 26);
+			btnbuscar.setBounds(118, 218, 98, 26);
 			contentPane.add(btnbuscar);
 		}
 		{
 			btnreportar = new JButton("Reportar");
 			btnreportar.addActionListener(this);
 			btnreportar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			btnreportar.setBounds(10, 146, 98, 24);
+			btnreportar.setBounds(10, 219, 98, 24);
 			contentPane.add(btnreportar);
-		}
-		{
-			txts = new JTextArea();
-			txts.setBounds(10, 181, 607, 254);
-			contentPane.add(txts);
 		}
 		{
 			lblNewLabel_3 = new JLabel("Estudiante a Modificar");
 			lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			lblNewLabel_3.setBounds(539, 0, 151, 35);
+			lblNewLabel_3.setBounds(428, 0, 151, 35);
 			contentPane.add(lblNewLabel_3);
 		}
 		{
@@ -174,17 +171,45 @@ public class V1 extends JFrame implements ActionListener {
 		btnModificar = new JButton("Modificar");
 		btnModificar.addActionListener(this);
 		btnModificar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnModificar.setBounds(334, 146, 98, 26);
+		btnModificar.setBounds(334, 219, 98, 26);
 		contentPane.add(btnModificar);
 		
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.addActionListener(this);
 		btnEliminar.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnEliminar.setBounds(442, 147, 98, 24);
+		btnEliminar.setBounds(442, 220, 98, 24);
 		contentPane.add(btnEliminar);
+		{
+			lblNewLabel_5 = new JLabel("Registrar Estudiante");
+			lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblNewLabel_5.setBounds(10, 0, 151, 35);
+			contentPane.add(lblNewLabel_5);
+		}
+		{
+			scrollPane = new JScrollPane();
+			scrollPane.setBounds(10, 271, 723, 310);
+			contentPane.add(scrollPane);
+			{
+				txts = new JTextArea();
+				scrollPane.setViewportView(txts);
+			}
+		}
+		{
+			lblNewLabel_7 = new JLabel(" MP");
+			lblNewLabel_7.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			lblNewLabel_7.setBounds(10, 131, 46, 14);
+			contentPane.add(lblNewLabel_7);
+		}
+		{
+			txtmp = new JTextField();
+			txtmp.setFont(new Font("Tahoma", Font.PLAIN, 15));
+			txtmp.setBounds(48, 130, 257, 26);
+			contentPane.add(txtmp);
+			txtmp.setColumns(10);
+		}
 Listado();
 	}
-	ArregloPaciente ap=new ArregloPaciente();
+	ArregloAlumno al=new ArregloAlumno();
 	private JLabel lblNewLabel_3;
 	private JLabel lblNewLabel_4;
 	private JLabel labeldni;
@@ -194,14 +219,19 @@ Listado();
 	private JTextField txtplanmod;
 	private JButton btnEliminar;
 	private JButton btnModificar;
+	private JLabel lblNewLabel_5;
+	private JScrollPane scrollPane;
+	private JTextArea txts;
+	private JLabel lblNewLabel_7;
+	private JTextField txtmp;
 	void Imprimir(String s) {
 		txts.append(s+"\n");
 	}
-	void Listado() { txts.setText("");
-		Imprimir("Dni\tNombre\t\tTipo de Plan");
-		for(int i = 0; i < ap.Tamaño(); i++)
+	void Listado() {
+		Imprimir("Código\tDni\tNombre\tTipo de Plan\tPrecio\tMP\tFI\tFV");
+		for(int i = 0; i < al.Tamaño(); i++)
 		{
-			Imprimir("" + ap.Obtener(i).getDni() + "\t" + ap.Obtener(i).getNom() + "\t\t" + ap.Obtener(i).getCita());
+			Imprimir(al.Obtener(i).getCod() +"\t" + al.Obtener(i).getDni() + "\t" + al.Obtener(i).getNom() + "\t" + al.Obtener(i).getCita()+"\t"+al.Obtener(i).getPrecio()+"\t"+al.Obtener(i).getMp()+"\t"+al.Obtener(i).getFechaIncripción()+"\t"+al.Obtener(i).getFechavencimiento());
 		}
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -224,15 +254,16 @@ Listado();
 	protected void do_btnadicionar_actionPerformed(ActionEvent e) {		
 		try {
 			
-			if(txtDni.getText().isEmpty() || txtNom.getText().isEmpty() || txtConsulta.getText().isEmpty()) {			            	           
+			if(txtDni.getText().isEmpty() || txtNom.getText().isEmpty() || txtConsulta.getText().isEmpty()|| txtmp.getText().isEmpty()) {			            	           
 				JOptionPane.showMessageDialog(this,"Complete todos los campos requeridos","Error",JOptionPane.WARNING_MESSAGE);
 			            return;				
 			}
-			
-			Paciente p1 = ap.BuscarPorDni(txtDni.getText());	
+			int nuevoCodigo = al.generarCodigoCorrelativo();
+			Alumno p1 = al.BuscarPorDni(txtDni.getText());	
 			if(p1 == null) {			
-				Paciente p11 = new Paciente(txtDni.getText(),txtNom.getText(),txtConsulta.getText());
-				ap.adicionar(p11);
+				Alumno p11 = new Alumno(txtDni.getText(),txtNom.getText(),txtConsulta.getText(),nuevoCodigo,txtmp.getText());
+				al.adicionar(p11);
+				al.guardarEnArchivoTxt();
 				}
 			else {							
 				JOptionPane.showMessageDialog(this, "El alumno ya existe");		
@@ -256,7 +287,7 @@ Listado();
 			return;
 		}
 		
-			Paciente resultado = ap.BuscarPorDni(dni);
+			Alumno resultado = al.BuscarPorDni(dni);
 			 if (resultado != null) {
 				 JOptionPane.showMessageDialog(this, "Alumno encontrado:\n" + resultado.getNom()+"\nPlan:\n" + resultado.getCita());
 		
@@ -271,16 +302,17 @@ Listado();
 		txts.setText("");
 		Listado();			
 		
-		Imprimir ("\nLa cantidad de alumnos es: " + ap.Tamaño());
+		Imprimir ("\nLa cantidad de alumnos es: " + al.Tamaño());
 	}
 	protected void do_btnEliminar_actionPerformed(ActionEvent e) {
 		String dni = txtDni.getText();
 		try {	
 		
-		Paciente resultado = ap.BuscarPorDni(dni);
+		Alumno resultado = al.BuscarPorDni(dni);
 				
 		if(resultado!=null) { 
-			ap.Eliminar(resultado);
+			al.Eliminar(resultado);
+			al.guardarEnArchivoTxt();
 		JOptionPane.showMessageDialog(this, "Alumno eliminado correctamente.");		
 		}else {
 			JOptionPane.showMessageDialog(this, "El alumno no existe en el registro.");
@@ -307,7 +339,7 @@ Listado();
 			}
 			
 		
-			Paciente resultado = ap.BuscarPorDni(dni);
+			Alumno resultado = al.BuscarPorDni(dni);
 	        
 			if (resultado != null) {
 			
@@ -315,7 +347,8 @@ Listado();
 				resultado.setDni(dni);
 				resultado.setCita(nuevaCita);
 	            
-				ap.actualizar(resultado);
+				al.actualizar(resultado);
+				al.guardarEnArchivoTxt();
 				JOptionPane.showMessageDialog(this, "Alumno modificado con éxito");
 			} else {
 				JOptionPane.showMessageDialog(this, "El alumno no existe en el registro");
