@@ -11,19 +11,33 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.CardLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import arreglo.ArregloAlumno;
+import arreglo.ArregloProfesor;
+import clases.Alumno;
+import reportes.ReporteProfesor;
+
 import javax.swing.border.TitledBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 
-public class MenuPrincipal extends JFrame implements ActionListener {
+public class MenuPrincipal extends JFrame implements ActionListener, MouseListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -44,7 +58,6 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 	private JTextField txtBuscarDniAlumno;
 	private JButton btnBuscarDniAlumno;
 	private JScrollPane scrollPane;
-	private JTable table;
 	private JLabel lblDatosDelAlumno;
 	private JLabel lblDatosDelApoderado;
 	private JLabel lblDni;
@@ -156,9 +169,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 	private JComboBox comboBox_mesProfesor;
 	private JComboBox comboBox_profesorReporte;
 	private JButton btnFiltrarPROFESOR;
-	private JScrollPane scrollPane_5;
 	private JButton btnMostrarTodoPROFESOR;
-	private JTable table_5;
 	private JPanel panel_6;
 	private JPanel panel_7;
 	private JLabel lblNewLabel_16;
@@ -168,6 +179,9 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 	private JComboBox comboBox_SedeClase;
 	private JLabel lblNewLabel_17;
 	private JComboBox comboBox_JefaSede;
+	private JTable tbTabla;
+	private JScrollPane scrollPane_5;
+	private JTable tbReporteProfesores;
 
 	/**
 	 * Launch the application.
@@ -226,50 +240,40 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 				}
 				{
 					btnBuscarDniAlumno = new JButton("BUSCAR");
+					btnBuscarDniAlumno.addActionListener(this);
 					btnBuscarDniAlumno.setFont(new Font("Tahoma", Font.BOLD, 11));
 					btnBuscarDniAlumno.setBounds(472, 64, 89, 23);
 					moduloAlumnos.add(btnBuscarDniAlumno);
 				}
 				{
 					scrollPane = new JScrollPane();
-					scrollPane.setBounds(23, 102, 1107, 175);
+					scrollPane.setBounds(23, 97, 1107, 175);
 					moduloAlumnos.add(scrollPane);
 					{
-						table = new JTable();
-						table.setRowHeight(25);
-						table.setModel(new DefaultTableModel(
-							new Object[][] {
-								{null, null, null, null, null, null, null},
-								{null, null, null, null, null, null, null},
-								{null, null, null, null, null, null, null},
-								{null, null, null, null, null, null, null},
-								{null, null, null, null, null, null, null},
-								{null, null, null, null, null, null, null},
-								{null, null, null, null, null, null, null},
-							},
-							new String[] {
-								"C\u00D3DIGO", "DNI", "NOMBRES", "APELLIDOS", "CELULAR", "F. NAC.", "ESTADO"
-							}
-						));
-						scrollPane.setViewportView(table);
+						tbTabla = new JTable();
+						tbTabla.addMouseListener(this);
+						tbTabla.setFillsViewportHeight(true);
+						scrollPane.setViewportView(tbTabla);
 					}
 				}
 				{
 					btnMatricular = new JButton("MATRICULAR");
+					btnMatricular.addActionListener(this);
 					btnMatricular.setBackground(new Color(192, 192, 192));
 					btnMatricular.setFont(new Font("Tahoma", Font.BOLD, 14));
-					btnMatricular.setBounds(269, 592, 129, 48);
+					btnMatricular.setBounds(269, 592, 144, 48);
 					moduloAlumnos.add(btnMatricular);
 				}
 				{
 					btnModificar = new JButton("MODIFICAR");
 					btnModificar.setBackground(new Color(192, 192, 192));
 					btnModificar.setFont(new Font("Tahoma", Font.BOLD, 14));
-					btnModificar.setBounds(472, 592, 117, 48);
+					btnModificar.setBounds(472, 592, 129, 48);
 					moduloAlumnos.add(btnModificar);
 				}
 				{
 					btnLimpiar = new JButton("LIMPIAR");
+					btnLimpiar.addActionListener(this);
 					btnLimpiar.setBackground(new Color(192, 192, 192));
 					btnLimpiar.setFont(new Font("Tahoma", Font.BOLD, 14));
 					btnLimpiar.setBounds(670, 592, 117, 48);
@@ -423,6 +427,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 				}
 				{
 					btnMostrarTodoAlumnos = new JButton("MOSTRAR TODO");
+					btnMostrarTodoAlumnos.addActionListener(this);
 					btnMostrarTodoAlumnos.setFont(new Font("Tahoma", Font.BOLD, 11));
 					btnMostrarTodoAlumnos.setBounds(574, 64, 135, 23);
 					moduloAlumnos.add(btnMostrarTodoAlumnos);
@@ -910,6 +915,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 							}
 							{
 								comboBox_sedeGeneral = new JComboBox();
+								comboBox_sedeGeneral.setModel(new DefaultComboBoxModel(new String[] {"Bellavista", "Pilares"}));
 								comboBox_sedeGeneral.setBounds(139, 85, 120, 22);
 								panel_8.add(comboBox_sedeGeneral);
 							}
@@ -992,6 +998,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 							}
 							{
 								comboBox_mesAsesor = new JComboBox();
+								comboBox_mesAsesor.setModel(new DefaultComboBoxModel(new String[] {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"}));
 								comboBox_mesAsesor.setBounds(149, 50, 120, 22);
 								panel_7.add(comboBox_mesAsesor);
 							}
@@ -1003,6 +1010,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 							}
 							{
 								comboBox_asesor = new JComboBox();
+								comboBox_asesor.setModel(new DefaultComboBoxModel(new String[] {"Axel", "Fabio", "Jimena"}));
 								comboBox_asesor.setBounds(149, 85, 120, 22);
 								panel_7.add(comboBox_asesor);
 							}
@@ -1031,42 +1039,6 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 							panel_Profesores.add(lblPanelDeReportes_2);
 						}
 						{
-							scrollPane_5 = new JScrollPane();
-							scrollPane_5.setBounds(63, 248, 1003, 315);
-							panel_Profesores.add(scrollPane_5);
-							{
-								table_5 = new JTable();
-								table_5.setRowHeight(24);
-								table_5.setModel(new DefaultTableModel(
-									new Object[][] {
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-										{null, null, null, null, null, null},
-									},
-									new String[] {
-										"MES", "SEDE", "PROFESOR", "DISCIPLINA", "N.\u00BA CLASES DICTADAS", "CALIFICACI\u00D3N PROMEDIO"
-									}
-								));
-								table_5.getColumnModel().getColumn(3).setPreferredWidth(76);
-								table_5.getColumnModel().getColumn(4).setPreferredWidth(132);
-								table_5.getColumnModel().getColumn(5).setPreferredWidth(158);
-								scrollPane_5.setViewportView(table_5);
-							}
-						}
-						{
 							panel_6 = new JPanel();
 							panel_6.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 							panel_6.setBackground(SystemColor.info);
@@ -1093,25 +1065,39 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 							}
 							{
 								comboBox_mesProfesor = new JComboBox();
+								comboBox_mesProfesor.setModel(new DefaultComboBoxModel(new String[] {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"}));
 								comboBox_mesProfesor.setBounds(149, 50, 120, 22);
 								panel_6.add(comboBox_mesProfesor);
 							}
 							{
 								comboBox_profesorReporte = new JComboBox();
+								comboBox_profesorReporte.setModel(new DefaultComboBoxModel(new String[] {"Danny Rosales", "Jordan Pacheco", "William Gómez"}));
 								comboBox_profesorReporte.setBounds(149, 85, 120, 22);
 								panel_6.add(comboBox_profesorReporte);
 							}
 							{
 								btnFiltrarPROFESOR = new JButton("FILTRAR");
+								btnFiltrarPROFESOR.addActionListener(this);
 								btnFiltrarPROFESOR.setBounds(334, 50, 89, 23);
 								panel_6.add(btnFiltrarPROFESOR);
 								btnFiltrarPROFESOR.setFont(new Font("Tahoma", Font.BOLD, 11));
 							}
 							{
 								btnMostrarTodoPROFESOR = new JButton("MOSTRAR TODO");
+								btnMostrarTodoPROFESOR.addActionListener(this);
 								btnMostrarTodoPROFESOR.setBounds(322, 85, 123, 23);
 								panel_6.add(btnMostrarTodoPROFESOR);
 								btnMostrarTodoPROFESOR.setFont(new Font("Tahoma", Font.BOLD, 11));
+							}
+						}
+						{
+							scrollPane_5 = new JScrollPane();
+							scrollPane_5.setBounds(62, 250, 1031, 311);
+							panel_Profesores.add(scrollPane_5);
+							{
+								tbReporteProfesores = new JTable();
+								tbReporteProfesores.setFillsViewportHeight(true);
+								scrollPane_5.setViewportView(tbReporteProfesores);
 							}
 						}
 					}
@@ -1126,6 +1112,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 			panel.setLayout(null);
 			{
 				btnAlumnos = new JButton("ALUMNOS");
+				btnAlumnos.addActionListener(this);
 				btnAlumnos.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnAlumnos.setBackground(new Color(112, 128, 144));
 				btnAlumnos.setBounds(23, 48, 182, 81);
@@ -1133,6 +1120,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 			}
 			{
 				btnVenta = new JButton("VENTAS");
+				btnVenta.addActionListener(this);
 				btnVenta.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnVenta.setBackground(new Color(112, 128, 144));
 				btnVenta.setBounds(23, 170, 182, 81);
@@ -1140,6 +1128,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 			}
 			{
 				btnClases = new JButton("CLASES");
+				btnClases.addActionListener(this);
 				btnClases.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnClases.setBackground(new Color(112, 128, 144));
 				btnClases.setBounds(23, 291, 182, 81);
@@ -1147,6 +1136,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 			}
 			{
 				btnReporte = new JButton("REPORTE");
+				btnReporte.addActionListener(this);
 				btnReporte.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnReporte.setBackground(new Color(112, 128, 144));
 				btnReporte.setBounds(23, 417, 182, 81);
@@ -1154,6 +1144,7 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 			}
 			{
 				btnCerrarSesión = new JButton("CERRAR SESIÓN");
+				btnCerrarSesión.addActionListener(this);
 				btnCerrarSesión.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnCerrarSesión.setBackground(new Color(112, 128, 144));
 				btnCerrarSesión.setBounds(23, 541, 182, 81);
@@ -1186,8 +1177,225 @@ public class MenuPrincipal extends JFrame implements ActionListener {
 			comboBox_JefaSede.setBounds(1217, 50, 137, 22);
 			contentPane.add(comboBox_JefaSede);
 		}
-
+    Listar("");
 	}
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnMostrarTodoPROFESOR) {
+			do_btnMostrarTodoPROFESOR_actionPerformed(e);
+		}
+		if (e.getSource() == btnFiltrarPROFESOR) {
+			do_btnFiltrarPROFESOR_actionPerformed(e);
+		}
+		if (e.getSource() == btnLimpiar) {
+			do_btnLimpiar_actionPerformed(e);
+		}
+		if (e.getSource() == btnMostrarTodoAlumnos) {
+			do_btnMostrarTodoAlumnos_actionPerformed(e);
+		}
+		if (e.getSource() == btnBuscarDniAlumno) {
+			do_btnBuscarDniAlumno_actionPerformed(e);
+		}
+		if (e.getSource() == btnMatricular) {
+			do_btnMatricular_actionPerformed(e);
+		}
+		if (e.getSource() == btnCerrarSesión) {
+			do_btnCerrarSesión_actionPerformed(e);
+		}
+		if (e.getSource() == btnReporte) {
+			do_btnReporte_actionPerformed(e);
+		}
+		if (e.getSource() == btnClases) {
+			do_btnClases_actionPerformed(e);
+		}
+		if (e.getSource() == btnAlumnos) {
+			do_btnAlumnos_actionPerformed(e);
+		}
+		if (e.getSource() == btnVenta) {
+			do_btnVenta_actionPerformed(e);
+		}
 	}
+	public void Listar(String nom) {
+		DefaultTableModel modelo=new DefaultTableModel();
+		ArregloAlumno acce=new ArregloAlumno();
+		ArrayList<Alumno> lista=new ArrayList<Alumno>();
+		if(nom.length()==0)
+			lista=acce.ListarAlumnos();
+		else
+			lista=acce.ConsultarAlumno(nom);
+		modelo.addColumn("Código");
+		modelo.addColumn("DNI");
+		modelo.addColumn("Nombres");
+		modelo.addColumn("Apellidos");
+		modelo.addColumn("Celular");
+		modelo.addColumn("Fecha de nacimiento");
+		modelo.addColumn("Estado");
+		modelo.setRowCount(lista.size());
+		Iterator it=lista.iterator();
+		int i=0;
+		while(it.hasNext()) {
+			Object obj=it.next();
+			Alumno acceso=(Alumno)obj;
+			modelo.setValueAt(acceso.getCódigo(), i, 0);
+			modelo.setValueAt(acceso.getDni(), i, 1);
+			modelo.setValueAt(acceso.getNom(), i, 2);
+			modelo.setValueAt(acceso.getApellidos(), i, 3);
+			modelo.setValueAt(acceso.getCelular(), i, 4);
+			modelo.setValueAt(acceso.getFecha_nacimiento(), i, 5);
+			modelo.setValueAt(acceso.getEstado(), i, 6);
+			i++;
+		}
+		tbTabla.setModel(modelo);
+	}
+	public void ListarProfesores(String mesFiltro, String profesorFiltro) {
+	    DefaultTableModel modelo = new DefaultTableModel();
+	    ArregloProfesor acce = new ArregloProfesor();
+	    ArrayList<ReporteProfesor> lista = new ArrayList<ReporteProfesor>();
+	    
+	    if(mesFiltro.length() == 0 || profesorFiltro.length() == 0) { 
+	        lista = acce.ListarTodosProfesores();
+	    } else {
+	        lista = acce.FiltrarProfesores(mesFiltro, profesorFiltro);
+	    }
+	    
+	    modelo.addColumn("MES");
+	    modelo.addColumn("SEDE");
+	    modelo.addColumn("PROFESOR");
+	    modelo.addColumn("DISCIPLINA");
+	    modelo.addColumn("N.º CLASES DICTADAS");
+	    modelo.addColumn("CALIFICACIÓN PROMEDIO");
+	    
+	    modelo.setRowCount(lista.size());
+	    
+	    Iterator it = lista.iterator();
+	    int i = 0;
+	    while(it.hasNext()) {
+	        Object obj = it.next();
+	        ReporteProfesor acceso = (ReporteProfesor)obj;
+	        modelo.setValueAt(acceso.getMes(), i, 0);
+	        modelo.setValueAt(acceso.getSede(), i, 1);
+	        modelo.setValueAt(acceso.getProfesor(), i, 2);
+	        modelo.setValueAt(acceso.getDisciplina(), i, 3);
+	        modelo.setValueAt(acceso.getnClasesDictadas(), i, 4);
+	        modelo.setValueAt(acceso.getCalificacionPromedio(), i, 5);
+	        
+	        i++;
+	    }
+	    tbReporteProfesores.setModel(modelo);
+	}
+	
+	//Módulo Ventas-------------------------------------------------------------------------------------------
+	protected void do_btnVenta_actionPerformed(ActionEvent e) {
+		moduloAlumnos.setVisible(false);
+		moduloClases.setVisible(false);
+		moduloReporte.setVisible(false);
+		moduloVentas.setVisible(true);
+	}
+
+	
+	//--------------------------------------------------------------------------------------------------------
+	//Módulo Alumnos-------------------------------------------------------------------------------------------
+	protected void do_btnAlumnos_actionPerformed(ActionEvent e) {
+		moduloAlumnos.setVisible(true);
+		moduloClases.setVisible(false);
+		moduloReporte.setVisible(false);
+		moduloVentas.setVisible(false);
+	}
+	protected void do_tbTabla_mouseClicked(MouseEvent e) {
+		int fila=tbTabla.getSelectedRow();
+		txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
+		txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
+		txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila,3 )));
+		txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
+		txtFechaNaciAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 5)));
+	}
+	protected void do_btnLimpiar_actionPerformed(ActionEvent e) {
+		txtBuscarDniAlumno.setText("");
+		txtDniAlumno.setText("");
+		txtNombresAlumno.setText("");
+		txtApellidosAlumno.setText("");
+		txtCelularAlumno.setText("");
+		txtFechaNaciAlumno.setText("");
+	}
+	protected void do_btnMostrarTodoAlumnos_actionPerformed(ActionEvent e) {
+		Listar("");
+	}
+	protected void do_btnBuscarDniAlumno_actionPerformed(ActionEvent e) {
+		String Dni_Buscar=txtBuscarDniAlumno.getText().trim();
+		Listar(Dni_Buscar);
+		txtBuscarDniAlumno.setText("");
+	}
+	protected void do_btnMatricular_actionPerformed(ActionEvent e) {
+	    String dni = txtDniAlumno.getText();
+	    String nombres = txtNombresAlumno.getText();
+	    String apellidos = txtApellidosAlumno.getText();
+	    String celular = txtCelularAlumno.getText();
+	    String fecha_nacimiento=txtFechaNaciAlumno.getText();
+	    if (dni.isEmpty() || nombres.isEmpty()) {
+	        JOptionPane.showMessageDialog(null, "Campos obligatorios incompletos.");
+	        return;
+	    }
+	    try {
+	        Alumno alu = new Alumno(dni, nombres, apellidos, celular, fecha_nacimiento ,"Activo");
+	        ArregloAlumno arreglo = new ArregloAlumno();
+	        arreglo.InsertarAlumno(alu);
+	        JOptionPane.showMessageDialog(null, "¡Alumno matriculado correctamente!");
+			txtDniAlumno.setText("");
+			txtNombresAlumno.setText("");
+			txtApellidosAlumno.setText("");
+			txtCelularAlumno.setText("");
+			txtFechaNaciAlumno.setText("");
+			Listar("");
+	    } catch (Exception ex) {
+	        JOptionPane.showMessageDialog(null, "Ocurrió un error al guardar: " + ex.getMessage());
+	    }
+	}
+	//---------------------------------------------------------------------------------------------------------
+	//Módulo Clases-------------------------------------------------------------------------------------------
+	protected void do_btnClases_actionPerformed(ActionEvent e) {
+		moduloAlumnos.setVisible(false);
+		moduloClases.setVisible(true);
+		moduloReporte.setVisible(false);
+		moduloVentas.setVisible(false);
+	}
+	//--------------------------------------------------------------------------------------------------------
+	//Módulo Reporte-------------------------------------------------------------------------------------------
+	protected void do_btnReporte_actionPerformed(ActionEvent e) {
+		moduloAlumnos.setVisible(false);
+		moduloClases.setVisible(false);
+		moduloReporte.setVisible(true);
+		moduloVentas.setVisible(false);
+		ListarProfesores("", "");
+	}
+	protected void do_btnFiltrarPROFESOR_actionPerformed(ActionEvent e) {
+		String mesSeleccionado = comboBox_mesProfesor.getSelectedItem().toString();
+	    String profesorSeleccionado = comboBox_profesorReporte.getSelectedItem().toString();
+	    ListarProfesores(mesSeleccionado, profesorSeleccionado);
+	}
+	protected void do_btnMostrarTodoPROFESOR_actionPerformed(ActionEvent e) {
+		ListarProfesores("", "");
+	}
+	//---------------------------------------------------------------------------------------------------------
+	protected void do_btnCerrarSesión_actionPerformed(ActionEvent e) {
+		VentanaLogin login = new VentanaLogin();
+		login.setVisible(true);
+		this.dispose();
+	}
+	public void mouseClicked(MouseEvent e) {
+		if (e.getSource() == tbTabla) {
+			do_tbTabla_mouseClicked(e);
+		}
+	}
+	public void mouseEntered(MouseEvent e) {
+	}
+	public void mouseExited(MouseEvent e) {
+	}
+	public void mousePressed(MouseEvent e) {
+	}
+	public void mouseReleased(MouseEvent e) {
+	}
+	
+	
+
+
+	
 }

@@ -1,26 +1,44 @@
 package clases;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.Date;
 
 public class Alumno {
+private int código;
 private String dni;
 private String nom;
-private String cita,mp;
-private Date hora;
-private int cod;
-private double precio;
-private LocalDate fechaIncripción;
-private LocalDate fechavencimiento;
-public Alumno(String dni, String nom, String cita, int cod, String mp) {
+private String apellidos;
+private String celular;
+private String fecha_nacimiento;
+private String estado;
+
+public Alumno(String dni, String nom, String apellidos, String celular, String fecha_nacimiento, String estado) {
+	super();
 	this.dni = dni;
 	this.nom = nom;
-	this.cita = cita;
-	this.cod=cod;
-	this.mp=mp;
-	this.fechaIncripción=LocalDate.now();
-	this.fechavencimiento=calcularVencimiento(cita);
-	this.precio=calcularPrecio(cita);
+	this.apellidos = apellidos;
+	this.celular = celular;
+	this.fecha_nacimiento = fecha_nacimiento;
+	this.estado = estado;
+}
+public Alumno(int código, String dni, String nom, String apellidos, String celular, String fecha_nacimiento,
+		String estado) {
+	super();
+	this.código = código;
+	this.dni = dni;
+	this.nom = nom;
+	this.apellidos = apellidos;
+	this.celular = celular;
+	this.fecha_nacimiento = fecha_nacimiento;
+	this.estado = estado;
+}
+public int getCódigo() {
+	return código;
+}
+public void setCódigo(int código) {
+	this.código = código;
 }
 public String getDni() {
 	return dni;
@@ -34,73 +52,31 @@ public String getNom() {
 public void setNom(String nom) {
 	this.nom = nom;
 }
-public String getCita() {
-	return cita;
+public String getApellidos() {
+	return apellidos;
 }
-public void setCita(String cita) {
-	this.cita = cita;
+public void setApellidos(String apellidos) {
+	this.apellidos = apellidos;
 }
-public Date getHora() {
-	return hora;
+public String getCelular() {
+	return celular;
 }
-public void setHora(Date hora) {
-	this.hora = hora;
+public void setCelular(String celular) {
+	this.celular = celular;
 }
-public int getCod() {
-	return cod;
+public String getFecha_nacimiento() {
+	return fecha_nacimiento;
 }
-public void setCod(int cod) {
-	this.cod = cod;
+public void setFecha_nacimiento(String fecha_nacimiento) {
+	this.fecha_nacimiento = fecha_nacimiento;
+}
+public String getEstado() {
+	return estado;
+}
+public void setEstado(String estado) {
+	this.estado = estado;
 }
 
-public LocalDate getFechaIncripción() {
-	return fechaIncripción;
+
 }
-public void setFechaIncripción(LocalDate fechaIncripción) {
-	this.fechaIncripción = fechaIncripción;
-}
-public LocalDate getFechavencimiento() {
-	return fechavencimiento;
-}
-public void setFechavencimiento(LocalDate fechavencimiento) {
-	this.fechavencimiento = fechavencimiento;
-}
-public String getMp() {
-	return mp;
-}
-public void setMp(String mp) {
-	this.mp = mp;
-}
-public double getPrecio() {
-	return precio;
-}
-public void setPrecio(double precio) {
-	this.precio = precio;
-}
-private LocalDate calcularVencimiento(String plan) {
-    int mesesAsumar;
-    String planLimpio = plan.toLowerCase().trim();
-    switch (planLimpio) {
-        case "classic plus":
-            mesesAsumar = 1;
-            break;
-        default:
-            mesesAsumar = 0;
-            break;
-    }
-    return this.fechaIncripción.plusMonths(mesesAsumar);
-}
-private double calcularPrecio(String plan) {
-    double costo;
-    String planLimpio = plan.toLowerCase().trim();
-    switch (planLimpio) {
-        case "classic plus":
-            costo = 209.90;
-            break;
-        default:
-            costo = 0.0; 
-            break;
-    }
-    return costo;
-}
-}
+

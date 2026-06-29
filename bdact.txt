@@ -1,0 +1,362 @@
+-- ============================================================
+-- 1. LIMPIEZA Y CREACIÓN DE LA BASE DE DATOS
+-- ============================================================
+DROP SCHEMA IF EXISTS bd_truesports;
+CREATE SCHEMA bd_truesports;
+USE bd_truesports;
+
+-- ============================================================
+-- 2. TABLAS CATÁLOGO (No dependen de ninguna otra tabla)
+-- ============================================================
+CREATE TABLE sedes (
+    id_sede INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_sede VARCHAR(45) NOT NULL,
+    direccion VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE disciplinas (
+    id_disciplina INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_disciplina VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE planes (
+    id_plan INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_plan VARCHAR(100) NOT NULL,
+    precio_total DECIMAL(6,2) NOT NULL
+);
+
+-- ============================================================
+-- 3. ENTIDADES PRINCIPALES
+-- ============================================================
+CREATE TABLE alumnos (
+    codigo_alumno INT AUTO_INCREMENT PRIMARY KEY,
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    celular VARCHAR(15) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    estado VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    rol VARCHAR(45) NOT NULL,
+    id_sede INT NOT NULL,
+    username VARCHAR(50) NOT NULL, -- Incluido directamente aquí
+    password VARCHAR(50) NOT NULL, -- Incluido directamente aquí
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+-- ============================================================
+-- 4. ENTIDADES SECUNDARIAS (Dependen de las principales)
+-- ============================================================
+CREATE TABLE apoderados (
+    id_apoderado INT AUTO_INCREMENT PRIMARY KEY,
+    dni_apoderado VARCHAR(8) NOT NULL UNIQUE,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    celular VARCHAR(15) NOT NULL,
+    parentesco VARCHAR(50) NOT NULL,
+    codigo_alumno INT NOT NULL,
+    FOREIGN KEY (codigo_alumno) REFERENCES alumnos(codigo_alumno)
+);
+
+CREATE TABLE profesores (
+    id_profesor INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    celular VARCHAR(15) NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    id_disciplina INT NOT NULL,
+    id_sede INT NOT NULL, -- ¡Agregado con éxito según tu análisis!
+    FOREIGN KEY (id_disciplina) REFERENCES disciplinas(id_disciplina),
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+-- ============================================================
+-- 5. TABLAS TRANSACCIONALES (El corazón del negocio)
+-- ============================================================
+CREATE TABLE ventas (
+    codigo_venta INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_venta DATE NOT NULL,
+    metodo_pago VARCHAR(20) NOT NULL,
+    monto_efectivo DECIMAL(6,2) NOT NULL,
+    monto_digital DECIMAL(6,2) NOT NULL,
+    total_pagado DECIMAL(6,2) NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    codigo_alumno INT NOT NULL,
+    id_plan INT NOT NULL,
+    id_usuario INT NOT NULL,
+    id_sede INT NOT NULL,
+    FOREIGN KEY (codigo_alumno) REFERENCES alumnos(codigo_alumno),
+    FOREIGN KEY (id_plan) REFERENCES planes(id_plan),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+CREATE TABLE clases_dictadas (
+    id_clase INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_clase DATE NOT NULL,
+    turno VARCHAR(20) NOT NULL,
+    cantidad_alumnos INT NOT NULL,
+    calificacion VARCHAR(20) NOT NULL,
+    id_profesor INT NOT NULL,
+    id_disciplina INT NOT NULL,
+    id_sede INT NOT NULL,
+    FOREIGN KEY (id_profesor) REFERENCES profesores(id_profesor),
+    FOREIGN KEY (id_disciplina) REFERENCES disciplinas(id_disciplina),
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+
+-- ============================================================
+-- 6. INYECCIÓN DE DATOS REALES (SEED DATA)
+-- ============================================================
+
+-- A. SEDES (Genera ID 1 y 2 automáticamente)
+INSERT INTO sedes (nombre_sede, direccion) VALUES  
+('Sede Bellavista', 'Av. Oscar R Benavides 3866'),
+('Sede Pilares', 'Av. Oscar R Benavides Cdra. 30');
+
+-- B. DISCIPLINAS (ID 1 al 5 automáticamente)
+INSERT INTO disciplinas (nombre_disciplina) VALUES  
+('Boxeo'),          -- ID 1
+('Muay Thai'),      -- ID 2
+('MMA'),            -- ID 3
+('Lucha Olímpica'), -- ID 4
+('Lucha Libre');     -- ID 5
+
+-- C. PLANES (ID 1 al 5 automáticamente)
+INSERT INTO planes (nombre_plan, precio_total) VALUES  
+('Plan - 1 Mes', 209.90),
+('Plan - 2 Meses', 259.90),
+('Plan - 3 Meses', 329.90),
+('Plan - 6 Meses', 499.90),
+('Plan - 12 Meses', 839.90);
+
+-- D. USUARIOS 
+-- (Sede 1 = Bellavista, Sede 2 = Pilares)
+INSERT INTO usuarios (nombres, rol, id_sede, username, password) VALUES  
+('Andrea', 'Jefa', 1, 'admin', '123456'),
+('Axel', 'Asesor', 1, 'axel', '01012026'),
+('Fabio', 'Asesor', 2, 'fabio', '02022026'),
+('Jimena', 'Asesor', 1, 'jimena', '03032026'),
+('Kiara', 'Asesor', 2, 'kiara', '04042026');
+
+-- E. PROFESORES 
+-- (Los últimos dos números corresponden a: id_disciplina, id_sede)
+INSERT INTO profesores (nombres, apellidos, celular, estado, id_disciplina, id_sede) VALUES  
+('Danny', 'Rosales', '987654321', 'Activo', 1, 1),   -- Boxeo en Bellavista
+('Jordan', 'Pacheco', '912345678', 'Activo', 2, 2), -- Muay Thai en Pilares 
+('William', 'Gómez', '999888777', 'Activo', 3, 1);  -- MMA en Bellavista
+
+
+USE bd_truesports;
+SELECT * FROM alumnos;
+SELECT * FROM clases_dictadas;
+DROP PROCEDURE SP_INSERTAR_ALUMNO;
+CREATE PROCEDURE SP_INSERTAR_ALUMNO(
+    DNI VARCHAR(8),
+    NOM VARCHAR(100),
+    APEL VARCHAR(100),
+    CEL VARCHAR(15),
+    FEC DATE,
+    EST VARCHAR(20)
+)
+INSERT INTO alumnos (dni, nombres, apellidos, celular, fecha_nacimiento, estado) 
+VALUES (DNI, NOM, APEL, CEL, FEC, EST);
+CREATE PROCEDURE SP_LISTAR()
+SELECT * FROM alumnos;
+
+CALL SP_LISTAR();
+CREATE PROCEDURE CONSULTAR_DNI(
+DNI_B CHAR(8))
+SELECT * FROM alumnos WHERE dni=DNI_B;
+CALL CONSULTAR_DNI('12345678');
+SELECT * FROM sedes;
+SELECT * FROM profesores;
+SELECT * FROM ventas;
+SELECT * FROM clases_dictadas;
+
+INSERT INTO ventas (fecha_venta, metodo_pago, monto_efectivo, monto_digital, total_pagado, estado, codigo_alumno, id_plan, id_usuario, id_sede) VALUES  
+-- --- VENTAS EN ENERO ---
+-- Axel vende Plan 3 Meses en Bellavista a Alumno 1
+('2026-01-10', 'Digital', 0.00, 329.90, 329.90, 'Pagado', 1, 3, 2, 1),
+-- Axel vende Plan 1 Mes en Bellavista a Alumno 2 (Axel totaliza 2 ventas en Enero)
+('2026-01-15', 'Efectivo', 209.90, 0.00, 209.90, 'Pagado', 2, 1, 2, 1),
+-- Jimena vende Plan 1 Mes en Bellavista a Alumno 3
+('2026-01-18', 'Digital', 0.00, 209.90, 209.90, 'Pagado', 3, 1, 4, 1),
+-- Fabio vende Plan 2 Meses en Pilares a Alumno 4
+('2026-01-20', 'Digital', 0.00, 259.90, 259.90, 'Pagado', 4, 2, 3, 2),
+
+-- --- VENTAS EN FEBRERO ---
+-- Jimena vende Plan 3 Meses en Bellavista a Alumno 1
+('2026-02-05', 'Efectivo', 329.90, 0.00, 329.90, 'Pagado', 1, 3, 4, 1),
+-- Kiara vende Plan 2 Meses en Pilares a Alumno 2
+('2026-02-12', 'Digital', 0.00, 259.90, 259.90, 'Pagado', 2, 2, 5, 2);
+
+
+-- ============================================================
+-- 3. INSERCIÓN DE CLASES DICTADAS (Para el panel de Profesores y General)
+-- ============================================================
+-- Recordando Profesores, sus disciplinas y sedes de tu BD:
+-- Danny Rosales = ID 1 (Boxeo - ID 1, Sede 1 - Bellavista)
+-- Jordan Pacheco = ID 2 (Muay Thai - ID 2, Sede 2 - Pilares)
+-- William Gómez = ID 3 (MMA - ID 3, Sede 1 - Bellavista)
+
+INSERT INTO clases_dictadas (fecha_clase, turno, cantidad_alumnos, calificacion, id_profesor, id_disciplina, id_sede) VALUES  
+-- --- CLASES EN ENERO ---
+-- Danny dicta Boxeo en Bellavista (Calificación "18")
+('2026-01-12', 'Mañana', 15, '18', 1, 1, 1),
+('2026-01-14', 'Noche', 18, '20', 1, 1, 1), -- Danny tendrá 2 clases en Enero
+
+-- William dicta MMA en Bellavista
+('2026-01-15', 'Noche', 10, '15', 3, 3, 1),
+
+-- Jordan dicta Muay Thai en Pilares
+('2026-01-15', 'Tarde', 12, '19', 2, 2, 2),
+('2026-01-22', 'Noche', 14, '17', 2, 2, 2),
+
+-- --- CLASES EN FEBRERO ---
+-- Danny dicta Boxeo en Bellavista
+('2026-02-02', 'Mañana', 12, '16', 1, 1, 1),
+-- William dicta MMA en Bellavista
+('2026-02-04', 'Noche', 20, '19', 3, 3, 1),
+('2026-02-11', 'Tarde', 15, '18', 3, 3, 1); -- William tendrá más clases en Febrero
+
+
+CREATE VIEW VW_REPORTE_GENERAL AS
+WITH ResumenVentas AS (
+    SELECT 
+        MONTH(fecha_venta) AS num_mes,
+        id_sede,
+        SUM(total_pagado) AS ingreso_total
+    FROM ventas
+    GROUP BY MONTH(fecha_venta), id_sede
+),
+RankingAsesores AS (
+    -- Calcula el asesor con más ventas por mes y sede
+    SELECT 
+        MONTH(v.fecha_venta) AS num_mes,
+        v.id_sede,
+        u.nombres AS asesor,
+        ROW_NUMBER() OVER(PARTITION BY MONTH(v.fecha_venta), v.id_sede ORDER BY SUM(v.total_pagado) DESC) AS rnk
+    FROM ventas v
+    JOIN usuarios u ON v.id_usuario = u.id_usuario
+    WHERE u.rol = 'Asesor'
+    GROUP BY MONTH(v.fecha_venta), v.id_sede, u.nombres
+),
+RankingProfesores AS (
+    -- Calcula el profesor con más clases dictadas por mes y sede
+    SELECT 
+        MONTH(c.fecha_clase) AS num_mes,
+        c.id_sede,
+        p.nombres AS profesor,
+        ROW_NUMBER() OVER(PARTITION BY MONTH(c.fecha_clase), c.id_sede ORDER BY COUNT(c.id_clase) DESC) AS rnk
+    FROM clases_dictadas c
+    JOIN profesores p ON c.id_profesor = p.id_profesor
+    GROUP BY MONTH(c.fecha_clase), c.id_sede, p.nombres
+),
+RankingDisciplinas AS (
+    -- Calcula el arte marcial con más alumnos asistentes por mes y sede
+    SELECT 
+        MONTH(c.fecha_clase) AS num_mes,
+        c.id_sede,
+        d.nombre_disciplina AS disciplina,
+        ROW_NUMBER() OVER(PARTITION BY MONTH(c.fecha_clase), c.id_sede ORDER BY SUM(c.cantidad_alumnos) DESC) AS rnk
+    FROM clases_dictadas c
+    JOIN disciplinas d ON c.id_disciplina = d.id_disciplina
+    GROUP BY MONTH(c.fecha_clase), c.id_sede, d.nombre_disciplina
+)
+SELECT 
+    CASE rv.num_mes
+        WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
+        WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+        WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+        WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+    END AS MES,
+    s.nombre_sede AS SEDE,
+    IFNULL(ra.asesor, 'Sin registros') AS ASESOR_DESTACADO,
+    IFNULL(rp.profesor, 'Sin registros') AS PROFESOR_DESTACADO,
+    IFNULL(rd.disciplina, 'Sin registros') AS ARTE_MARCIAL_POPULAR,
+    rv.ingreso_total AS INGRESO_TOTAL
+FROM ResumenVentas rv
+JOIN sedes s ON rv.id_sede = s.id_sede
+LEFT JOIN RankingAsesores ra ON rv.num_mes = ra.num_mes AND rv.id_sede = ra.id_sede AND ra.rnk = 1
+LEFT JOIN RankingProfesores rp ON rv.num_mes = rp.num_mes AND rv.id_sede = rp.id_sede AND rp.rnk = 1
+LEFT JOIN RankingDisciplinas rd ON rv.num_mes = rd.num_mes AND rv.id_sede = rd.id_sede AND rd.rnk = 1;
+
+-- Para ver el resultado en tu sistema solo ejecutas:
+-- SELECT * FROM VW_REPORTE_GENERAL;
+
+
+
+CREATE OR REPLACE VIEW VW_REPORTE_ASESORES AS
+WITH BaseAsesores AS (
+    -- Primero calculamos todo agrupando por el número del mes
+    SELECT 
+        MONTH(v.fecha_venta) AS num_mes,
+        s.nombre_sede AS SEDE,
+        u.nombres AS ASESOR,
+        COUNT(v.codigo_venta) AS N_VENTAS,
+        SUM(v.total_pagado) AS INGRESO_GENERADO,
+        ROUND(SUM(v.total_pagado) * 0.10, 2) AS COMISION
+    FROM ventas v
+    JOIN usuarios u ON v.id_usuario = u.id_usuario
+    JOIN sedes s ON v.id_sede = s.id_sede
+    WHERE u.rol = 'Asesor'
+    GROUP BY MONTH(v.fecha_venta), s.nombre_sede, u.nombres
+)
+-- Luego convertimos el número a texto en la salida final
+SELECT 
+    CASE num_mes
+        WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
+        WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+        WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+        WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+    END AS MES,
+    SEDE,
+    ASESOR,
+    N_VENTAS,
+    INGRESO_GENERADO,
+    COMISION
+FROM BaseAsesores;
+SELECT * FROM VW_REPORTE_ASESORES;
+
+
+
+
+CREATE OR REPLACE VIEW VW_REPORTE_PROFESORES AS
+WITH BaseProfesores AS (
+    -- Primero calculamos promedios y sumas agrupando por el número del mes
+    SELECT 
+        MONTH(c.fecha_clase) AS num_mes,
+        s.nombre_sede AS SEDE,
+        CONCAT(p.nombres, ' ', p.apellidos) AS PROFESOR,
+        d.nombre_disciplina AS DISCIPLINA,
+        COUNT(c.id_clase) AS N_CLASES_DICTADAS,
+        ROUND(AVG(CAST(c.calificacion AS DECIMAL(5,2))), 2) AS CALIFICACION_PROMEDIO
+    FROM clases_dictadas c
+    JOIN profesores p ON c.id_profesor = p.id_profesor
+    JOIN sedes s ON c.id_sede = s.id_sede
+    JOIN disciplinas d ON c.id_disciplina = d.id_disciplina
+    GROUP BY MONTH(c.fecha_clase), s.nombre_sede, CONCAT(p.nombres, ' ', p.apellidos), d.nombre_disciplina
+)
+SELECT 
+    CASE num_mes
+        WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
+        WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+        WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+        WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+    END AS MES,
+    SEDE,
+    PROFESOR,
+    DISCIPLINA,
+    N_CLASES_DICTADAS,
+    CALIFICACION_PROMEDIO
+FROM BaseProfesores;
+-- Para ver el resultado en tu sistema solo ejecutas:
+-- SELECT * FROM VW_REPORTE_PROFESORES;
+SELECT * FROM VW_REPORTE_PROFESORES 
+ORDER BY CALIFICACION_PROMEDIO DESC;
