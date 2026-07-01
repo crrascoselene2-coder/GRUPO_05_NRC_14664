@@ -19,9 +19,6 @@ private ArrayList<Alumno>paci;
 public ArregloAlumno() {
 	paci=new ArrayList<Alumno>();
 }
-public void adicionar(Alumno x) {
-	paci.add(x);
-}
 public boolean InsertarAlumno(clases.Alumno alu, int idSede) {
 	boolean exito = false;
 	try {
@@ -103,27 +100,6 @@ public ArrayList<Alumno> ConsultarAlumno(String nom){
     } catch (Exception e) {}
     return lista;
 }
-
-public int Tamaño() {
-	return paci.size();
-}
-
-public Alumno Obtener(int x) {
-	return paci.get(x);
-}
-public Alumno BuscarPorDni(String dni) {
-	for(int i=0; i<Tamaño(); i++) {
-		if(Obtener(i).getDni().equals(dni)) 
-			return Obtener(i);
-	}
-	return null;
-}
-
-public void Eliminar(Alumno x)
-{ paci.remove(x);
-	}
-
-
 
 }
 

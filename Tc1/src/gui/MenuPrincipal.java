@@ -1260,717 +1260,732 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			do_btnVenta_actionPerformed(e);
 		}
 	}
-	public void Listar(String nom) {
-		DefaultTableModel modelo = new DefaultTableModel();
-		modelo.addColumn("Código");
-		modelo.addColumn("DNI");
-		modelo.addColumn("Nombres");
-		modelo.addColumn("Apellidos");
-		modelo.addColumn("Celular");
-		modelo.addColumn("Fecha de nacimiento");
-		modelo.addColumn("Estado");
-
-		try {
-			java.sql.Connection cn = utils.Conexion.conectar();
-			java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_ALUMNOS_SEDE(?,?)}");
-			
-			csta.setString(1, nom);
-			csta.setInt(2, VentanaLogin.idSedeLogueada); 
-			
-			java.sql.ResultSet rs = csta.executeQuery();
-			while(rs.next()) {
-				Object[] fila = {
-					rs.getInt(1),     // Código
-					rs.getString(2),  // DNI
-					rs.getString(3),  // Nombres
-					rs.getString(4),  // Apellidos
-					rs.getString(5),  // Celular
-					rs.getString(6),  // Fecha de nacimiento
-					rs.getString(7)   // Estado
-				};
-				modelo.addRow(fila);
-			}
-		} catch (Exception e) {
-			System.out.println("Error en Listar Alumnos: " + e.getMessage());
-		}
-		
-		tbTabla.setModel(modelo); 
-	}
-	
-	public void listarVentas(String dniBuscar) {
+		//--------------------------------------------------------------------------------------------------------
+		//Módulo Alumnos------------------------------------------------------------------------------------------
+		public void Listar(String nom) {
 			DefaultTableModel modelo = new DefaultTableModel();
-			modelo.addColumn("CÓDIGO VENTA");
-			modelo.addColumn("FECHA");
-			modelo.addColumn("DNI ALUMNO");
-			modelo.addColumn("PLAN");
-			modelo.addColumn("MÉTODO DE PAGO");
-			modelo.addColumn("TOTAL PAGADO");
+			modelo.addColumn("Código");
+			modelo.addColumn("DNI");
+			modelo.addColumn("Nombres");
+			modelo.addColumn("Apellidos");
+			modelo.addColumn("Celular");
+			modelo.addColumn("Fecha de nacimiento");
+			modelo.addColumn("Estado");
 
 			try {
 				java.sql.Connection cn = utils.Conexion.conectar();
-				java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_VENTAS_SEDE(?,?)}");
-				csta.setString(1, dniBuscar);
+				java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_ALUMNOS_SEDE(?,?)}");
+				
+				csta.setString(1, nom);
 				csta.setInt(2, VentanaLogin.idSedeLogueada); 
 				
 				java.sql.ResultSet rs = csta.executeQuery();
 				while(rs.next()) {
 					Object[] fila = {
-						rs.getInt(1),     // codigo_venta
-						rs.getString(2),  // fecha_venta
-						rs.getString(3),  // dni (traído del JOIN)
-						rs.getString(4),  // nombre_plan (traído del JOIN)
-						rs.getString(5),  // metodo_pago
-						"S/. " + rs.getDouble(6) // total_pagado
+						rs.getInt(1),     // Código
+						rs.getString(2),  // DNI
+						rs.getString(3),  // Nombres
+						rs.getString(4),  // Apellidos
+						rs.getString(5),  // Celular
+						rs.getString(6),  // Fecha de nacimiento
+						rs.getString(7)   // Estado
 					};
 					modelo.addRow(fila);
 				}
 			} catch (Exception e) {
-				System.out.println("Error en Listar Ventas: " + e.getMessage());
+				System.out.println("Error en Listar Alumnos: " + e.getMessage());
 			}
-			tbTablaVentas.setModel(modelo); 
+			
+			tbTabla.setModel(modelo); 
 		}
-	
-	public void ListarProfesores(String mesFiltro, String profesorFiltro) {
-		DefaultTableModel modelo = new DefaultTableModel();
-		ArregloProfesor acce = new ArregloProfesor();
-		
-		ArrayList<ReporteProfesor> lista = acce.ListarTodosProfesores();
-		
-		modelo.addColumn("MES");
-		modelo.addColumn("SEDE");
-		modelo.addColumn("PROFESOR");
-		modelo.addColumn("DISCIPLINA");
-		modelo.addColumn("N.º CLASES DICTADAS");
-		modelo.addColumn("CALIFICACIÓN PROMEDIO");
-		
-		Iterator it = lista.iterator();
-		int i = 0;
-		while(it.hasNext()) {
-			ReporteProfesor acceso = (ReporteProfesor) it.next();
-		
-			boolean pasaFiltroSede = false;
-			if (VentanaLogin.idSedeLogueada == 0) {
-				pasaFiltroSede = true; 
-			} else {
-				String sededelReporte = String.valueOf(acceso.getSede()).toLowerCase();
-				if (VentanaLogin.idSedeLogueada == 1 && (sededelReporte.equals("1") || sededelReporte.contains("bellavista"))) {
-					pasaFiltroSede = true;
-				} else if (VentanaLogin.idSedeLogueada == 2 && (sededelReporte.equals("2") || sededelReporte.contains("pilares"))) {
-					pasaFiltroSede = true;
+
+		public void mostrarApoderado(int codigoAlumno, String nombreAlumno) {
+			try {
+				java.sql.Connection cn = utils.Conexion.conectar();
+				
+				String sql = "SELECT * FROM apoderados WHERE codigo_alumno = ?"; 
+				
+				java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+				pst.setInt(1, codigoAlumno); // Enviamos el número entero
+				java.sql.ResultSet rs = pst.executeQuery();
+				
+				if (rs.next()) {
+					
+					String nombresApo = rs.getString("nombres");
+					String apellidosApo = rs.getString("apellidos");
+					String celularApo = rs.getString("celular");
+					String relacion = rs.getString("parentesco"); 
+					
+				
+					String mensaje = "Información del Apoderado de: " + nombreAlumno + "\n"
+							       + "--------------------------------------------------\n"
+							       + "Nombres: " + nombresApo + " " + apellidosApo + "\n"
+							       + "Parentesco: " + relacion + "\n"
+							       + "Celular: " + celularApo;
+					
+					JOptionPane.showMessageDialog(null, mensaje, "Datos del Apoderado", JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(null, "El alumno " + nombreAlumno + " no tiene un apoderado registrado.", "Aviso", JOptionPane.WARNING_MESSAGE);
 				}
-			}
-			
-			boolean pasaFiltroCombo = true;
-			String mesBD = acceso.getMes();
-			String profBD = acceso.getProfesor();
-			
-			if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
-				pasaFiltroCombo = false;
-			}
-			if (!profesorFiltro.contains("Seleccione") && !profesorFiltro.equals("") && !profBD.equalsIgnoreCase(profesorFiltro)) {
-				pasaFiltroCombo = false;
-			}
-	
-			if (pasaFiltroSede && pasaFiltroCombo) {
-				modelo.setRowCount(modelo.getRowCount() + 1); 
-				modelo.setValueAt(acceso.getMes(), i, 0);
-				modelo.setValueAt(acceso.getSede(), i, 1);
-				modelo.setValueAt(acceso.getProfesor(), i, 2);
-				modelo.setValueAt(acceso.getDisciplina(), i, 3);
-				modelo.setValueAt(acceso.getnClasesDictadas(), i, 4);
-				modelo.setValueAt(acceso.getCalificacionPromedio(), i, 5);
-				i++;
+				
+			} catch (Exception ex) {
+				System.out.println("Error al buscar apoderado: " + ex.getMessage());
 			}
 		}
-		tbReporteProfesores.setModel(modelo);
-	}
-	
-	//Módulo Ventas-------------------------------------------------------------------------------------------
-	protected void do_btnVenta_actionPerformed(ActionEvent e) {
-		moduloAlumnos.setVisible(false);
-		moduloClases.setVisible(false);
-		moduloReporte.setVisible(false);
-		moduloVentas.setVisible(true);
-	}
 
-	
-	//--------------------------------------------------------------------------------------------------------
-	//Módulo Alumnos-------------------------------------------------------------------------------------------
-	protected void do_btnAlumnos_actionPerformed(ActionEvent e) {
-		moduloAlumnos.setVisible(true);
-		moduloClases.setVisible(false);
-		moduloReporte.setVisible(false);
-		moduloVentas.setVisible(false);
-	}
-	protected void do_tbTabla_mouseClicked(MouseEvent e) {
-int fila = tbTabla.getSelectedRow();
-		
-		if (fila >= 0) {
-			
-			txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
-			txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
-			txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 3)));
-			txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
-			txtFechaNaciAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 5)));			
-		
-			if (e.getClickCount() == 2) {
-				
-				int codigoAlumno = Integer.parseInt(String.valueOf(tbTabla.getValueAt(fila, 0)));
-				String nombreAlumno = String.valueOf(tbTabla.getValueAt(fila, 2));
-				
-				mostrarApoderado(codigoAlumno, nombreAlumno);
-			}
+		protected void do_btnAlumnos_actionPerformed(ActionEvent e) {
+			moduloAlumnos.setVisible(true);
+			moduloClases.setVisible(false);
+			moduloReporte.setVisible(false);
+			moduloVentas.setVisible(false);
 		}
-		
-	}
-	protected void do_btnLimpiar_actionPerformed(ActionEvent e) {
-		txtBuscarDniAlumno.setText("");
-		txtDniAlumno.setText("");
-		txtNombresAlumno.setText("");
-		txtApellidosAlumno.setText("");
-		txtCelularAlumno.setText("");
-		txtFechaNaciAlumno.setText("");
-	}
-	protected void do_btnMostrarTodoAlumnos_actionPerformed(ActionEvent e) {
-		Listar("");
-	}
-	protected void do_btnBuscarDniAlumno_actionPerformed(ActionEvent e) {
-String Dni_Buscar = txtBuscarDniAlumno.getText().trim();
-		
-		if (Dni_Buscar.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
+
+		protected void do_btnMostrarTodoAlumnos_actionPerformed(ActionEvent e) {
 			Listar("");
-			return;
-		}
-		
-	
-		arreglo.ArregloAlumno acce = new arreglo.ArregloAlumno();
-		java.util.ArrayList<clases.Alumno> lista = acce.ConsultarAlumno(Dni_Buscar);
-		
-	
-		if (lista.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Alumno no encontrado. Verifique el DNI.");
-			Listar(""); 
-		} else {
-			Listar(Dni_Buscar); 
-		}
-		
-		txtBuscarDniAlumno.setText("");
-	}
-	protected void do_btnMatricular_actionPerformed(ActionEvent e) {
-		String dni = txtDniAlumno.getText().trim();
-		String nombres = txtNombresAlumno.getText().trim();
-		String apellidos = txtApellidosAlumno.getText().trim();
-		String celular = txtCelularAlumno.getText().trim();
-		String fechaTexto = txtFechaNaciAlumno.getText().trim(); 
-
-		if (dni.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || fechaTexto.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Por favor, completa todos los datos obligatorios del alumno.");
-			return;
 		}
 
-		String fechaParaMySQL = "";
-		int edad = 0;
-
-		try {
-			java.time.format.DateTimeFormatter formatoEntrada = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			java.time.LocalDate fechaNac = java.time.LocalDate.parse(fechaTexto, formatoEntrada);
-			java.time.LocalDate hoy = java.time.LocalDate.now();
+		protected void do_btnBuscarDniAlumno_actionPerformed(ActionEvent e) {
+			String Dni_Buscar = txtBuscarDniAlumno.getText().trim();
 			
-			edad = java.time.Period.between(fechaNac, hoy).getYears();
+			if (Dni_Buscar.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
+				Listar("");
+				return;
+			}
 			
-			java.time.format.DateTimeFormatter formatoBD = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			fechaParaMySQL = fechaNac.format(formatoBD);
-			
-		} catch (java.time.format.DateTimeParseException ex) {
-			JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Usa el formato DD/MM/AAAA (Ejemplo: 25/10/2005)", "Aviso", JOptionPane.WARNING_MESSAGE);
-			return; 
-		}
-
-		try {
 		
-			clases.Alumno alu = new clases.Alumno(dni, nombres, apellidos, celular, fechaParaMySQL, "Activo");
-
-			String dniApo = "";
-			String nomApo = "";
-			String apeApo = "";
-			String celApo = "";
-			String parentesco = "";
-
-	        if (edad < 18) {
-	            dniApo = txtDniApoderado.getText().trim();
-	            nomApo = txtNombresApoderado.getText().trim();
-	            apeApo = txtApellidosApoderado.getText().trim();
-	            celApo = txtCelularApoderado.getText().trim();
-	            parentesco = txtParentescoApoderado.getText().trim();
-	            
-	            if (dniApo.isEmpty() || nomApo.isEmpty() || apeApo.isEmpty() || parentesco.isEmpty()) {
-	                JOptionPane.showMessageDialog(null, "¡Alto! El alumno es menor de edad (" + edad + " años). Es OBLIGATORIO llenar los datos del apoderado.");
-	                return; 
-	            }
-	        }
-	        
-	     
-	     
-	        arreglo.ArregloAlumno arreglo = new arreglo.ArregloAlumno();
-	        boolean exito = arreglo.InsertarAlumno(alu, VentanaLogin.idSedeLogueada);
-	        
-	        if (exito == true) {
-	            
-	            if (edad < 18) {
-	                arreglo.InsertarApoderado(dni, dniApo, nomApo, apeApo, celApo, parentesco);
-	            }
-	            
-	            JOptionPane.showMessageDialog(null, "¡Alumno matriculado correctamente!");
-	            
-	            
-	            do_btnLimpiar_actionPerformed(null);
-	            Listar("");
-	            
-	        } else {
-	            
-	            JOptionPane.showMessageDialog(null, "Error: No se pudo matricular. El DNI ingresado ya existe en el sistema.", "DNI Duplicado", JOptionPane.ERROR_MESSAGE);
-	        }
-	        
-	    } catch (Exception ex) {
-	        JOptionPane.showMessageDialog(null, "Ocurrió un error al guardar: " + ex.getMessage());
-	    }
-	}
-	    
-	    
-	
-	//---------------------------------------------------------------------------------------------------------
-	//Módulo Clases-------------------------------------------------------------------------------------------
-	protected void do_btnClases_actionPerformed(ActionEvent e) {
-		moduloAlumnos.setVisible(false);
-		moduloClases.setVisible(true);
-		moduloReporte.setVisible(false);
-		moduloVentas.setVisible(false);
-	}
-	//--------------------------------------------------------------------------------------------------------
-	//Módulo Reporte-------------------------------------------------------------------------------------------
-	protected void do_btnReporte_actionPerformed(ActionEvent e) {
-		moduloAlumnos.setVisible(false);
-		moduloClases.setVisible(false);
-		moduloReporte.setVisible(true);
-		moduloVentas.setVisible(false);
-		ListarProfesores("", "");
-	}
-	protected void do_btnFiltrarPROFESOR_actionPerformed(ActionEvent e) {
-		String mesSeleccionado = comboBox_mesProfesor.getSelectedItem().toString();
-		String profesorSeleccionado = comboBox_profesorReporte.getSelectedItem().toString();
-		ListarProfesores(mesSeleccionado, profesorSeleccionado);
-	}
-	protected void do_btnMostrarTodoPROFESOR_actionPerformed(ActionEvent e) {
-		ListarProfesores("", "");
-		comboBox_mesProfesor.setSelectedIndex(0);
-		comboBox_profesorReporte.setSelectedIndex(0);
-		}
-	
-	//---------------------------------------------------------------------------------------------------------
-	protected void do_btnCerrarSesión_actionPerformed(ActionEvent e) {
-		VentanaLogin login = new VentanaLogin();
-		login.setVisible(true);
-		this.dispose();
-	}
-	public void mouseClicked(MouseEvent e) {
-		if (e.getSource() == tbTabla) {
-			do_tbTabla_mouseClicked(e);
-		}
-	}
-	public void mouseEntered(MouseEvent e) {
-	}
-	public void mouseExited(MouseEvent e) {
-	}
-	public void mousePressed(MouseEvent e) {
-	}
-	public void mouseReleased(MouseEvent e) {
-	}
-	
-	
-
-	//--------------------------------------------------------------------------------------------------------
-		//Módulo Venta-------------------------------------------------------------------------------------------
-	
-	protected void do_btnBuscarDniVenta1_actionPerformed(ActionEvent e) {
-		String dni = txtBuscarDniVenta1.getText().trim();
-		if (dni.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
-			return;
-		}
+			arreglo.ArregloAlumno acce = new arreglo.ArregloAlumno();
+			java.util.ArrayList<clases.Alumno> lista = acce.ConsultarAlumno(Dni_Buscar);
+			
 		
-		arreglo.ArregloAlumno arrAlumno = new arreglo.ArregloAlumno();
-		java.util.ArrayList<clases.Alumno> lista = arrAlumno.ConsultarAlumno(dni);
-		
-		if (lista.size() > 0) {
+			if (lista.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Alumno no encontrado. Verifique el DNI.");
+				Listar(""); 
+			} else {
+				Listar(Dni_Buscar); 
+			}
 			
-			textField_7.setText(lista.get(0).getNom() + " " + lista.get(0).getApellidos());
-		} else {
-			JOptionPane.showMessageDialog(null, "Alumno no encontrado. Debe matricularlo primero.");
-			textField_7.setText("");
-		}
-	}
-	protected void do_btnProcesarVenta_actionPerformed(ActionEvent e) {
-		String dni = txtBuscarDniVenta2.getText().trim();
-		if (dni.isEmpty() || textField_7.getText().isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Primero busque y seleccione un alumno válido.");
-			return;
+			txtBuscarDniAlumno.setText("");
 		}
 
-		try {
-			int idPlan = comboBox.getSelectedIndex() + 1; 
-			String metodoPago = comboBox_1.getSelectedItem().toString();
-			
-			
-			double total = textField_8.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_8.getText());
-			if (total <= 0) {
-				JOptionPane.showMessageDialog(null, "Seleccione un plan válido.");
+		protected void do_btnLimpiar_actionPerformed(ActionEvent e) {
+			txtBuscarDniAlumno.setText("");
+			txtDniAlumno.setText("");
+			txtNombresAlumno.setText("");
+			txtApellidosAlumno.setText("");
+			txtCelularAlumno.setText("");
+			txtFechaNaciAlumno.setText("");
+		}
+
+		protected void do_btnMatricular_actionPerformed(ActionEvent e) {
+			String dni = txtDniAlumno.getText().trim();
+			String nombres = txtNombresAlumno.getText().trim();
+			String apellidos = txtApellidosAlumno.getText().trim();
+			String celular = txtCelularAlumno.getText().trim();
+			String fechaTexto = txtFechaNaciAlumno.getText().trim(); 
+
+			if (dni.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || fechaTexto.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Por favor, completa todos los datos obligatorios del alumno.");
 				return;
 			}
 
-			double efectivo = 0.0;
-			double digital = 0.0;
+			String fechaParaMySQL = "";
+			int edad = 0;
 
-			
-			if (metodoPago.equals("Mixto")) {
-				efectivo = textField_10.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_10.getText());
-				digital = textField_11.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_11.getText());
+			try {
+				java.time.format.DateTimeFormatter formatoEntrada = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				java.time.LocalDate fechaNac = java.time.LocalDate.parse(fechaTexto, formatoEntrada);
+				java.time.LocalDate hoy = java.time.LocalDate.now();
 				
+				edad = java.time.Period.between(fechaNac, hoy).getYears();
 				
-				if (Math.abs((efectivo + digital) - total) > 0.1) {
-					JOptionPane.showMessageDialog(null, "Error: En método Mixto, la suma exacta debe ser " + total);
-					return;
-				}
-			} else if (metodoPago.equals("Efectivo")) {
-				efectivo = total; 
-				digital = 0.0;
-			} else { 
+				java.time.format.DateTimeFormatter formatoBD = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				fechaParaMySQL = fechaNac.format(formatoBD);
 				
-				efectivo = 0.0;
-				digital = total; 
+			} catch (java.time.format.DateTimeParseException ex) {
+				JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Usa el formato DD/MM/AAAA (Ejemplo: 25/10/2005)", "Aviso", JOptionPane.WARNING_MESSAGE);
+				return; 
 			}
 
-		
-			arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
-			System.out.println("DEBUG: Estoy intentando registrar con la Sede ID: " + VentanaLogin.idSedeLogueada);
-			arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, 1);
-			
-			JOptionPane.showMessageDialog(null, "¡Venta registrada con éxito en el sistema!");
-			
-		
-			txtBuscarDniVenta2.setText("");
-			textField_7.setText("");
-			textField_8.setText("");
-			textField_10.setText("");
-			textField_11.setText("");
-			comboBox.setSelectedIndex(0);
-			comboBox_1.setSelectedIndex(0);
-			
-			
-			listarVentas("");
-			
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(null, "Error: Revise los montos ingresados.");
-		}
-	}
-	protected void do_btnMostrarTodoVentas_actionPerformed(ActionEvent e) {
-		listarVentas(""); 
-	    txtBuscarDniVenta1.setText(""); 
-	}
-	
-	protected void do_btnRegistrarClase_actionPerformed(ActionEvent e) {
-		try {
-			int idDisciplina = comboBox_arteMarcial.getSelectedIndex() + 1; 
-			int idProfesor = comboBox_profesor.getSelectedIndex() + 1;
-			String turno = comboBox_turno.getSelectedItem().toString();
-			int numAlumnos = Integer.parseInt(txtNdeAlumnos.getText().trim());
-			
-			// Lógica de calificación automática
-			String calificacion = "";
-			if (numAlumnos >= 22) calificacion = "Estrella";
-			else if (numAlumnos >= 12) calificacion = "Normal";
-			else calificacion = "Bajo";
-
-			// Conexión y envío a MySQL
-			java.sql.Connection cn = utils.Conexion.conectar();
-			java.sql.CallableStatement csta = cn.prepareCall("{call SP_INSERTAR_CLASE(?,?,?,?,?)}");
-			csta.setString(1, turno);
-			csta.setInt(2, numAlumnos);
-			csta.setString(3, calificacion);
-			csta.setInt(4, idProfesor);
-			csta.setInt(5, idDisciplina);
-			csta.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "¡Clase registrada con calificación: " + calificacion + "!");
-            txtNdeAlumnos.setText(""); 
-            
-           
-            ListarClases(""); 
-            
-        } catch(Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error: Ingrese una cantidad válida de alumnos (solo números enteros).");
-        }
-	}
-	protected void do_btnBuscarDniVenta2_actionPerformed(ActionEvent e) {
-		String dni = txtBuscarDniVenta2.getText().trim();
-		if (dni.isEmpty()) {
-			JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
-			return;
-		}
-		
-		arreglo.ArregloAlumno arrAlumno = new arreglo.ArregloAlumno();
-		java.util.ArrayList<clases.Alumno> lista = arrAlumno.ConsultarAlumno(dni);
-		
-		if (lista.size() > 0) {
-			
-			textField_7.setText(lista.get(0).getNom() + " " + lista.get(0).getApellidos());
-		} else {
-	
-			JOptionPane.showMessageDialog(null, "Alumno no encontrado. Debe matricularlo en el módulo de Alumnos primero.");
-			textField_7.setText("");
-		}
-	}
-	protected void do_comboBox_actionPerformed(ActionEvent e) {
-		int index = comboBox.getSelectedIndex();
-		double precio = 0.0;
-		
-		
-		switch(index) {
-			case 0: precio = 209.90; break; // Plan - 1 Mes
-			case 1: precio = 259.90; break; // Plan - 2 Meses
-			case 2: precio = 329.90; break; // Plan - 3 Meses
-			case 3: precio = 499.90; break; // Plan - 6 Meses
-			case 4: precio = 839.90; break; // Plan - 12 Meses
-		}
-		
-		textField_8.setText(String.valueOf(precio)); 
-		textField_8.setEditable(false); 
-		textField_10.setText("");
-		textField_11.setText("");
-	}
-	protected void do_comboBox_1_actionPerformed(ActionEvent e) {
-		String metodo = comboBox_1.getSelectedItem().toString();
-		
-		if (metodo.equals("Mixto")) {
-			
-			textField_10.setEditable(true);
-			textField_11.setEditable(false); 
-			textField_10.setText("");
-			textField_11.setText("");
-			textField_10.requestFocus(); 
-		} else {
-			
-			textField_10.setEditable(false);
-			textField_11.setEditable(false);
-			textField_10.setText("");
-			textField_11.setText("");
-		}
-	}
-	public void keyPressed(KeyEvent e) {
-	}
-	public void keyReleased(KeyEvent e) {
-		if (e.getSource() == textField_10) {
-			do_textField_10_keyReleased(e);
-		}
-	}
-	public void keyTyped(KeyEvent e) {
-	}
-	protected void do_textField_10_keyReleased(KeyEvent e) {
-		if (comboBox_1.getSelectedItem().toString().equals("Mixto")) {
 			try {
-				double total = Double.parseDouble(textField_8.getText());
-				String textoEfectivo = textField_10.getText().trim();
+			
+				clases.Alumno alu = new clases.Alumno(dni, nombres, apellidos, celular, fechaParaMySQL, "Activo");
+
+				String dniApo = "";
+				String nomApo = "";
+				String apeApo = "";
+				String celApo = "";
+				String parentesco = "";
+
+		        if (edad < 18) {
+		            dniApo = txtDniApoderado.getText().trim();
+		            nomApo = txtNombresApoderado.getText().trim();
+		            apeApo = txtApellidosApoderado.getText().trim();
+		            celApo = txtCelularApoderado.getText().trim();
+		            parentesco = txtParentescoApoderado.getText().trim();
+		            
+		            if (dniApo.isEmpty() || nomApo.isEmpty() || apeApo.isEmpty() || parentesco.isEmpty()) {
+		                JOptionPane.showMessageDialog(null, "¡Alto! El alumno es menor de edad (" + edad + " años). Es OBLIGATORIO llenar los datos del apoderado.");
+		                return; 
+		            }
+		        }
+		        
+		     
+		     
+		        arreglo.ArregloAlumno arreglo = new arreglo.ArregloAlumno();
+		        boolean exito = arreglo.InsertarAlumno(alu, VentanaLogin.idSedeLogueada);
+		        
+		        if (exito == true) {
+		            
+		            if (edad < 18) {
+		                arreglo.InsertarApoderado(dni, dniApo, nomApo, apeApo, celApo, parentesco);
+		            }
+		            
+		            JOptionPane.showMessageDialog(null, "¡Alumno matriculado correctamente!");
+		            
+		            
+		            do_btnLimpiar_actionPerformed(null);
+		            Listar("");
+		            
+		        } else {
+		            
+		            JOptionPane.showMessageDialog(null, "Error: No se pudo matricular. El DNI ingresado ya existe en el sistema.", "DNI Duplicado", JOptionPane.ERROR_MESSAGE);
+		        }
+		        
+		    } catch (Exception ex) {
+		        JOptionPane.showMessageDialog(null, "Ocurrió un error al guardar: " + ex.getMessage());
+		    }
+		}
+
+		protected void do_tbTabla_mouseClicked(MouseEvent e) {
+			int fila = tbTabla.getSelectedRow();
+			
+			if (fila >= 0) {
 				
-				if (textoEfectivo.isEmpty()) {
-					textField_11.setText("");
+				txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
+				txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
+				txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 3)));
+				txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
+				txtFechaNaciAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 5)));			
+			
+				if (e.getClickCount() == 2) {
+					
+					int codigoAlumno = Integer.parseInt(String.valueOf(tbTabla.getValueAt(fila, 0)));
+					String nombreAlumno = String.valueOf(tbTabla.getValueAt(fila, 2));
+					
+					mostrarApoderado(codigoAlumno, nombreAlumno);
+				}
+			}
+		}
+
+		//---------------------------------------------------------------------------------------------------------
+		//Módulo Clases-------------------------------------------------------------------------------------------
+		public void ListarClases(String fecha) {
+		    
+		    DefaultTableModel modelo = (DefaultTableModel) table_2.getModel();
+		    modelo.setRowCount(0); 
+		    
+		    try {
+		        java.sql.Connection cn = utils.Conexion.conectar();
+		        java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_CLASES(?,?)}");
+		        csta.setString(1, fecha);
+		        csta.setInt(2, 1);
+		        java.sql.ResultSet rs = csta.executeQuery();
+		        
+		        while(rs.next()) {
+		            Object[] fila = new Object[6]; 
+		            fila[0] = rs.getString(1);
+		            fila[1] = rs.getString(2); 
+		            fila[2] = rs.getString(3); 
+		            fila[3] = rs.getString(4); 
+		            fila[4] = rs.getInt(5);    
+		            fila[5] = rs.getString(6); 
+		            
+		            modelo.addRow(fila); 
+		        }
+		    } catch (Exception e) {
+		        JOptionPane.showMessageDialog(null, "Error al cargar tabla: " + e.getMessage());
+		    }
+		}
+
+		protected void do_btnClases_actionPerformed(ActionEvent e) {
+			moduloAlumnos.setVisible(false);
+			moduloClases.setVisible(true);
+			moduloReporte.setVisible(false);
+			moduloVentas.setVisible(false);
+		}
+
+		protected void do_btnRegistrarClase_actionPerformed(ActionEvent e) {
+			try {
+				int idDisciplina = comboBox_arteMarcial.getSelectedIndex() + 1; 
+				int idProfesor = comboBox_profesor.getSelectedIndex() + 1;
+				String turno = comboBox_turno.getSelectedItem().toString();
+				int numAlumnos = Integer.parseInt(txtNdeAlumnos.getText().trim());
+				
+				// Lógica de calificación automática
+				String calificacion = "";
+				if (numAlumnos >= 22) calificacion = "Estrella";
+				else if (numAlumnos >= 12) calificacion = "Normal";
+				else calificacion = "Bajo";
+
+				// Conexión y envío a MySQL
+				java.sql.Connection cn = utils.Conexion.conectar();
+				java.sql.CallableStatement csta = cn.prepareCall("{call SP_INSERTAR_CLASE(?,?,?,?,?,?)}");
+				csta.setString(1, turno);
+				csta.setInt(2, numAlumnos);
+				csta.setString(3, calificacion);
+				csta.setInt(4, idProfesor);
+				csta.setInt(5, idDisciplina);
+				csta.setInt(6, 1);
+
+				csta.executeUpdate();
+
+	            JOptionPane.showMessageDialog(null, "¡Clase registrada con calificación: " + calificacion + "!");
+	            txtNdeAlumnos.setText(""); 
+	            
+	           
+	            ListarClases(""); 
+	            
+	        } catch(Exception exe) {
+	        	JOptionPane.showMessageDialog(null,exe);
+	            JOptionPane.showMessageDialog(null, "Error: Ingrese una cantidad válida de alumnos (solo números enteros).");
+	        }
+		}
+
+		//--------------------------------------------------------------------------------------------------------
+		//Módulo Ventas-------------------------------------------------------------------------------------------
+		public void listarVentas(String dniBuscar) {
+				DefaultTableModel modelo = new DefaultTableModel();
+				modelo.addColumn("CÓDIGO VENTA");
+				modelo.addColumn("FECHA");
+				modelo.addColumn("DNI ALUMNO");
+				modelo.addColumn("PLAN");
+				modelo.addColumn("MÉTODO DE PAGO");
+				modelo.addColumn("TOTAL PAGADO");
+
+				try {
+					java.sql.Connection cn = utils.Conexion.conectar();
+					java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_VENTAS_SEDE(?,?)}");
+					csta.setString(1, dniBuscar);
+					csta.setInt(2, VentanaLogin.idSedeLogueada); 
+					
+					java.sql.ResultSet rs = csta.executeQuery();
+					while(rs.next()) {
+						Object[] fila = {
+							rs.getInt(1),     // codigo_venta
+							rs.getString(2),  // fecha_venta
+							rs.getString(3),  // dni (traído del JOIN)
+							rs.getString(4),  // nombre_plan (traído del JOIN)
+							rs.getString(5),  // metodo_pago
+							"S/. " + rs.getDouble(6) // total_pagado
+						};
+						modelo.addRow(fila);
+					}
+				} catch (Exception e) {
+					System.out.println("Error en Listar Ventas: " + e.getMessage());
+				}
+				tbTablaVentas.setModel(modelo); 
+			}
+
+		protected void do_btnVenta_actionPerformed(ActionEvent e) {
+			moduloAlumnos.setVisible(false);
+			moduloClases.setVisible(false);
+			moduloReporte.setVisible(false);
+			moduloVentas.setVisible(true);
+		}
+
+		protected void do_btnBuscarDniVenta1_actionPerformed(ActionEvent e) {
+			String dni = txtBuscarDniVenta1.getText().trim();
+			if (dni.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
+				return;
+			}
+			
+			arreglo.ArregloAlumno arrAlumno = new arreglo.ArregloAlumno();
+			java.util.ArrayList<clases.Alumno> lista = arrAlumno.ConsultarAlumno(dni);
+			
+			if (lista.size() > 0) {
+				
+				textField_7.setText(lista.get(0).getNom() + " " + lista.get(0).getApellidos());
+			} else {
+				JOptionPane.showMessageDialog(null, "Alumno no encontrado. Debe matricularlo primero.");
+				textField_7.setText("");
+			}
+		}
+
+		protected void do_btnBuscarDniVenta2_actionPerformed(ActionEvent e) {
+			String dni = txtBuscarDniVenta2.getText().trim();
+			if (dni.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
+				return;
+			}
+			
+			arreglo.ArregloAlumno arrAlumno = new arreglo.ArregloAlumno();
+			java.util.ArrayList<clases.Alumno> lista = arrAlumno.ConsultarAlumno(dni);
+			
+			if (lista.size() > 0) {
+				
+				textField_7.setText(lista.get(0).getNom() + " " + lista.get(0).getApellidos());
+			} else {
+		
+				JOptionPane.showMessageDialog(null, "Alumno no encontrado. Debe matricularlo en el módulo de Alumnos primero.");
+				textField_7.setText("");
+			}
+		}
+
+		protected void do_btnProcesarVenta_actionPerformed(ActionEvent e) {
+			String dni = txtBuscarDniVenta2.getText().trim();
+			if (dni.isEmpty() || textField_7.getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Primero busque y seleccione un alumno válido.");
+				return;
+			}
+
+			try {
+				int idPlan = comboBox.getSelectedIndex() + 1; 
+				String metodoPago = comboBox_1.getSelectedItem().toString();
+				
+				
+				double total = textField_8.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_8.getText());
+				if (total <= 0) {
+					JOptionPane.showMessageDialog(null, "Seleccione un plan válido.");
 					return;
 				}
-				
-				double efectivo = Double.parseDouble(textoEfectivo);
-				
-				if (efectivo > total) {
-					textField_11.setText("¡Se pasó!"); 
-				} else {
-					double digital = total - efectivo;
-				
-					textField_11.setText(String.format(java.util.Locale.US, "%.2f", digital));
+
+				double efectivo = 0.0;
+				double digital = 0.0;
+
+				if (metodoPago.equals("Mixto")) {
+					efectivo = textField_10.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_10.getText());
+					digital = textField_11.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_11.getText());
+					
+					
+					if (Math.abs((efectivo + digital) - total) > 0.1) {
+						JOptionPane.showMessageDialog(null, "Error: En método Mixto, la suma exacta debe ser " + total);
+						return;
+					}
+				} else if (metodoPago.equals("Efectivo")) {
+					efectivo = total; 
+					digital = 0.0;
+				} else { 
+					
+					efectivo = 0.0;
+					digital = total; 
 				}
+
+			
+				arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
+				System.out.println("DEBUG: Estoy intentando registrar con la Sede ID: " + VentanaLogin.idSedeLogueada);
+				arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, 1);
+				
+				JOptionPane.showMessageDialog(null, "¡Venta registrada con éxito en el sistema!");
+				
+			
+				txtBuscarDniVenta2.setText("");
+				textField_7.setText("");
+				textField_8.setText("");
+				textField_10.setText("");
+				textField_11.setText("");
+				comboBox.setSelectedIndex(0);
+				comboBox_1.setSelectedIndex(0);
+				
+				
+				listarVentas("");
+				
 			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(null, "Error: Revise los montos ingresados.");
+			}
+		}
+
+		protected void do_btnMostrarTodoVentas_actionPerformed(ActionEvent e) {
+			listarVentas(""); 
+		    txtBuscarDniVenta1.setText(""); 
+		}
+
+		protected void do_comboBox_actionPerformed(ActionEvent e) {
+			int index = comboBox.getSelectedIndex();
+			double precio = 0.0;
+			
+			
+			switch(index) {
+				case 0: precio = 209.90; break; // Plan - 1 Mes
+				case 1: precio = 259.90; break; // Plan - 2 Meses
+				case 2: precio = 329.90; break; // Plan - 3 Meses
+				case 3: precio = 499.90; break; // Plan - 6 Meses
+				case 4: precio = 839.90; break; // Plan - 12 Meses
+			}
+			
+			textField_8.setText(String.valueOf(precio)); 
+			textField_8.setEditable(false); 
+			textField_10.setText("");
+			textField_11.setText("");
+		}
+
+		protected void do_comboBox_1_actionPerformed(ActionEvent e) {
+			String metodo = comboBox_1.getSelectedItem().toString();
+			
+			if (metodo.equals("Mixto")) {
+				
+				textField_10.setEditable(true);
+				textField_11.setEditable(false); 
+				textField_10.setText("");
+				textField_11.setText("");
+				textField_10.requestFocus(); 
+			} else {
+				
+				textField_10.setEditable(false);
+				textField_11.setEditable(false);
+				textField_10.setText("");
 				textField_11.setText("");
 			}
 		}
-	}
-	
-	public void ListarClases(String fecha) {
-	    
-	    DefaultTableModel modelo = (DefaultTableModel) table_2.getModel();
-	    modelo.setRowCount(0); 
-	    
-	    try {
-	        java.sql.Connection cn = utils.Conexion.conectar();
-	        java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_CLASES(?)}");
-	        csta.setString(1, fecha);
-	        java.sql.ResultSet rs = csta.executeQuery();
-	        
-	        while(rs.next()) {
-	            Object[] fila = new Object[6]; 
-	            fila[0] = rs.getString(1);
-	            fila[1] = rs.getString(2); 
-	            fila[2] = rs.getString(3); 
-	            fila[3] = rs.getString(4); 
-	            fila[4] = rs.getInt(5);    
-	            fila[5] = rs.getString(6); 
-	            
-	            modelo.addRow(fila); 
-	        }
-	    } catch (Exception e) {
-	        JOptionPane.showMessageDialog(null, "Error al cargar tabla: " + e.getMessage());
-	    }
-	}
-	
-	public void mostrarApoderado(int codigoAlumno, String nombreAlumno) {
-		try {
-			java.sql.Connection cn = utils.Conexion.conectar();
-			
-			String sql = "SELECT * FROM apoderados WHERE codigo_alumno = ?"; 
-			
-			java.sql.PreparedStatement pst = cn.prepareStatement(sql);
-			pst.setInt(1, codigoAlumno); // Enviamos el número entero
-			java.sql.ResultSet rs = pst.executeQuery();
-			
-			if (rs.next()) {
-				
-				String nombresApo = rs.getString("nombres");
-				String apellidosApo = rs.getString("apellidos");
-				String celularApo = rs.getString("celular");
-				String relacion = rs.getString("parentesco"); 
-				
-			
-				String mensaje = "Información del Apoderado de: " + nombreAlumno + "\n"
-						       + "--------------------------------------------------\n"
-						       + "Nombres: " + nombresApo + " " + apellidosApo + "\n"
-						       + "Parentesco: " + relacion + "\n"
-						       + "Celular: " + celularApo;
-				
-				JOptionPane.showMessageDialog(null, mensaje, "Datos del Apoderado", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(null, "El alumno " + nombreAlumno + " no tiene un apoderado registrado.", "Aviso", JOptionPane.WARNING_MESSAGE);
-			}
-			
-		} catch (Exception ex) {
-			System.out.println("Error al buscar apoderado: " + ex.getMessage());
-		}
-	}
-	
-	public void ListarReporteAsesores(String mesFiltro, String asesorFiltro) {
-		DefaultTableModel modelo = new DefaultTableModel();
-		modelo.addColumn("MES");
-		modelo.addColumn("SEDE");
-		modelo.addColumn("ASESOR");
-		modelo.addColumn("N.º VENTAS");
-		modelo.addColumn("INGRESO GENERADO (S/.)");
-		modelo.addColumn("COMISIÓN");
 
-		try {
-			java.sql.Connection cn = utils.Conexion.conectar();
-			java.sql.CallableStatement csta = cn.prepareCall("{call SP_REPORTE_ASESORES(?)}");
-			csta.setInt(1, VentanaLogin.idSedeLogueada); 
+		protected void do_textField_10_keyReleased(KeyEvent e) {
+			if (comboBox_1.getSelectedItem().toString().equals("Mixto")) {
+				try {
+					double total = Double.parseDouble(textField_8.getText());
+					String textoEfectivo = textField_10.getText().trim();
+					
+					if (textoEfectivo.isEmpty()) {
+						textField_11.setText("");
+						return;
+					}
+					
+					double efectivo = Double.parseDouble(textoEfectivo);
+					
+					if (efectivo > total) {
+						textField_11.setText("¡Se pasó!"); 
+					} else {
+						double digital = total - efectivo;
+					
+						textField_11.setText(String.format(java.util.Locale.US, "%.2f", digital));
+					}
+				} catch (Exception ex) {
+					textField_11.setText("");
+				}
+			}
+		}
+
+		//--------------------------------------------------------------------------------------------------------
+		//Módulo Reporte------------------------------------------------------------------------------------------
+		public void ListarProfesores(String mesFiltro, String profesorFiltro) {
+			DefaultTableModel modelo = new DefaultTableModel();
+			ArregloProfesor acce = new ArregloProfesor();
 			
-			java.sql.ResultSet rs = csta.executeQuery();
-			while(rs.next()) {
-				String mesBD = rs.getString("MES");
-				String asesorBD = rs.getString("ASESOR");
+			ArrayList<ReporteProfesor> lista = acce.ListarTodosProfesores();
+			
+			modelo.addColumn("MES");
+			modelo.addColumn("SEDE");
+			modelo.addColumn("PROFESOR");
+			modelo.addColumn("DISCIPLINA");
+			modelo.addColumn("N.º CLASES DICTADAS");
+			modelo.addColumn("CALIFICACIÓN PROMEDIO");
+			
+			Iterator it = lista.iterator();
+			int i = 0;
+			while(it.hasNext()) {
+				ReporteProfesor acceso = (ReporteProfesor) it.next();
+			
+				boolean pasaFiltroSede = false;
+				if (VentanaLogin.idSedeLogueada == 0) {
+					pasaFiltroSede = true; 
+				} else {
+					String sededelReporte = String.valueOf(acceso.getSede()).toLowerCase();
+					if (VentanaLogin.idSedeLogueada == 1 && (sededelReporte.equals("1") || sededelReporte.contains("bellavista"))) {
+						pasaFiltroSede = true;
+					} else if (VentanaLogin.idSedeLogueada == 2 && (sededelReporte.equals("2") || sededelReporte.contains("pilares"))) {
+						pasaFiltroSede = true;
+					}
+				}
 				
-				boolean pasaFiltro = true;
+				boolean pasaFiltroCombo = true;
+				String mesBD = acceso.getMes();
+				String profBD = acceso.getProfesor();
 				
 				if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
-					pasaFiltro = false;
+					pasaFiltroCombo = false;
 				}
-				if (!asesorFiltro.contains("Seleccione") && !asesorFiltro.equals("") && !asesorBD.equalsIgnoreCase(asesorFiltro)) {
-					pasaFiltro = false;
+				if (!profesorFiltro.contains("Seleccione") && !profesorFiltro.equals("") && !profBD.equalsIgnoreCase(profesorFiltro)) {
+					pasaFiltroCombo = false;
 				}
-				
-				if (pasaFiltro) {
-					Object[] fila = {
-						mesBD,
-						rs.getString("SEDE"),
-						asesorBD,
-						rs.getInt("N_VENTAS"),
-						"S/. " + rs.getDouble("INGRESO_GENERADO"),
-						"S/. " + rs.getDouble("COMISION")
-					};
-					modelo.addRow(fila);
+		
+				if (pasaFiltroSede && pasaFiltroCombo) {
+					modelo.setRowCount(modelo.getRowCount() + 1); 
+					modelo.setValueAt(acceso.getMes(), i, 0);
+					modelo.setValueAt(acceso.getSede(), i, 1);
+					modelo.setValueAt(acceso.getProfesor(), i, 2);
+					modelo.setValueAt(acceso.getDisciplina(), i, 3);
+					modelo.setValueAt(acceso.getnClasesDictadas(), i, 4);
+					modelo.setValueAt(acceso.getCalificacionPromedio(), i, 5);
+					i++;
 				}
 			}
-		} catch (Exception e) {
-			System.out.println("Error en Reporte Asesores: " + e.getMessage());
+			tbReporteProfesores.setModel(modelo);
 		}
-		
-		tbReporteAsesores.setModel(modelo); 
-	}
-	
-	protected void do_btnMostrarTodoGeneral_actionPerformed(ActionEvent e) {
-		ListarReporteGeneral("", "");
-		comboBox_mesGeneral.setSelectedIndex(0);
-		comboBox_sedeGeneral.setSelectedIndex(0);
-	}
-	protected void do_btnFiltrarASESORES_actionPerformed(ActionEvent e) {
-		String mes = comboBox_mesAsesor.getSelectedItem().toString();
-		String asesor = comboBox_asesorAsesor.getSelectedItem().toString();
-		ListarReporteAsesores(mes, asesor);
-	}
-	protected void do_btnMostrarTodoAsesores_actionPerformed(ActionEvent e) {
-		ListarReporteAsesores("", "");
-		comboBox_mesAsesor.setSelectedIndex(0);
-		comboBox_asesorAsesor.setSelectedIndex(0);
-	}
-	
-	public void ListarReporteGeneral(String mesFiltro, String sedeFiltro) {
-		DefaultTableModel modelo = new DefaultTableModel();
-		modelo.addColumn("MES");
-		modelo.addColumn("SEDE");
-		modelo.addColumn("ASESOR DESTACADO");
-		modelo.addColumn("PROFESOR DESTACADO");
-		modelo.addColumn("ARTE MARCIAL POPULAR");
-		modelo.addColumn("INGRESO TOTAL");
 
-		try {
-			java.sql.Connection cn = utils.Conexion.conectar();
-			java.sql.CallableStatement csta = cn.prepareCall("{call SP_REPORTE_GENERAL(?)}");
-			csta.setInt(1, VentanaLogin.idSedeLogueada); 
-			java.sql.ResultSet rs = csta.executeQuery();
-			while(rs.next()) {
-				String mesBD = rs.getString("MES");
-				String sedeBD = rs.getString("SEDE");
-				boolean pasaFiltro = true;
+		public void ListarReporteAsesores(String mesFiltro, String asesorFiltro) {
+			DefaultTableModel modelo = new DefaultTableModel();
+			modelo.addColumn("MES");
+			modelo.addColumn("SEDE");
+			modelo.addColumn("ASESOR");
+			modelo.addColumn("N.º VENTAS");
+			modelo.addColumn("INGRESO GENERADO (S/.)");
+			modelo.addColumn("COMISIÓN");
+
+			try {
+				java.sql.Connection cn = utils.Conexion.conectar();
+				java.sql.CallableStatement csta = cn.prepareCall("{call SP_REPORTE_ASESORES(?)}");
+				csta.setInt(1, VentanaLogin.idSedeLogueada); 
 				
-				if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
-					pasaFiltro = false;
+				java.sql.ResultSet rs = csta.executeQuery();
+				while(rs.next()) {
+					String mesBD = rs.getString("MES");
+					String asesorBD = rs.getString("ASESOR");
+					
+					boolean pasaFiltro = true;
+					
+					if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
+						pasaFiltro = false;
+					}
+					if (!asesorFiltro.contains("Seleccione") && !asesorFiltro.equals("") && !asesorBD.equalsIgnoreCase(asesorFiltro)) {
+						pasaFiltro = false;
+					}
+					
+					if (pasaFiltro) {
+						Object[] fila = {
+							mesBD,
+							rs.getString("SEDE"),
+							asesorBD,
+							rs.getInt("N_VENTAS"),
+							"S/. " + rs.getDouble("INGRESO_GENERADO"),
+							"S/. " + rs.getDouble("COMISION")
+						};
+						modelo.addRow(fila);
+					}
 				}
-				if (!sedeFiltro.contains("Seleccione") && !sedeFiltro.equals("") && !sedeBD.equalsIgnoreCase(sedeFiltro)) {
-					pasaFiltro = false;
-				}
-				if (pasaFiltro) {
-					Object[] fila = {
-						mesBD,
-						sedeBD,
-						rs.getString("ASESOR_DESTACADO"),
-						rs.getString("PROFESOR_DESTACADO"),
-						rs.getString("ARTE_MARCIAL_POPULAR"),
-						"S/. " + rs.getDouble("INGRESO_TOTAL")
-					};
-					modelo.addRow(fila);
-				}
+			} catch (Exception e) {
+				System.out.println("Error en Reporte Asesores: " + e.getMessage());
 			}
-		} catch (Exception e) {
-			System.out.println("Error en Reporte General: " + e.getMessage());
+			
+			tbReporteAsesores.setModel(modelo); 
 		}
-		
-		tbReporteGeneral.setModel(modelo); 
+
+		public void ListarReporteGeneral(String mesFiltro, String sedeFiltro) {
+			DefaultTableModel modelo = new DefaultTableModel();
+			modelo.addColumn("MES");
+			modelo.addColumn("SEDE");
+			modelo.addColumn("ASESOR DESTACADO");
+			modelo.addColumn("PROFESOR DESTACADO");
+			modelo.addColumn("ARTE MARCIAL POPULAR");
+			modelo.addColumn("INGRESO TOTAL");
+
+			try {
+				java.sql.Connection cn = utils.Conexion.conectar();
+				java.sql.CallableStatement csta = cn.prepareCall("{call SP_REPORTE_GENERAL(?)}");
+				csta.setInt(1, VentanaLogin.idSedeLogueada); 
+				java.sql.ResultSet rs = csta.executeQuery();
+				while(rs.next()) {
+					String mesBD = rs.getString("MES");
+					String sedeBD = rs.getString("SEDE");
+					boolean pasaFiltro = true;
+					
+					if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
+						pasaFiltro = false;
+					}
+					if (!sedeFiltro.contains("Seleccione") && !sedeFiltro.equals("") && !sedeBD.equalsIgnoreCase(sedeFiltro)) {
+						pasaFiltro = false;
+					}
+					if (pasaFiltro) {
+						Object[] fila = {
+							mesBD,
+							sedeBD,
+							rs.getString("ASESOR_DESTACADO"),
+							rs.getString("PROFESOR_DESTACADO"),
+							rs.getString("ARTE_MARCIAL_POPULAR"),
+							"S/. " + rs.getDouble("INGRESO_TOTAL")
+						};
+						modelo.addRow(fila);
+					}
+				}
+			} catch (Exception e) {
+				System.out.println("Error en Reporte General: " + e.getMessage());
+			}
+			
+			tbReporteGeneral.setModel(modelo); 
+		}
+
+		protected void do_btnReporte_actionPerformed(ActionEvent e) {
+			moduloAlumnos.setVisible(false);
+			moduloClases.setVisible(false);
+			moduloReporte.setVisible(true);
+			moduloVentas.setVisible(false);
+			ListarProfesores("", "");
+		}
+
+		protected void do_btnFiltrarPROFESOR_actionPerformed(ActionEvent e) {
+			String mesSeleccionado = comboBox_mesProfesor.getSelectedItem().toString();
+			String profesorSeleccionado = comboBox_profesorReporte.getSelectedItem().toString();
+			ListarProfesores(mesSeleccionado, profesorSeleccionado);
+		}
+
+		protected void do_btnMostrarTodoPROFESOR_actionPerformed(ActionEvent e) {
+			ListarProfesores("", "");
+			comboBox_mesProfesor.setSelectedIndex(0);
+			comboBox_profesorReporte.setSelectedIndex(0);
+		}
+
+		protected void do_btnFiltrarASESORES_actionPerformed(ActionEvent e) {
+			String mes = comboBox_mesAsesor.getSelectedItem().toString();
+			String asesor = comboBox_asesorAsesor.getSelectedItem().toString();
+			ListarReporteAsesores(mes, asesor);
+		}
+
+		protected void do_btnMostrarTodoAsesores_actionPerformed(ActionEvent e) {
+			ListarReporteAsesores("", "");
+			comboBox_mesAsesor.setSelectedIndex(0);
+			comboBox_asesorAsesor.setSelectedIndex(0);
+		}
+
+		protected void do_btnFiltrarGENERAL_actionPerformed(ActionEvent e) {
+			String mes = comboBox_mesGeneral.getSelectedItem().toString();
+			String sede = comboBox_sedeGeneral.getSelectedItem().toString();
+			ListarReporteGeneral(mes, sede);
+		}
+
+		protected void do_btnMostrarTodoGeneral_actionPerformed(ActionEvent e) {
+			ListarReporteGeneral("", "");
+			comboBox_mesGeneral.setSelectedIndex(0);
+			comboBox_sedeGeneral.setSelectedIndex(0);
+		}
+
+		//---------------------------------------------------------------------------------------------------------
+		//Eventos Generales y Listeners----------------------------------------------------------------------------
+		protected void do_btnCerrarSesión_actionPerformed(ActionEvent e) {
+			VentanaLogin login = new VentanaLogin();
+			login.setVisible(true);
+			this.dispose();
+		}
+
+		public void mouseClicked(MouseEvent e) {
+			if (e.getSource() == tbTabla) {
+				do_tbTabla_mouseClicked(e);
+			}
+		}
+		public void mouseEntered(MouseEvent e) {
+		}
+		public void mouseExited(MouseEvent e) {
+		}
+		public void mousePressed(MouseEvent e) {
+		}
+		public void mouseReleased(MouseEvent e) {
+		}
+		public void keyPressed(KeyEvent e) {
+		}
+		public void keyReleased(KeyEvent e) {
+			if (e.getSource() == textField_10) {
+				do_textField_10_keyReleased(e);
+			}
+		}
+		public void keyTyped(KeyEvent e) {
+		}
 	}
-	protected void do_btnFiltrarGENERAL_actionPerformed(ActionEvent e) {
-		String mes = comboBox_mesGeneral.getSelectedItem().toString();
-		String sede = comboBox_sedeGeneral.getSelectedItem().toString();
-		ListarReporteGeneral(mes, sede);
-	}
-}
+

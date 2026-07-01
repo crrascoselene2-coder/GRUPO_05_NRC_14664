@@ -1,0 +1,372 @@
+-- ============================================================
+-- 1. LIMPIEZA Y CREACIÓN DE LA BASE DE DATOS
+-- ============================================================
+DROP SCHEMA IF EXISTS truesports_bd;
+CREATE SCHEMA truesports_bd;
+USE truesports_bd;
+
+-- ============================================================
+-- 2. TABLAS CATÁLOGO (No dependen de ninguna otra tabla)
+-- ============================================================
+CREATE TABLE sedes (
+    id_sede INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_sede VARCHAR(45) NOT NULL,
+    direccion VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE disciplinas (
+    id_disciplina INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_disciplina VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE planes (
+    id_plan INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_plan VARCHAR(100) NOT NULL,
+    precio_total DECIMAL(6,2) NOT NULL
+);
+
+-- ============================================================
+-- 3. ENTIDADES PRINCIPALES
+-- ============================================================
+CREATE TABLE alumnos (
+    codigo_alumno INT AUTO_INCREMENT PRIMARY KEY,
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    celular VARCHAR(15) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    id_sede INT DEFAULT 1 -- Agregado directamente a la tabla
+);
+
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    rol VARCHAR(45) NOT NULL,
+    id_sede INT NOT NULL,
+    username VARCHAR(50) NOT NULL, 
+    password VARCHAR(50) NOT NULL, 
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+-- ============================================================
+-- 4. ENTIDADES SECUNDARIAS (Dependen de las principales)
+-- ============================================================
+CREATE TABLE apoderados (
+    id_apoderado INT AUTO_INCREMENT PRIMARY KEY,
+    dni_apoderado VARCHAR(8) NOT NULL UNIQUE,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    celular VARCHAR(15) NOT NULL,
+    parentesco VARCHAR(50) NOT NULL,
+    codigo_alumno INT NOT NULL,
+    FOREIGN KEY (codigo_alumno) REFERENCES alumnos(codigo_alumno)
+);
+
+CREATE TABLE profesores (
+    id_profesor INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    celular VARCHAR(15) NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    id_disciplina INT NOT NULL,
+    id_sede INT NOT NULL, 
+    FOREIGN KEY (id_disciplina) REFERENCES disciplinas(id_disciplina),
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+-- ============================================================
+-- 5. TABLAS TRANSACCIONALES (El corazón del negocio)
+-- ============================================================
+CREATE TABLE ventas (
+    codigo_venta INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_venta DATE NOT NULL,
+    metodo_pago VARCHAR(20) NOT NULL,
+    monto_efectivo DECIMAL(6,2) NOT NULL,
+    monto_digital DECIMAL(6,2) NOT NULL,
+    total_pagado DECIMAL(6,2) NOT NULL,
+    estado VARCHAR(20) NOT NULL,
+    codigo_alumno INT NOT NULL,
+    id_plan INT NOT NULL,
+    id_usuario INT NOT NULL,
+    id_sede INT NOT NULL,
+    FOREIGN KEY (codigo_alumno) REFERENCES alumnos(codigo_alumno),
+    FOREIGN KEY (id_plan) REFERENCES planes(id_plan),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+CREATE TABLE clases_dictadas (
+    id_clase INT AUTO_INCREMENT PRIMARY KEY,
+    fecha_clase DATE NOT NULL,
+    turno VARCHAR(20) NOT NULL,
+    cantidad_alumnos INT NOT NULL,
+    calificacion VARCHAR(20) NOT NULL,
+    id_profesor INT NOT NULL,
+    id_disciplina INT NOT NULL,
+    id_sede INT NOT NULL,
+    FOREIGN KEY (id_profesor) REFERENCES profesores(id_profesor),
+    FOREIGN KEY (id_disciplina) REFERENCES disciplinas(id_disciplina),
+    FOREIGN KEY (id_sede) REFERENCES sedes(id_sede)
+);
+
+-- ============================================================
+-- 6. VISTAS
+-- ============================================================
+CREATE OR REPLACE VIEW VW_REPORTE_PROFESORES AS
+SELECT 
+    CASE MONTH(c.fecha_clase)
+        WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo' 
+        WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+        WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Setiembre' 
+        WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+    END AS MES,
+    s.nombre_sede AS SEDE,
+    CONCAT(p.nombres, ' ', p.apellidos) AS PROFESOR,
+    d.nombre_disciplina AS DISCIPLINA,
+    COUNT(c.id_clase) AS CLASES_DICTADAS,
+    IFNULL(ROUND(AVG(CAST(c.calificacion AS DECIMAL(4,2))), 2), 0.0) AS CALIFICACION_PROMEDIO
+FROM clases_dictadas c
+JOIN sedes s ON c.id_sede = s.id_sede
+JOIN profesores p ON c.id_profesor = p.id_profesor
+JOIN disciplinas d ON c.id_disciplina = d.id_disciplina
+GROUP BY MONTH(c.fecha_clase), s.nombre_sede, p.nombres, p.apellidos, d.nombre_disciplina;
+
+-- ============================================================
+-- 7. PROCEDIMIENTOS ALMACENADOS (Únicos y consolidados)
+-- ============================================================
+
+-- A. ALUMNOS Y APODERADOS
+DROP PROCEDURE IF EXISTS SP_INSERTAR_ALUMNO;
+DELIMITER //
+CREATE PROCEDURE SP_INSERTAR_ALUMNO(
+    IN p_dni VARCHAR(8), IN p_nom VARCHAR(100), IN p_ape VARCHAR(100),
+    IN p_cel VARCHAR(15), IN p_fec DATE, IN p_estado VARCHAR(20), IN p_id_sede INT
+)
+BEGIN
+    INSERT INTO alumnos (dni, nombres, apellidos, celular, fecha_nacimiento, estado, id_sede)
+    VALUES (p_dni, p_nom, p_ape, p_cel, p_fec, p_estado, p_id_sede);
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS SP_LISTAR_ALUMNOS_SEDE;
+DELIMITER //
+CREATE PROCEDURE SP_LISTAR_ALUMNOS_SEDE(
+    IN p_dni VARCHAR(15),
+    IN p_id_sede INT
+)
+BEGIN
+    IF p_dni = '' THEN
+        SELECT codigo_alumno, dni, nombres, apellidos, celular, fecha_nacimiento, estado
+        FROM alumnos
+        WHERE (id_sede = p_id_sede OR p_id_sede = 0);
+    ELSE
+        SELECT codigo_alumno, dni, nombres, apellidos, celular, fecha_nacimiento, estado
+        FROM alumnos
+        WHERE dni = p_dni AND (id_sede = p_id_sede OR p_id_sede = 0);
+    END IF;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS CONSULTAR_DNI;
+DELIMITER //
+CREATE PROCEDURE CONSULTAR_DNI(IN p_criterio VARCHAR(100))
+BEGIN
+    SELECT codigo_alumno, dni, nombres, apellidos, celular, fecha_nacimiento, estado 
+    FROM alumnos 
+    WHERE dni = p_criterio OR nombres LIKE CONCAT('%', p_criterio, '%') OR apellidos LIKE CONCAT('%', p_criterio, '%');
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS SP_INSERTAR_APODERADO;
+DELIMITER //
+CREATE PROCEDURE SP_INSERTAR_APODERADO(
+    IN p_dni_alumno VARCHAR(8),
+    IN p_dni_apoderado VARCHAR(8),
+    IN p_nombres VARCHAR(100),
+    IN p_apellidos VARCHAR(100),
+    IN p_celular VARCHAR(15),
+    IN p_parentesco VARCHAR(50)
+)
+BEGIN
+    DECLARE v_codigo_alumno INT;
+    SELECT codigo_alumno INTO v_codigo_alumno FROM alumnos WHERE dni = p_dni_alumno;
+
+    INSERT INTO apoderados (dni_apoderado, nombres, apellidos, celular, parentesco, codigo_alumno)
+    VALUES (p_dni_apoderado, p_nombres, p_apellidos, p_celular, p_parentesco, v_codigo_alumno);
+END //
+DELIMITER ;
+
+-- B. VENTAS
+DROP PROCEDURE IF EXISTS SP_INSERTAR_VENTA;
+DELIMITER //
+CREATE PROCEDURE SP_INSERTAR_VENTA(
+    IN p_dni_alumno VARCHAR(8), IN p_id_plan INT, IN p_metodo_pago VARCHAR(20),
+    IN p_monto_efectivo DECIMAL(6,2), IN p_monto_digital DECIMAL(6,2), IN p_total DECIMAL(6,2), IN p_id_sede INT
+)
+BEGIN
+    DECLARE v_codigo_alumno INT;
+    SELECT codigo_alumno INTO v_codigo_alumno FROM alumnos WHERE dni = p_dni_alumno;
+
+    INSERT INTO ventas (fecha_venta, metodo_pago, monto_efectivo, monto_digital, total_pagado, estado, codigo_alumno, id_plan, id_usuario, id_sede)
+    VALUES (CURDATE(), p_metodo_pago, p_monto_efectivo, p_monto_digital, p_total, 'Pagado', v_codigo_alumno, p_id_plan, 1, p_id_sede);
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS SP_LISTAR_VENTAS_SEDE;
+DELIMITER //
+CREATE PROCEDURE SP_LISTAR_VENTAS_SEDE(
+    IN p_dni VARCHAR(15),
+    IN p_id_sede INT
+)
+BEGIN
+    IF p_dni = '' THEN
+        SELECT v.codigo_venta, v.fecha_venta, a.dni, p.nombre_plan, v.metodo_pago, v.total_pagado
+        FROM ventas v
+        JOIN alumnos a ON v.codigo_alumno = a.codigo_alumno
+        JOIN planes p ON v.id_plan = p.id_plan
+        WHERE (v.id_sede = p_id_sede OR p_id_sede = 0);
+    ELSE
+        SELECT v.codigo_venta, v.fecha_venta, a.dni, p.nombre_plan, v.metodo_pago, v.total_pagado
+        FROM ventas v
+        JOIN alumnos a ON v.codigo_alumno = a.codigo_alumno
+        JOIN planes p ON v.id_plan = p.id_plan
+        WHERE a.dni = p_dni AND (v.id_sede = p_id_sede OR p_id_sede = 0);
+    END IF;
+END //
+DELIMITER ;
+
+-- C. CLASES
+DROP PROCEDURE IF EXISTS SP_INSERTAR_CLASE;
+DELIMITER //
+CREATE PROCEDURE SP_INSERTAR_CLASE(
+    IN p_turno VARCHAR(20), IN p_cantidad INT, IN p_calificacion VARCHAR(20),
+    IN p_id_profesor INT, IN p_id_disciplina INT, IN p_id_sede INT
+)
+BEGIN
+    INSERT INTO clases_dictadas (fecha_clase, turno, cantidad_alumnos, calificacion, id_profesor, id_disciplina, id_sede)
+    VALUES (CURDATE(), p_turno, p_cantidad, p_calificacion, p_id_profesor, p_id_disciplina, p_id_sede);
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS SP_LISTAR_CLASES;
+DELIMITER //
+CREATE PROCEDURE SP_LISTAR_CLASES(IN p_fecha VARCHAR(20), IN p_id_sede INT)
+BEGIN
+    IF p_id_sede = 0 THEN
+        SELECT c.fecha_clase, d.nombre_disciplina, p.nombres, c.turno, c.cantidad_alumnos, c.calificacion 
+        FROM clases_dictadas c
+        JOIN disciplinas d ON c.id_disciplina = d.id_disciplina
+        JOIN profesores p ON c.id_profesor = p.id_profesor
+        WHERE c.fecha_clase LIKE CONCAT(p_fecha, '%');
+    ELSE
+        SELECT c.fecha_clase, d.nombre_disciplina, p.nombres, c.turno, c.cantidad_alumnos, c.calificacion 
+        FROM clases_dictadas c
+        JOIN disciplinas d ON c.id_disciplina = d.id_disciplina
+        JOIN profesores p ON c.id_profesor = p.id_profesor
+        WHERE c.id_sede = p_id_sede AND c.fecha_clase LIKE CONCAT(p_fecha, '%');
+    END IF;
+END //
+DELIMITER ;
+
+-- D. REPORTES
+DROP PROCEDURE IF EXISTS SP_REPORTE_ASESORES;
+DELIMITER //
+CREATE PROCEDURE SP_REPORTE_ASESORES(IN p_id_sede INT)
+BEGIN
+    SELECT 
+        CASE MONTH(fecha_venta)
+            WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
+            WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+            WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+            WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+        END AS MES,
+        CASE id_sede 
+            WHEN 1 THEN 'Bellavista' 
+            WHEN 2 THEN 'Pilares' 
+            ELSE 'Desconocida' 
+        END AS SEDE,
+        'Asesor de Ventas' AS ASESOR, 
+        COUNT(codigo_venta) AS N_VENTAS,
+        SUM(total_pagado) AS INGRESO_GENERADO,
+        (SUM(total_pagado) * 0.10) AS COMISION 
+    FROM ventas
+    WHERE (id_sede = p_id_sede OR p_id_sede = 0)
+    GROUP BY MES, SEDE;
+END //
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS SP_REPORTE_GENERAL;
+DELIMITER //
+CREATE PROCEDURE SP_REPORTE_GENERAL(IN p_id_sede INT)
+BEGIN
+    SELECT 
+        CASE MONTH(fecha_venta)
+            WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
+            WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+            WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+            WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+        END AS MES,
+        CASE id_sede 
+            WHEN 1 THEN 'Bellavista' 
+            WHEN 2 THEN 'Pilares' 
+            ELSE 'Consolidado' 
+        END AS SEDE,
+        'Evaluación en curso' AS ASESOR_DESTACADO,
+        'Evaluación en curso' AS PROFESOR_DESTACADO,
+        'Boxeo / MMA' AS ARTE_MARCIAL_POPULAR,
+        SUM(total_pagado) AS INGRESO_TOTAL
+    FROM ventas
+    WHERE (id_sede = p_id_sede OR p_id_sede = 0)
+    GROUP BY MES, SEDE;
+END //
+DELIMITER ;
+
+-- ============================================================
+-- 8. INYECCIÓN DE DATOS REALES (SEED DATA)
+-- ============================================================
+INSERT INTO sedes (nombre_sede, direccion) VALUES  
+('Sede Bellavista', 'Av. Oscar R Benavides 3866'),
+('Sede Pilares', 'Av. Oscar R Benavides Cdra. 30');
+
+INSERT INTO disciplinas (nombre_disciplina) VALUES  
+('Boxeo'), ('Muay Thai'), ('MMA'), ('Lucha Olímpica'), ('Luta Livre'); 
+
+INSERT INTO planes (nombre_plan, precio_total) VALUES  
+('Plan - 1 Mes', 209.90),
+('Plan - 2 Meses', 259.90),
+('Plan - 3 Meses', 329.90),
+('Plan - 6 Meses', 499.90),
+('Plan - 12 Meses', 839.90);
+
+INSERT INTO usuarios (nombres, rol, id_sede, username, password) VALUES  
+('Andrea', 'Jefa', 1, 'admin', '123456'),
+('Axel', 'Asesor', 1, 'axel', '01012026'),
+('Fabio', 'Asesor', 2, 'fabio', '02022026'),
+('Jimena', 'Asesor', 1, 'jimena', '03032026'),
+('Kiara', 'Asesor', 2, 'kiara', '04042026');
+
+INSERT INTO profesores (nombres, apellidos, celular, estado, id_disciplina, id_sede) VALUES  
+('Danny', 'Rosales', '987654321', 'Activo', 1, 1),   
+('Jordan', 'Pacheco', '912345678', 'Activo', 2, 1), 
+('William', 'Gómez', '999888777', 'Activo', 3, 1),  
+('José', 'López', '999888333', 'Activo', 4, 1),  
+('Marcos', 'Quesada', '999888666', 'Activo', 5, 1),  
+('Juan', 'García', '987654321', 'Activo', 1, 2),   
+('Katty', 'Pérez', '912345678', 'Activo', 2, 2), 
+('Paco', 'Vargas', '999888999', 'Activo', 3, 2),  
+('Diego', 'Morales', '999888333', 'Activo', 4, 2),  
+('Enzo', 'Vera', '999888333', 'Activo', 5, 2);  
+
+
+-- ============================================================
+-- 9. BLOQUE DE MANTENIMIENTO (Opcional - Usar solo para limpiar datos)
+-- ============================================================
+/*
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE ventas;
+TRUNCATE TABLE clases_dictadas;
+TRUNCATE TABLE apoderados;
+TRUNCATE TABLE alumnos;
+SET FOREIGN_KEY_CHECKS = 1;
+*/
