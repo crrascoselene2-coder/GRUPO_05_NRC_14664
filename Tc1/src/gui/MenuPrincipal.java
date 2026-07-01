@@ -1536,7 +1536,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				csta.setString(3, calificacion);
 				csta.setInt(4, idProfesor);
 				csta.setInt(5, idDisciplina);
-				csta.setInt(6, 1);
+				csta.setInt(6, VentanaLogin.idSedeLogueada);
 
 				csta.executeUpdate();
 
@@ -1675,8 +1675,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			
 				arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
 				System.out.println("DEBUG: Estoy intentando registrar con la Sede ID: " + VentanaLogin.idSedeLogueada);
-				arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, 1);
-				
+				arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, VentanaLogin.idSedeLogueada, VentanaLogin.idUsuarioLogueado);				
 				JOptionPane.showMessageDialog(null, "¡Venta registrada con éxito en el sistema!");
 				
 			

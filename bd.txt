@@ -201,15 +201,22 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS SP_INSERTAR_VENTA;
 DELIMITER //
 CREATE PROCEDURE SP_INSERTAR_VENTA(
-    IN p_dni_alumno VARCHAR(8), IN p_id_plan INT, IN p_metodo_pago VARCHAR(20),
-    IN p_monto_efectivo DECIMAL(6,2), IN p_monto_digital DECIMAL(6,2), IN p_total DECIMAL(6,2), IN p_id_sede INT
+    IN p_dni_alumno VARCHAR(8), 
+    IN p_id_plan INT, 
+    IN p_metodo_pago VARCHAR(20),
+    IN p_monto_efectivo DECIMAL(6,2), 
+    IN p_monto_digital DECIMAL(6,2), 
+    IN p_total DECIMAL(6,2), 
+    IN p_id_sede INT,
+    IN p_id_usuario INT -- <-- NUEVO PARÁMETRO
 )
 BEGIN
     DECLARE v_codigo_alumno INT;
     SELECT codigo_alumno INTO v_codigo_alumno FROM alumnos WHERE dni = p_dni_alumno;
 
+    -- Aquí usamos p_id_usuario en vez del 1 estático
     INSERT INTO ventas (fecha_venta, metodo_pago, monto_efectivo, monto_digital, total_pagado, estado, codigo_alumno, id_plan, id_usuario, id_sede)
-    VALUES (CURDATE(), p_metodo_pago, p_monto_efectivo, p_monto_digital, p_total, 'Pagado', v_codigo_alumno, p_id_plan, 1, p_id_sede);
+    VALUES (CURDATE(), p_metodo_pago, p_monto_efectivo, p_monto_digital, p_total, 'Pagado', v_codigo_alumno, p_id_plan, p_id_usuario, p_id_sede);
 END //
 DELIMITER ;
 
@@ -275,50 +282,136 @@ DELIMITER //
 CREATE PROCEDURE SP_REPORTE_ASESORES(IN p_id_sede INT)
 BEGIN
     SELECT 
-        CASE MONTH(fecha_venta)
+        CASE MONTH(v.fecha_venta)
             WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
             WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
             WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
             WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
         END AS MES,
-        CASE id_sede 
-            WHEN 1 THEN 'Bellavista' 
-            WHEN 2 THEN 'Pilares' 
-            ELSE 'Desconocida' 
-        END AS SEDE,
-        'Asesor de Ventas' AS ASESOR, 
-        COUNT(codigo_venta) AS N_VENTAS,
-        SUM(total_pagado) AS INGRESO_GENERADO,
-        (SUM(total_pagado) * 0.10) AS COMISION 
-    FROM ventas
-    WHERE (id_sede = p_id_sede OR p_id_sede = 0)
-    GROUP BY MES, SEDE;
+        s.nombre_sede AS SEDE,
+        u.nombres AS ASESOR, -- <-- AQUÍ OBTENEMOS EL NOMBRE REAL DEL ASESOR
+        COUNT(v.codigo_venta) AS N_VENTAS,
+        SUM(v.total_pagado) AS INGRESO_GENERADO,
+        (SUM(v.total_pagado) * 0.10) AS COMISION 
+    FROM ventas v
+    JOIN usuarios u ON v.id_usuario = u.id_usuario
+    JOIN sedes s ON v.id_sede = s.id_sede
+    WHERE (v.id_sede = p_id_sede OR p_id_sede = 0)
+    GROUP BY 
+        MONTH(v.fecha_venta),
+        CASE MONTH(v.fecha_venta)
+            WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
+            WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+            WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
+            WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+        END,
+        s.nombre_sede, 
+        u.nombres; -- <-- Y LO AGREGAMOS AL GRUPO PARA QUE NO DE ERROR
 END //
 DELIMITER ;
+CREATE OR REPLACE VIEW VW_REPORTE_PROFESORES AS
+SELECT 
+    CASE MONTH(MAX(c.fecha_clase)) -- Solución: Envolvemos en MAX() para evitar el error strict mode
+        WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo' 
+        WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+        WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre' 
+        WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+    END AS MES,
+    s.nombre_sede AS SEDE,
+    CONCAT(p.nombres, ' ', p.apellidos) AS PROFESOR,
+    d.nombre_disciplina AS DISCIPLINA,
+    COUNT(c.id_clase) AS CLASES_DICTADAS,
+    ROUND(AVG(CASE c.calificacion WHEN 'Estrella' THEN 5.0 WHEN 'Normal' THEN 3.0 WHEN 'Bajo' THEN 1.0 ELSE 0.0 END), 2) AS CALIFICACION_PROMEDIO
+FROM clases_dictadas c
+JOIN sedes s ON c.id_sede = s.id_sede
+JOIN profesores p ON c.id_profesor = p.id_profesor
+JOIN disciplinas d ON c.id_disciplina = d.id_disciplina
+GROUP BY 
+    MONTH(c.fecha_clase), 
+    s.id_sede, 
+    s.nombre_sede, 
+    p.id_profesor, 
+    p.nombres, 
+    p.apellidos, 
+    d.id_disciplina, 
+    d.nombre_disciplina;
+CREATE OR REPLACE VIEW VW_REPORTE_PROFESORES AS
+SELECT 
+    CASE MONTH(c.fecha_clase)
+        WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo' 
+        WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+        WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Setiembre' 
+        WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+    END AS MES,
+    s.nombre_sede AS SEDE,
+    CONCAT(p.nombres, ' ', p.apellidos) AS PROFESOR,
+    d.nombre_disciplina AS DISCIPLINA,
+    COUNT(c.id_clase) AS CLASES_DICTADAS,
+    -- Convertimos el texto a número para poder sacar un promedio real
+    ROUND(AVG(CASE c.calificacion 
+        WHEN 'Estrella' THEN 5.0 
+        WHEN 'Normal' THEN 3.0 
+        WHEN 'Bajo' THEN 1.0 
+        ELSE 0.0 END), 2) AS CALIFICACION_PROMEDIO
+FROM clases_dictadas c
+JOIN sedes s ON c.id_sede = s.id_sede
+JOIN profesores p ON c.id_profesor = p.id_profesor
+JOIN disciplinas d ON c.id_disciplina = d.id_disciplina
+GROUP BY 
+    MONTH(c.fecha_clase), -- Agregado para cumplir con el full_group_by
+    CASE MONTH(c.fecha_clase)
+        WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo' 
+        WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
+        WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Setiembre' 
+        WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
+    END,
+    s.nombre_sede,
+    p.nombres,
+    p.apellidos,
+    d.nombre_disciplina;
+
 
 DROP PROCEDURE IF EXISTS SP_REPORTE_GENERAL;
 DELIMITER //
 CREATE PROCEDURE SP_REPORTE_GENERAL(IN p_id_sede INT)
 BEGIN
     SELECT 
-        CASE MONTH(fecha_venta)
+        CASE base.v_mes 
             WHEN 1 THEN 'Enero' WHEN 2 THEN 'Febrero' WHEN 3 THEN 'Marzo'
             WHEN 4 THEN 'Abril' WHEN 5 THEN 'Mayo' WHEN 6 THEN 'Junio'
             WHEN 7 THEN 'Julio' WHEN 8 THEN 'Agosto' WHEN 9 THEN 'Septiembre'
             WHEN 10 THEN 'Octubre' WHEN 11 THEN 'Noviembre' WHEN 12 THEN 'Diciembre'
         END AS MES,
-        CASE id_sede 
-            WHEN 1 THEN 'Bellavista' 
-            WHEN 2 THEN 'Pilares' 
-            ELSE 'Consolidado' 
-        END AS SEDE,
-        'Evaluación en curso' AS ASESOR_DESTACADO,
-        'Evaluación en curso' AS PROFESOR_DESTACADO,
-        'Boxeo / MMA' AS ARTE_MARCIAL_POPULAR,
-        SUM(total_pagado) AS INGRESO_TOTAL
-    FROM ventas
-    WHERE (id_sede = p_id_sede OR p_id_sede = 0)
-    GROUP BY MES, SEDE;
+        s.nombre_sede AS SEDE,
+
+        -- Calculamos al mejor asesor 
+        IFNULL((SELECT u.nombres FROM ventas v2 JOIN usuarios u ON v2.id_usuario = u.id_usuario
+         WHERE MONTH(v2.fecha_venta) = base.v_mes AND v2.id_sede = base.v_sede
+         GROUP BY u.id_usuario, u.nombres ORDER BY SUM(v2.total_pagado) DESC LIMIT 1), 'Sin ventas') AS ASESOR_DESTACADO,
+
+        -- Calculamos al profesor destacado
+        IFNULL((SELECT CONCAT(p.nombres, ' ', p.apellidos) FROM clases_dictadas c JOIN profesores p ON c.id_profesor = p.id_profesor
+         WHERE MONTH(c.fecha_clase) = base.v_mes AND c.id_sede = base.v_sede
+         GROUP BY p.id_profesor, p.nombres, p.apellidos ORDER BY COUNT(c.id_clase) DESC LIMIT 1), 'Sin clases') AS PROFESOR_DESTACADO,
+
+        -- Calculamos la disciplina más popular
+        IFNULL((SELECT d.nombre_disciplina FROM clases_dictadas c2 JOIN disciplinas d ON c2.id_disciplina = d.id_disciplina
+         WHERE MONTH(c2.fecha_clase) = base.v_mes AND c2.id_sede = base.v_sede
+         GROUP BY d.id_disciplina, d.nombre_disciplina ORDER BY COUNT(c2.id_clase) DESC LIMIT 1), 'Sin clases') AS ARTE_MARCIAL_POPULAR,
+
+        base.v_ingreso AS INGRESO_TOTAL
+
+    FROM (
+        -- Pre-agrupamos los datos básicos para que el GROUP BY no dé error
+        SELECT 
+            MONTH(fecha_venta) AS v_mes, 
+            id_sede AS v_sede, 
+            SUM(total_pagado) AS v_ingreso
+        FROM ventas
+        WHERE (id_sede = p_id_sede OR p_id_sede = 0)
+        GROUP BY MONTH(fecha_venta), id_sede
+    ) AS base
+    JOIN sedes s ON base.v_sede = s.id_sede;
 END //
 DELIMITER ;
 

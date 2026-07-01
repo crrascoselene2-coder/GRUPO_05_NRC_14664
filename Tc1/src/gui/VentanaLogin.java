@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 public class VentanaLogin extends JFrame implements ActionListener {
 	public static int idSedeLogueada = 0; 
 	public static String rolUsuario = "";
+	public static int idUsuarioLogueado;
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
@@ -93,6 +94,8 @@ public class VentanaLogin extends JFrame implements ActionListener {
 			do_btnInicioSesion_actionPerformed(e);
 		}
 	}
+
+
 	protected void do_btnInicioSesion_actionPerformed(ActionEvent e) {
 		
 		String usuario = txtUsuario.getText();
@@ -120,24 +123,21 @@ public class VentanaLogin extends JFrame implements ActionListener {
 		
 		    if (rs.next()) {
 		        
-		        String rol = rs.getString("rol");
-		        String nombre = rs.getString("nombres");
-		        int sedeDB = rs.getInt("id_sede");
-		   
-		        rolUsuario = rol; 
-		        
-		        if (rol.equals("Jefa")) {
-		            idSedeLogueada = 0; 
-		        } else {
-		            idSedeLogueada = sedeDB; 
-		        }
-		      
+		    	String rol = rs.getString("rol");
+		    	String nombre = rs.getString("nombres");
+		    	int sedeDB = rs.getInt("id_sede");
+		    	int idUsuarioDB = rs.getInt("id_usuario"); // <-- CAPTURAMOS EL ID DEL USUARIO
+		    	rolUsuario = rol; 
+		    	VentanaLogin.idUsuarioLogueado = idUsuarioDB; // <-- LO GUARDAMOS EN LA VARIABLE GLOBAL
+		    	if (rol.equals("Jefa")) {
+		    	    idSedeLogueada = 0; 
+		    	} else {
+		    	    idSedeLogueada = sedeDB; 
+		    	}
 		        JOptionPane.showMessageDialog(null, "¡Bienvenid@ " + nombre + "!\nHas ingresado como: " + rol);
-		        
 		        MenuPrincipal menu = new MenuPrincipal();
 		        menu.setVisible(true);
 		        this.dispose();
-		        
 		    } else {
 		        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
 		    }
