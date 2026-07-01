@@ -20,7 +20,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class VentanaLogin extends JFrame implements ActionListener {
-
+	public static int idSedeLogueada = 0; 
+	public static String rolUsuario = "";
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel lblNewLabel;
@@ -118,19 +119,26 @@ public class VentanaLogin extends JFrame implements ActionListener {
 		    
 		
 		    if (rs.next()) {
-		 
+		        
 		        String rol = rs.getString("rol");
 		        String nombre = rs.getString("nombres");
+		        int sedeDB = rs.getInt("id_sede");
+		   
+		        rolUsuario = rol; 
 		        
+		        if (rol.equals("Jefa")) {
+		            idSedeLogueada = 0; 
+		        } else {
+		            idSedeLogueada = sedeDB; 
+		        }
+		      
 		        JOptionPane.showMessageDialog(null, "¡Bienvenid@ " + nombre + "!\nHas ingresado como: " + rol);
 		        
-		     
 		        MenuPrincipal menu = new MenuPrincipal();
 		        menu.setVisible(true);
-		        this.dispose(); 
+		        this.dispose();
 		        
 		    } else {
-		       
 		        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
 		    }
 		    
@@ -140,5 +148,7 @@ public class VentanaLogin extends JFrame implements ActionListener {
 		} catch (Exception e1) {
 		    JOptionPane.showMessageDialog(null, "Error del sistema: " + e1.getMessage());
 		}
+		
+		
 	}
 }

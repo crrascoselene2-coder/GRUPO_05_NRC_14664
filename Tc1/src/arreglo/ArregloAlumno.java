@@ -22,23 +22,46 @@ public ArregloAlumno() {
 public void adicionar(Alumno x) {
 	paci.add(x);
 }
-public void InsertarAlumno(Alumno alu) { 
+public boolean InsertarAlumno(clases.Alumno alu, int idSede) {
+	boolean exito = false;
+	try {
+		java.sql.Connection cn = utils.Conexion.conectar();
+		java.sql.CallableStatement csta = cn.prepareCall("{call SP_INSERTAR_ALUMNO(?,?,?,?,?,?,?)}");
+		
+		csta.setString(1, alu.getDni());
+		csta.setString(2, alu.getNom());
+		csta.setString(3, alu.getApellidos());
+		csta.setString(4, alu.getCelular());
+		csta.setString(5, alu.getFecha_nacimiento());
+		csta.setString(6, alu.getEstado());
+		csta.setInt(7, idSede); 
+		
+		csta.executeUpdate();
+		exito = true;
+	} catch (Exception e) {
+		System.out.println("Error al insertar: " + e.getMessage());
+	}
+	return exito;
+}
+
+public void InsertarApoderado(String dniAlumno, String dniApo, String nom, String ape, String cel, String parentesco) { 
     try {
         Connection cnx = utils.Conexion.conectar();
-
-        CallableStatement csta = cnx.prepareCall("{call SP_INSERTAR_ALUMNO(?,?,?,?,?,?)}");
+        CallableStatement csta = cnx.prepareCall("{call SP_INSERTAR_APODERADO(?,?,?,?,?,?)}");
         
-        csta.setString(1, alu.getDni());
-        csta.setString(2, alu.getNom());
-        csta.setString(3, alu.getApellidos());
-        csta.setString(4, alu.getCelular());
-        csta.setString(5, (alu.getFecha_nacimiento()));
-        csta.setString(6, alu.getEstado());
+        csta.setString(1, dniAlumno);
+        csta.setString(2, dniApo);
+        csta.setString(3, nom);
+        csta.setString(4, ape);
+        csta.setString(5, cel);
+        csta.setString(6, parentesco);
+        
         csta.executeUpdate();
     } catch (Exception e) {
-        System.out.println("Error al insertar: " + e);
+        System.out.println("Error al insertar apoderado: " + e);
     }
 }
+
 public ArrayList<Alumno> ListarAlumnos(){
 	ArrayList<Alumno>lista=new ArrayList<Alumno>();
 	try {

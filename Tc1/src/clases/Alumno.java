@@ -4,7 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.Date;
-
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 public class Alumno {
 private int código;
 private String dni;
@@ -77,6 +78,23 @@ public void setEstado(String estado) {
 	this.estado = estado;
 }
 
+public int calcularEdad() {
+    try {
+      
+        String fechaLimpia = this.fecha_nacimiento.trim();
+     
+        java.time.LocalDate fechaNac = java.time.LocalDate.parse(fechaLimpia);
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        
+   
+        return java.time.Period.between(fechaNac, hoy).getYears();
+        
+    } catch (Exception e) {
+     
+        System.out.println("Java se quejó de esto al leer la fecha: " + e.getMessage());
+        return -1; 
+    }
+}
 
 }
 

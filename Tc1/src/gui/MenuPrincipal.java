@@ -36,8 +36,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 
-public class MenuPrincipal extends JFrame implements ActionListener, MouseListener {
+public class MenuPrincipal extends JFrame implements ActionListener, MouseListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -92,7 +94,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	private JTextField textField_8;
 	private JComboBox comboBox_1;
 	private JScrollPane scrollPane_1;
-	private JTable table_1;
+	private JTable tbTablaVentas;
 	private JLabel lblNewLabel_8;
 	private JTextField txtBuscarDniVenta1;
 	private JButton btnBuscarDniVenta1;
@@ -151,17 +153,17 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	private JComboBox comboBox_sedeGeneral;
 	private JButton btnFiltrarGENERAL;
 	private JScrollPane scrollPane_3;
-	private JTable table_3;
+	private JTable tbReporteGeneral;
 	private JButton btnMostrarTodoGeneral;
 	private JLabel lblPanelDeReportes_1;
 	private JLabel lblAsesores;
 	private JLabel lblNewLabel_13;
 	private JComboBox comboBox_mesAsesor;
-	private JComboBox comboBox_asesor;
+	private JComboBox comboBox_asesorAsesor;
 	private JButton btnFiltrarASESORES;
 	private JScrollPane scrollPane_4;
 	private JButton btnMostrarTodoAsesores;
-	private JTable table_4;
+	private JTable tbReporteAsesores;
 	private JLabel lblPanelDeReportes_2;
 	private JLabel lblProfesores;
 	private JLabel lblNewLabel_14;
@@ -177,8 +179,6 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	private JLabel lblNewLabel_12;
 	private JButton btnBuscarClase;
 	private JComboBox comboBox_SedeClase;
-	private JLabel lblNewLabel_17;
-	private JComboBox comboBox_JefaSede;
 	private JTable tbTabla;
 	private JScrollPane scrollPane_5;
 	private JTable tbReporteProfesores;
@@ -458,6 +458,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						btnBuscarDniVenta2 = new JButton("BUSCAR");
+						btnBuscarDniVenta2.addActionListener(this);
 						btnBuscarDniVenta2.setFont(new Font("Tahoma", Font.BOLD, 11));
 						btnBuscarDniVenta2.setBounds(304, 58, 89, 23);
 						panel_1.add(btnBuscarDniVenta2);
@@ -476,6 +477,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						comboBox = new JComboBox();
+						comboBox.addActionListener(this);
 						comboBox.setBounds(916, 106, 164, 22);
 						panel_1.add(comboBox);
 					}
@@ -487,6 +489,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						comboBox_1 = new JComboBox();
+						comboBox_1.addActionListener(this);
 						comboBox_1.setBounds(583, 106, 135, 22);
 						panel_1.add(comboBox_1);
 					}
@@ -528,6 +531,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						textField_10 = new JTextField();
+						textField_10.addKeyListener(this);
 						textField_10.setColumns(10);
 						textField_10.setBounds(583, 153, 135, 20);
 						panel_1.add(textField_10);
@@ -545,9 +549,9 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					moduloVentas.add(scrollPane_1);
 					scrollPane_1.setBackground(new Color(176, 196, 222));
 					{
-						table_1 = new JTable();
-						table_1.setRowHeight(25);
-						table_1.setModel(new DefaultTableModel(
+						tbTablaVentas = new JTable();
+						tbTablaVentas.setRowHeight(25);
+						tbTablaVentas.setModel(new DefaultTableModel(
 							new Object[][] {
 								{null, null, null, null, null, null},
 								{null, null, null, null, null, null},
@@ -572,14 +576,14 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 								"C\u00D3DIGO VENTA", "FECHA", "DNI ALUMNO", "PLAN", "M\u00C9TODO DE PAGO", "TOTAL PAGADO"
 							}
 						));
-						table_1.getColumnModel().getColumn(0).setPreferredWidth(99);
-						table_1.getColumnModel().getColumn(0).setMinWidth(18);
-						table_1.getColumnModel().getColumn(1).setPreferredWidth(80);
-						table_1.getColumnModel().getColumn(2).setPreferredWidth(90);
-						table_1.getColumnModel().getColumn(3).setPreferredWidth(80);
-						table_1.getColumnModel().getColumn(4).setPreferredWidth(115);
-						table_1.getColumnModel().getColumn(5).setPreferredWidth(102);
-						scrollPane_1.setViewportView(table_1);
+						tbTablaVentas.getColumnModel().getColumn(0).setPreferredWidth(99);
+						tbTablaVentas.getColumnModel().getColumn(0).setMinWidth(18);
+						tbTablaVentas.getColumnModel().getColumn(1).setPreferredWidth(80);
+						tbTablaVentas.getColumnModel().getColumn(2).setPreferredWidth(90);
+						tbTablaVentas.getColumnModel().getColumn(3).setPreferredWidth(80);
+						tbTablaVentas.getColumnModel().getColumn(4).setPreferredWidth(115);
+						tbTablaVentas.getColumnModel().getColumn(5).setPreferredWidth(102);
+						scrollPane_1.setViewportView(tbTablaVentas);
 					}
 				}
 				{
@@ -596,6 +600,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnBuscarDniVenta1 = new JButton("BUSCAR");
+					btnBuscarDniVenta1.addActionListener(this);
 					btnBuscarDniVenta1.setFont(new Font("Tahoma", Font.BOLD, 11));
 					btnBuscarDniVenta1.setBounds(471, 59, 89, 23);
 					moduloVentas.add(btnBuscarDniVenta1);
@@ -608,6 +613,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnProcesarVenta = new JButton("PROCESAR");
+					btnProcesarVenta.addActionListener(this);
 					btnProcesarVenta.setFont(new Font("Tahoma", Font.BOLD, 14));
 					btnProcesarVenta.setBounds(362, 596, 175, 41);
 					moduloVentas.add(btnProcesarVenta);
@@ -620,6 +626,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnMostrarTodoVentas = new JButton("MOSTRAR TODO");
+					btnMostrarTodoVentas.addActionListener(this);
 					btnMostrarTodoVentas.setFont(new Font("Tahoma", Font.BOLD, 11));
 					btnMostrarTodoVentas.setBounds(572, 60, 135, 23);
 					moduloVentas.add(btnMostrarTodoVentas);
@@ -740,6 +747,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnRegistrarClase = new JButton("REGISTRAR");
+					btnRegistrarClase.addActionListener(this);
 					btnRegistrarClase.setFont(new Font("Tahoma", Font.BOLD, 14));
 					btnRegistrarClase.setBounds(110, 326, 175, 41);
 					moduloClases.add(btnRegistrarClase);
@@ -854,9 +862,9 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 							scrollPane_3.setBounds(61, 241, 1003, 315);
 							panel_General.add(scrollPane_3);
 							{
-								table_3 = new JTable();
-								table_3.setRowHeight(25);
-								table_3.setModel(new DefaultTableModel(
+								tbReporteGeneral = new JTable();
+								tbReporteGeneral.setRowHeight(25);
+								tbReporteGeneral.setModel(new DefaultTableModel(
 									new Object[][] {
 										{null, null, null, null, null, null},
 										{null, null, null, null, null, null},
@@ -875,11 +883,11 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 										"MES", "SEDE", "ASESOR DESTACADO", "PROFESOR DESTACADO", "ARTE MARCIAL POPULAR", "INGRESO TOTAL"
 									}
 								));
-								table_3.getColumnModel().getColumn(2).setPreferredWidth(131);
-								table_3.getColumnModel().getColumn(3).setPreferredWidth(143);
-								table_3.getColumnModel().getColumn(4).setPreferredWidth(153);
-								table_3.getColumnModel().getColumn(5).setPreferredWidth(100);
-								scrollPane_3.setViewportView(table_3);
+								tbReporteGeneral.getColumnModel().getColumn(2).setPreferredWidth(131);
+								tbReporteGeneral.getColumnModel().getColumn(3).setPreferredWidth(143);
+								tbReporteGeneral.getColumnModel().getColumn(4).setPreferredWidth(153);
+								tbReporteGeneral.getColumnModel().getColumn(5).setPreferredWidth(100);
+								scrollPane_3.setViewportView(tbReporteGeneral);
 							}
 						}
 						{
@@ -921,12 +929,14 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 							}
 							{
 								btnFiltrarGENERAL = new JButton("FILTRAR");
+								btnFiltrarGENERAL.addActionListener(this);
 								btnFiltrarGENERAL.setBounds(337, 50, 89, 23);
 								panel_8.add(btnFiltrarGENERAL);
 								btnFiltrarGENERAL.setFont(new Font("Tahoma", Font.BOLD, 11));
 							}
 							{
 								btnMostrarTodoGeneral = new JButton("MOSTRAR TODO");
+								btnMostrarTodoGeneral.addActionListener(this);
 								btnMostrarTodoGeneral.setBounds(322, 85, 123, 23);
 								panel_8.add(btnMostrarTodoGeneral);
 								btnMostrarTodoGeneral.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -948,9 +958,9 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 							scrollPane_4.setBounds(66, 246, 1003, 315);
 							panel_Asesores.add(scrollPane_4);
 							{
-								table_4 = new JTable();
-								table_4.setRowHeight(24);
-								table_4.setModel(new DefaultTableModel(
+								tbReporteAsesores = new JTable();
+								tbReporteAsesores.setRowHeight(24);
+								tbReporteAsesores.setModel(new DefaultTableModel(
 									new Object[][] {
 										{null, null, null, null, null, null},
 										{null, null, null, null, null, null},
@@ -972,9 +982,9 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 										"MES", "SEDE", "ASESOR", "N.\u00BA VENTAS", "INGRESO GENERADO (S/.)", "COMISI\u00D3N"
 									}
 								));
-								table_4.getColumnModel().getColumn(3).setPreferredWidth(78);
-								table_4.getColumnModel().getColumn(4).setPreferredWidth(148);
-								scrollPane_4.setViewportView(table_4);
+								tbReporteAsesores.getColumnModel().getColumn(3).setPreferredWidth(78);
+								tbReporteAsesores.getColumnModel().getColumn(4).setPreferredWidth(148);
+								scrollPane_4.setViewportView(tbReporteAsesores);
 							}
 						}
 						{
@@ -1009,19 +1019,21 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 								lblNewLabel_13.setFont(new Font("Tahoma", Font.PLAIN, 13));
 							}
 							{
-								comboBox_asesor = new JComboBox();
-								comboBox_asesor.setModel(new DefaultComboBoxModel(new String[] {"Axel", "Fabio", "Jimena"}));
-								comboBox_asesor.setBounds(149, 85, 120, 22);
-								panel_7.add(comboBox_asesor);
+								comboBox_asesorAsesor = new JComboBox();
+								comboBox_asesorAsesor.setModel(new DefaultComboBoxModel(new String[] {"Axel", "Fabio", "Jimena"}));
+								comboBox_asesorAsesor.setBounds(149, 85, 120, 22);
+								panel_7.add(comboBox_asesorAsesor);
 							}
 							{
 								btnFiltrarASESORES = new JButton("FILTRAR");
+								btnFiltrarASESORES.addActionListener(this);
 								btnFiltrarASESORES.setBounds(335, 50, 89, 23);
 								panel_7.add(btnFiltrarASESORES);
 								btnFiltrarASESORES.setFont(new Font("Tahoma", Font.BOLD, 11));
 							}
 							{
 								btnMostrarTodoAsesores = new JButton("MOSTRAR TODO");
+								btnMostrarTodoAsesores.addActionListener(this);
 								btnMostrarTodoAsesores.setBounds(322, 85, 123, 23);
 								panel_7.add(btnMostrarTodoAsesores);
 								btnMostrarTodoAsesores.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -1159,27 +1171,61 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			contentPane.add(lblNewLabel_1);
 		}
 		{
-			lblNewLabel_17 = new JLabel("Modo Operativo");
-			lblNewLabel_17.setForeground(Color.WHITE);
-			lblNewLabel_17.setFont(new Font("Verdana", Font.BOLD, 15));
-			lblNewLabel_17.setBounds(1217, 18, 137, 34);
-			contentPane.add(lblNewLabel_17);
-		}
-		{
 			lblNewLabel_4 = new JLabel("− Academia de Artes Marciales");
 			lblNewLabel_4.setBounds(509, 18, 578, 67);
 			contentPane.add(lblNewLabel_4);
 			lblNewLabel_4.setForeground(new Color(255, 255, 255));
 			lblNewLabel_4.setFont(new Font("Verdana", Font.ITALIC, 35));
 		}
-		{
-			comboBox_JefaSede = new JComboBox();
-			comboBox_JefaSede.setBounds(1217, 50, 137, 22);
-			contentPane.add(comboBox_JefaSede);
-		}
     Listar("");
+    
+ 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Plan - 1 Mes", "Plan - 2 Meses", "Plan - 3 Meses", "Plan - 6 Meses", "Plan - 12 Meses"}));
+ 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Efectivo", "Tarjeta", "Yape/Plin", "Mixto"}));
+ 			comboBox_arteMarcial.setModel(new DefaultComboBoxModel(new String[] {"Boxeo", "Muay Thai", "MMA", "Lucha Olímpica", "Luta Livre"}));
+ 			comboBox_profesor.setModel(new DefaultComboBoxModel(new String[] {"Danny Rosales", "Jordan Pacheco", "William Gómez"}));
+ 			comboBox_turno.setModel(new DefaultComboBoxModel(new String[] {"Mañana", "Tarde", "Noche"}));
+ 			listarVentas("");
+ 			comboBox_mesGeneral.setModel(new DefaultComboBoxModel(new String[] { "Seleccione...", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" }));
+ 			comboBox_sedeGeneral.setModel(new DefaultComboBoxModel(new String[] {"Bellavista", "Pilares"}));
+ 			comboBox_mesAsesor.setModel(new DefaultComboBoxModel(new String[] {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"}));
+ 			comboBox_asesorAsesor.setModel(new DefaultComboBoxModel(new String[] {"Axel", "Fabio", "Jimena", "Kiara"}));
+ 			comboBox_mesProfesor.setModel(new DefaultComboBoxModel(new String[] {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"}));
+ 			comboBox_profesorReporte.setModel(new DefaultComboBoxModel(new String[] {"Danny Rosales", "Jordan", "William" , "José" , "Marcos","Juan","Katty","Paco","Diego","Enzo"}));
 	}
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnFiltrarGENERAL) {
+			do_btnFiltrarGENERAL_actionPerformed(e);
+		}
+		if (e.getSource() == btnMostrarTodoAsesores) {
+			do_btnMostrarTodoAsesores_actionPerformed(e);
+		}
+		if (e.getSource() == btnFiltrarASESORES) {
+			do_btnFiltrarASESORES_actionPerformed(e);
+		}
+		if (e.getSource() == btnMostrarTodoGeneral) {
+			do_btnMostrarTodoGeneral_actionPerformed(e);
+		}
+		if (e.getSource() == comboBox_1) {
+			do_comboBox_1_actionPerformed(e);
+		}
+		if (e.getSource() == comboBox) {
+			do_comboBox_actionPerformed(e);
+		}
+		if (e.getSource() == btnBuscarDniVenta2) {
+			do_btnBuscarDniVenta2_actionPerformed(e);
+		}
+		if (e.getSource() == btnRegistrarClase) {
+			do_btnRegistrarClase_actionPerformed(e);
+		}
+		if (e.getSource() == btnMostrarTodoVentas) {
+			do_btnMostrarTodoVentas_actionPerformed(e);
+		}
+		if (e.getSource() == btnProcesarVenta) {
+			do_btnProcesarVenta_actionPerformed(e);
+		}
+		if (e.getSource() == btnBuscarDniVenta1) {
+			do_btnBuscarDniVenta1_actionPerformed(e);
+		}
 		if (e.getSource() == btnMostrarTodoPROFESOR) {
 			do_btnMostrarTodoPROFESOR_actionPerformed(e);
 		}
@@ -1215,13 +1261,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 	}
 	public void Listar(String nom) {
-		DefaultTableModel modelo=new DefaultTableModel();
-		ArregloAlumno acce=new ArregloAlumno();
-		ArrayList<Alumno> lista=new ArrayList<Alumno>();
-		if(nom.length()==0)
-			lista=acce.ListarAlumnos();
-		else
-			lista=acce.ConsultarAlumno(nom);
+		DefaultTableModel modelo = new DefaultTableModel();
 		modelo.addColumn("Código");
 		modelo.addColumn("DNI");
 		modelo.addColumn("Nombres");
@@ -1229,58 +1269,120 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		modelo.addColumn("Celular");
 		modelo.addColumn("Fecha de nacimiento");
 		modelo.addColumn("Estado");
-		modelo.setRowCount(lista.size());
-		Iterator it=lista.iterator();
-		int i=0;
-		while(it.hasNext()) {
-			Object obj=it.next();
-			Alumno acceso=(Alumno)obj;
-			modelo.setValueAt(acceso.getCódigo(), i, 0);
-			modelo.setValueAt(acceso.getDni(), i, 1);
-			modelo.setValueAt(acceso.getNom(), i, 2);
-			modelo.setValueAt(acceso.getApellidos(), i, 3);
-			modelo.setValueAt(acceso.getCelular(), i, 4);
-			modelo.setValueAt(acceso.getFecha_nacimiento(), i, 5);
-			modelo.setValueAt(acceso.getEstado(), i, 6);
-			i++;
+
+		try {
+			java.sql.Connection cn = utils.Conexion.conectar();
+			java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_ALUMNOS_SEDE(?,?)}");
+			
+			csta.setString(1, nom);
+			csta.setInt(2, VentanaLogin.idSedeLogueada); 
+			
+			java.sql.ResultSet rs = csta.executeQuery();
+			while(rs.next()) {
+				Object[] fila = {
+					rs.getInt(1),     // Código
+					rs.getString(2),  // DNI
+					rs.getString(3),  // Nombres
+					rs.getString(4),  // Apellidos
+					rs.getString(5),  // Celular
+					rs.getString(6),  // Fecha de nacimiento
+					rs.getString(7)   // Estado
+				};
+				modelo.addRow(fila);
+			}
+		} catch (Exception e) {
+			System.out.println("Error en Listar Alumnos: " + e.getMessage());
 		}
-		tbTabla.setModel(modelo);
+		
+		tbTabla.setModel(modelo); 
 	}
+	
+	public void listarVentas(String dniBuscar) {
+			DefaultTableModel modelo = new DefaultTableModel();
+			modelo.addColumn("CÓDIGO VENTA");
+			modelo.addColumn("FECHA");
+			modelo.addColumn("DNI ALUMNO");
+			modelo.addColumn("PLAN");
+			modelo.addColumn("MÉTODO DE PAGO");
+			modelo.addColumn("TOTAL PAGADO");
+
+			try {
+				java.sql.Connection cn = utils.Conexion.conectar();
+				java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_VENTAS_SEDE(?,?)}");
+				csta.setString(1, dniBuscar);
+				csta.setInt(2, VentanaLogin.idSedeLogueada); 
+				
+				java.sql.ResultSet rs = csta.executeQuery();
+				while(rs.next()) {
+					Object[] fila = {
+						rs.getInt(1),     // codigo_venta
+						rs.getString(2),  // fecha_venta
+						rs.getString(3),  // dni (traído del JOIN)
+						rs.getString(4),  // nombre_plan (traído del JOIN)
+						rs.getString(5),  // metodo_pago
+						"S/. " + rs.getDouble(6) // total_pagado
+					};
+					modelo.addRow(fila);
+				}
+			} catch (Exception e) {
+				System.out.println("Error en Listar Ventas: " + e.getMessage());
+			}
+			tbTablaVentas.setModel(modelo); 
+		}
+	
 	public void ListarProfesores(String mesFiltro, String profesorFiltro) {
-	    DefaultTableModel modelo = new DefaultTableModel();
-	    ArregloProfesor acce = new ArregloProfesor();
-	    ArrayList<ReporteProfesor> lista = new ArrayList<ReporteProfesor>();
-	    
-	    if(mesFiltro.length() == 0 || profesorFiltro.length() == 0) { 
-	        lista = acce.ListarTodosProfesores();
-	    } else {
-	        lista = acce.FiltrarProfesores(mesFiltro, profesorFiltro);
-	    }
-	    
-	    modelo.addColumn("MES");
-	    modelo.addColumn("SEDE");
-	    modelo.addColumn("PROFESOR");
-	    modelo.addColumn("DISCIPLINA");
-	    modelo.addColumn("N.º CLASES DICTADAS");
-	    modelo.addColumn("CALIFICACIÓN PROMEDIO");
-	    
-	    modelo.setRowCount(lista.size());
-	    
-	    Iterator it = lista.iterator();
-	    int i = 0;
-	    while(it.hasNext()) {
-	        Object obj = it.next();
-	        ReporteProfesor acceso = (ReporteProfesor)obj;
-	        modelo.setValueAt(acceso.getMes(), i, 0);
-	        modelo.setValueAt(acceso.getSede(), i, 1);
-	        modelo.setValueAt(acceso.getProfesor(), i, 2);
-	        modelo.setValueAt(acceso.getDisciplina(), i, 3);
-	        modelo.setValueAt(acceso.getnClasesDictadas(), i, 4);
-	        modelo.setValueAt(acceso.getCalificacionPromedio(), i, 5);
-	        
-	        i++;
-	    }
-	    tbReporteProfesores.setModel(modelo);
+		DefaultTableModel modelo = new DefaultTableModel();
+		ArregloProfesor acce = new ArregloProfesor();
+		
+		ArrayList<ReporteProfesor> lista = acce.ListarTodosProfesores();
+		
+		modelo.addColumn("MES");
+		modelo.addColumn("SEDE");
+		modelo.addColumn("PROFESOR");
+		modelo.addColumn("DISCIPLINA");
+		modelo.addColumn("N.º CLASES DICTADAS");
+		modelo.addColumn("CALIFICACIÓN PROMEDIO");
+		
+		Iterator it = lista.iterator();
+		int i = 0;
+		while(it.hasNext()) {
+			ReporteProfesor acceso = (ReporteProfesor) it.next();
+		
+			boolean pasaFiltroSede = false;
+			if (VentanaLogin.idSedeLogueada == 0) {
+				pasaFiltroSede = true; 
+			} else {
+				String sededelReporte = String.valueOf(acceso.getSede()).toLowerCase();
+				if (VentanaLogin.idSedeLogueada == 1 && (sededelReporte.equals("1") || sededelReporte.contains("bellavista"))) {
+					pasaFiltroSede = true;
+				} else if (VentanaLogin.idSedeLogueada == 2 && (sededelReporte.equals("2") || sededelReporte.contains("pilares"))) {
+					pasaFiltroSede = true;
+				}
+			}
+			
+			boolean pasaFiltroCombo = true;
+			String mesBD = acceso.getMes();
+			String profBD = acceso.getProfesor();
+			
+			if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
+				pasaFiltroCombo = false;
+			}
+			if (!profesorFiltro.contains("Seleccione") && !profesorFiltro.equals("") && !profBD.equalsIgnoreCase(profesorFiltro)) {
+				pasaFiltroCombo = false;
+			}
+	
+			if (pasaFiltroSede && pasaFiltroCombo) {
+				modelo.setRowCount(modelo.getRowCount() + 1); 
+				modelo.setValueAt(acceso.getMes(), i, 0);
+				modelo.setValueAt(acceso.getSede(), i, 1);
+				modelo.setValueAt(acceso.getProfesor(), i, 2);
+				modelo.setValueAt(acceso.getDisciplina(), i, 3);
+				modelo.setValueAt(acceso.getnClasesDictadas(), i, 4);
+				modelo.setValueAt(acceso.getCalificacionPromedio(), i, 5);
+				i++;
+			}
+		}
+		tbReporteProfesores.setModel(modelo);
 	}
 	
 	//Módulo Ventas-------------------------------------------------------------------------------------------
@@ -1301,12 +1403,25 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		moduloVentas.setVisible(false);
 	}
 	protected void do_tbTabla_mouseClicked(MouseEvent e) {
-		int fila=tbTabla.getSelectedRow();
-		txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
-		txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
-		txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila,3 )));
-		txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
-		txtFechaNaciAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 5)));
+int fila = tbTabla.getSelectedRow();
+		
+		if (fila >= 0) {
+			
+			txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
+			txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
+			txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 3)));
+			txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
+			txtFechaNaciAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 5)));			
+		
+			if (e.getClickCount() == 2) {
+				
+				int codigoAlumno = Integer.parseInt(String.valueOf(tbTabla.getValueAt(fila, 0)));
+				String nombreAlumno = String.valueOf(tbTabla.getValueAt(fila, 2));
+				
+				mostrarApoderado(codigoAlumno, nombreAlumno);
+			}
+		}
+		
 	}
 	protected void do_btnLimpiar_actionPerformed(ActionEvent e) {
 		txtBuscarDniAlumno.setText("");
@@ -1320,35 +1435,110 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		Listar("");
 	}
 	protected void do_btnBuscarDniAlumno_actionPerformed(ActionEvent e) {
-		String Dni_Buscar=txtBuscarDniAlumno.getText().trim();
-		Listar(Dni_Buscar);
+String Dni_Buscar = txtBuscarDniAlumno.getText().trim();
+		
+		if (Dni_Buscar.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
+			Listar("");
+			return;
+		}
+		
+	
+		arreglo.ArregloAlumno acce = new arreglo.ArregloAlumno();
+		java.util.ArrayList<clases.Alumno> lista = acce.ConsultarAlumno(Dni_Buscar);
+		
+	
+		if (lista.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Alumno no encontrado. Verifique el DNI.");
+			Listar(""); 
+		} else {
+			Listar(Dni_Buscar); 
+		}
+		
 		txtBuscarDniAlumno.setText("");
 	}
 	protected void do_btnMatricular_actionPerformed(ActionEvent e) {
-	    String dni = txtDniAlumno.getText();
-	    String nombres = txtNombresAlumno.getText();
-	    String apellidos = txtApellidosAlumno.getText();
-	    String celular = txtCelularAlumno.getText();
-	    String fecha_nacimiento=txtFechaNaciAlumno.getText();
-	    if (dni.isEmpty() || nombres.isEmpty()) {
-	        JOptionPane.showMessageDialog(null, "Campos obligatorios incompletos.");
-	        return;
-	    }
-	    try {
-	        Alumno alu = new Alumno(dni, nombres, apellidos, celular, fecha_nacimiento ,"Activo");
-	        ArregloAlumno arreglo = new ArregloAlumno();
-	        arreglo.InsertarAlumno(alu);
-	        JOptionPane.showMessageDialog(null, "¡Alumno matriculado correctamente!");
-			txtDniAlumno.setText("");
-			txtNombresAlumno.setText("");
-			txtApellidosAlumno.setText("");
-			txtCelularAlumno.setText("");
-			txtFechaNaciAlumno.setText("");
-			Listar("");
+		String dni = txtDniAlumno.getText().trim();
+		String nombres = txtNombresAlumno.getText().trim();
+		String apellidos = txtApellidosAlumno.getText().trim();
+		String celular = txtCelularAlumno.getText().trim();
+		String fechaTexto = txtFechaNaciAlumno.getText().trim(); 
+
+		if (dni.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || fechaTexto.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Por favor, completa todos los datos obligatorios del alumno.");
+			return;
+		}
+
+		String fechaParaMySQL = "";
+		int edad = 0;
+
+		try {
+			java.time.format.DateTimeFormatter formatoEntrada = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			java.time.LocalDate fechaNac = java.time.LocalDate.parse(fechaTexto, formatoEntrada);
+			java.time.LocalDate hoy = java.time.LocalDate.now();
+			
+			edad = java.time.Period.between(fechaNac, hoy).getYears();
+			
+			java.time.format.DateTimeFormatter formatoBD = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			fechaParaMySQL = fechaNac.format(formatoBD);
+			
+		} catch (java.time.format.DateTimeParseException ex) {
+			JOptionPane.showMessageDialog(null, "Formato de fecha incorrecto. Usa el formato DD/MM/AAAA (Ejemplo: 25/10/2005)", "Aviso", JOptionPane.WARNING_MESSAGE);
+			return; 
+		}
+
+		try {
+		
+			clases.Alumno alu = new clases.Alumno(dni, nombres, apellidos, celular, fechaParaMySQL, "Activo");
+
+			String dniApo = "";
+			String nomApo = "";
+			String apeApo = "";
+			String celApo = "";
+			String parentesco = "";
+
+	        if (edad < 18) {
+	            dniApo = txtDniApoderado.getText().trim();
+	            nomApo = txtNombresApoderado.getText().trim();
+	            apeApo = txtApellidosApoderado.getText().trim();
+	            celApo = txtCelularApoderado.getText().trim();
+	            parentesco = txtParentescoApoderado.getText().trim();
+	            
+	            if (dniApo.isEmpty() || nomApo.isEmpty() || apeApo.isEmpty() || parentesco.isEmpty()) {
+	                JOptionPane.showMessageDialog(null, "¡Alto! El alumno es menor de edad (" + edad + " años). Es OBLIGATORIO llenar los datos del apoderado.");
+	                return; 
+	            }
+	        }
+	        
+	     
+	     
+	        arreglo.ArregloAlumno arreglo = new arreglo.ArregloAlumno();
+	        boolean exito = arreglo.InsertarAlumno(alu, VentanaLogin.idSedeLogueada);
+	        
+	        if (exito == true) {
+	            
+	            if (edad < 18) {
+	                arreglo.InsertarApoderado(dni, dniApo, nomApo, apeApo, celApo, parentesco);
+	            }
+	            
+	            JOptionPane.showMessageDialog(null, "¡Alumno matriculado correctamente!");
+	            
+	            
+	            do_btnLimpiar_actionPerformed(null);
+	            Listar("");
+	            
+	        } else {
+	            
+	            JOptionPane.showMessageDialog(null, "Error: No se pudo matricular. El DNI ingresado ya existe en el sistema.", "DNI Duplicado", JOptionPane.ERROR_MESSAGE);
+	        }
+	        
 	    } catch (Exception ex) {
 	        JOptionPane.showMessageDialog(null, "Ocurrió un error al guardar: " + ex.getMessage());
 	    }
 	}
+	    
+	    
+	
 	//---------------------------------------------------------------------------------------------------------
 	//Módulo Clases-------------------------------------------------------------------------------------------
 	protected void do_btnClases_actionPerformed(ActionEvent e) {
@@ -1368,12 +1558,15 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	}
 	protected void do_btnFiltrarPROFESOR_actionPerformed(ActionEvent e) {
 		String mesSeleccionado = comboBox_mesProfesor.getSelectedItem().toString();
-	    String profesorSeleccionado = comboBox_profesorReporte.getSelectedItem().toString();
-	    ListarProfesores(mesSeleccionado, profesorSeleccionado);
+		String profesorSeleccionado = comboBox_profesorReporte.getSelectedItem().toString();
+		ListarProfesores(mesSeleccionado, profesorSeleccionado);
 	}
 	protected void do_btnMostrarTodoPROFESOR_actionPerformed(ActionEvent e) {
 		ListarProfesores("", "");
-	}
+		comboBox_mesProfesor.setSelectedIndex(0);
+		comboBox_profesorReporte.setSelectedIndex(0);
+		}
+	
 	//---------------------------------------------------------------------------------------------------------
 	protected void do_btnCerrarSesión_actionPerformed(ActionEvent e) {
 		VentanaLogin login = new VentanaLogin();
@@ -1396,6 +1589,388 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	
 	
 
-
+	//--------------------------------------------------------------------------------------------------------
+		//Módulo Venta-------------------------------------------------------------------------------------------
 	
+	protected void do_btnBuscarDniVenta1_actionPerformed(ActionEvent e) {
+		String dni = txtBuscarDniVenta1.getText().trim();
+		if (dni.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
+			return;
+		}
+		
+		arreglo.ArregloAlumno arrAlumno = new arreglo.ArregloAlumno();
+		java.util.ArrayList<clases.Alumno> lista = arrAlumno.ConsultarAlumno(dni);
+		
+		if (lista.size() > 0) {
+			
+			textField_7.setText(lista.get(0).getNom() + " " + lista.get(0).getApellidos());
+		} else {
+			JOptionPane.showMessageDialog(null, "Alumno no encontrado. Debe matricularlo primero.");
+			textField_7.setText("");
+		}
+	}
+	protected void do_btnProcesarVenta_actionPerformed(ActionEvent e) {
+		String dni = txtBuscarDniVenta2.getText().trim();
+		if (dni.isEmpty() || textField_7.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Primero busque y seleccione un alumno válido.");
+			return;
+		}
+
+		try {
+			int idPlan = comboBox.getSelectedIndex() + 1; 
+			String metodoPago = comboBox_1.getSelectedItem().toString();
+			
+			
+			double total = textField_8.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_8.getText());
+			if (total <= 0) {
+				JOptionPane.showMessageDialog(null, "Seleccione un plan válido.");
+				return;
+			}
+
+			double efectivo = 0.0;
+			double digital = 0.0;
+
+			
+			if (metodoPago.equals("Mixto")) {
+				efectivo = textField_10.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_10.getText());
+				digital = textField_11.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_11.getText());
+				
+				
+				if (Math.abs((efectivo + digital) - total) > 0.1) {
+					JOptionPane.showMessageDialog(null, "Error: En método Mixto, la suma exacta debe ser " + total);
+					return;
+				}
+			} else if (metodoPago.equals("Efectivo")) {
+				efectivo = total; 
+				digital = 0.0;
+			} else { 
+				
+				efectivo = 0.0;
+				digital = total; 
+			}
+
+		
+			arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
+			System.out.println("DEBUG: Estoy intentando registrar con la Sede ID: " + VentanaLogin.idSedeLogueada);
+			arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, 1);
+			
+			JOptionPane.showMessageDialog(null, "¡Venta registrada con éxito en el sistema!");
+			
+		
+			txtBuscarDniVenta2.setText("");
+			textField_7.setText("");
+			textField_8.setText("");
+			textField_10.setText("");
+			textField_11.setText("");
+			comboBox.setSelectedIndex(0);
+			comboBox_1.setSelectedIndex(0);
+			
+			
+			listarVentas("");
+			
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null, "Error: Revise los montos ingresados.");
+		}
+	}
+	protected void do_btnMostrarTodoVentas_actionPerformed(ActionEvent e) {
+		listarVentas(""); 
+	    txtBuscarDniVenta1.setText(""); 
+	}
+	
+	protected void do_btnRegistrarClase_actionPerformed(ActionEvent e) {
+		try {
+			int idDisciplina = comboBox_arteMarcial.getSelectedIndex() + 1; 
+			int idProfesor = comboBox_profesor.getSelectedIndex() + 1;
+			String turno = comboBox_turno.getSelectedItem().toString();
+			int numAlumnos = Integer.parseInt(txtNdeAlumnos.getText().trim());
+			
+			// Lógica de calificación automática
+			String calificacion = "";
+			if (numAlumnos >= 22) calificacion = "Estrella";
+			else if (numAlumnos >= 12) calificacion = "Normal";
+			else calificacion = "Bajo";
+
+			// Conexión y envío a MySQL
+			java.sql.Connection cn = utils.Conexion.conectar();
+			java.sql.CallableStatement csta = cn.prepareCall("{call SP_INSERTAR_CLASE(?,?,?,?,?)}");
+			csta.setString(1, turno);
+			csta.setInt(2, numAlumnos);
+			csta.setString(3, calificacion);
+			csta.setInt(4, idProfesor);
+			csta.setInt(5, idDisciplina);
+			csta.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "¡Clase registrada con calificación: " + calificacion + "!");
+            txtNdeAlumnos.setText(""); 
+            
+           
+            ListarClases(""); 
+            
+        } catch(Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error: Ingrese una cantidad válida de alumnos (solo números enteros).");
+        }
+	}
+	protected void do_btnBuscarDniVenta2_actionPerformed(ActionEvent e) {
+		String dni = txtBuscarDniVenta2.getText().trim();
+		if (dni.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
+			return;
+		}
+		
+		arreglo.ArregloAlumno arrAlumno = new arreglo.ArregloAlumno();
+		java.util.ArrayList<clases.Alumno> lista = arrAlumno.ConsultarAlumno(dni);
+		
+		if (lista.size() > 0) {
+			
+			textField_7.setText(lista.get(0).getNom() + " " + lista.get(0).getApellidos());
+		} else {
+	
+			JOptionPane.showMessageDialog(null, "Alumno no encontrado. Debe matricularlo en el módulo de Alumnos primero.");
+			textField_7.setText("");
+		}
+	}
+	protected void do_comboBox_actionPerformed(ActionEvent e) {
+		int index = comboBox.getSelectedIndex();
+		double precio = 0.0;
+		
+		
+		switch(index) {
+			case 0: precio = 209.90; break; // Plan - 1 Mes
+			case 1: precio = 259.90; break; // Plan - 2 Meses
+			case 2: precio = 329.90; break; // Plan - 3 Meses
+			case 3: precio = 499.90; break; // Plan - 6 Meses
+			case 4: precio = 839.90; break; // Plan - 12 Meses
+		}
+		
+		textField_8.setText(String.valueOf(precio)); 
+		textField_8.setEditable(false); 
+		textField_10.setText("");
+		textField_11.setText("");
+	}
+	protected void do_comboBox_1_actionPerformed(ActionEvent e) {
+		String metodo = comboBox_1.getSelectedItem().toString();
+		
+		if (metodo.equals("Mixto")) {
+			
+			textField_10.setEditable(true);
+			textField_11.setEditable(false); 
+			textField_10.setText("");
+			textField_11.setText("");
+			textField_10.requestFocus(); 
+		} else {
+			
+			textField_10.setEditable(false);
+			textField_11.setEditable(false);
+			textField_10.setText("");
+			textField_11.setText("");
+		}
+	}
+	public void keyPressed(KeyEvent e) {
+	}
+	public void keyReleased(KeyEvent e) {
+		if (e.getSource() == textField_10) {
+			do_textField_10_keyReleased(e);
+		}
+	}
+	public void keyTyped(KeyEvent e) {
+	}
+	protected void do_textField_10_keyReleased(KeyEvent e) {
+		if (comboBox_1.getSelectedItem().toString().equals("Mixto")) {
+			try {
+				double total = Double.parseDouble(textField_8.getText());
+				String textoEfectivo = textField_10.getText().trim();
+				
+				if (textoEfectivo.isEmpty()) {
+					textField_11.setText("");
+					return;
+				}
+				
+				double efectivo = Double.parseDouble(textoEfectivo);
+				
+				if (efectivo > total) {
+					textField_11.setText("¡Se pasó!"); 
+				} else {
+					double digital = total - efectivo;
+				
+					textField_11.setText(String.format(java.util.Locale.US, "%.2f", digital));
+				}
+			} catch (Exception ex) {
+				textField_11.setText("");
+			}
+		}
+	}
+	
+	public void ListarClases(String fecha) {
+	    
+	    DefaultTableModel modelo = (DefaultTableModel) table_2.getModel();
+	    modelo.setRowCount(0); 
+	    
+	    try {
+	        java.sql.Connection cn = utils.Conexion.conectar();
+	        java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_CLASES(?)}");
+	        csta.setString(1, fecha);
+	        java.sql.ResultSet rs = csta.executeQuery();
+	        
+	        while(rs.next()) {
+	            Object[] fila = new Object[6]; 
+	            fila[0] = rs.getString(1);
+	            fila[1] = rs.getString(2); 
+	            fila[2] = rs.getString(3); 
+	            fila[3] = rs.getString(4); 
+	            fila[4] = rs.getInt(5);    
+	            fila[5] = rs.getString(6); 
+	            
+	            modelo.addRow(fila); 
+	        }
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(null, "Error al cargar tabla: " + e.getMessage());
+	    }
+	}
+	
+	public void mostrarApoderado(int codigoAlumno, String nombreAlumno) {
+		try {
+			java.sql.Connection cn = utils.Conexion.conectar();
+			
+			String sql = "SELECT * FROM apoderados WHERE codigo_alumno = ?"; 
+			
+			java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+			pst.setInt(1, codigoAlumno); // Enviamos el número entero
+			java.sql.ResultSet rs = pst.executeQuery();
+			
+			if (rs.next()) {
+				
+				String nombresApo = rs.getString("nombres");
+				String apellidosApo = rs.getString("apellidos");
+				String celularApo = rs.getString("celular");
+				String relacion = rs.getString("parentesco"); 
+				
+			
+				String mensaje = "Información del Apoderado de: " + nombreAlumno + "\n"
+						       + "--------------------------------------------------\n"
+						       + "Nombres: " + nombresApo + " " + apellidosApo + "\n"
+						       + "Parentesco: " + relacion + "\n"
+						       + "Celular: " + celularApo;
+				
+				JOptionPane.showMessageDialog(null, mensaje, "Datos del Apoderado", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(null, "El alumno " + nombreAlumno + " no tiene un apoderado registrado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+			}
+			
+		} catch (Exception ex) {
+			System.out.println("Error al buscar apoderado: " + ex.getMessage());
+		}
+	}
+	
+	public void ListarReporteAsesores(String mesFiltro, String asesorFiltro) {
+		DefaultTableModel modelo = new DefaultTableModel();
+		modelo.addColumn("MES");
+		modelo.addColumn("SEDE");
+		modelo.addColumn("ASESOR");
+		modelo.addColumn("N.º VENTAS");
+		modelo.addColumn("INGRESO GENERADO (S/.)");
+		modelo.addColumn("COMISIÓN");
+
+		try {
+			java.sql.Connection cn = utils.Conexion.conectar();
+			java.sql.CallableStatement csta = cn.prepareCall("{call SP_REPORTE_ASESORES(?)}");
+			csta.setInt(1, VentanaLogin.idSedeLogueada); 
+			
+			java.sql.ResultSet rs = csta.executeQuery();
+			while(rs.next()) {
+				String mesBD = rs.getString("MES");
+				String asesorBD = rs.getString("ASESOR");
+				
+				boolean pasaFiltro = true;
+				
+				if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
+					pasaFiltro = false;
+				}
+				if (!asesorFiltro.contains("Seleccione") && !asesorFiltro.equals("") && !asesorBD.equalsIgnoreCase(asesorFiltro)) {
+					pasaFiltro = false;
+				}
+				
+				if (pasaFiltro) {
+					Object[] fila = {
+						mesBD,
+						rs.getString("SEDE"),
+						asesorBD,
+						rs.getInt("N_VENTAS"),
+						"S/. " + rs.getDouble("INGRESO_GENERADO"),
+						"S/. " + rs.getDouble("COMISION")
+					};
+					modelo.addRow(fila);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error en Reporte Asesores: " + e.getMessage());
+		}
+		
+		tbReporteAsesores.setModel(modelo); 
+	}
+	
+	protected void do_btnMostrarTodoGeneral_actionPerformed(ActionEvent e) {
+		ListarReporteGeneral("", "");
+		comboBox_mesGeneral.setSelectedIndex(0);
+		comboBox_sedeGeneral.setSelectedIndex(0);
+	}
+	protected void do_btnFiltrarASESORES_actionPerformed(ActionEvent e) {
+		String mes = comboBox_mesAsesor.getSelectedItem().toString();
+		String asesor = comboBox_asesorAsesor.getSelectedItem().toString();
+		ListarReporteAsesores(mes, asesor);
+	}
+	protected void do_btnMostrarTodoAsesores_actionPerformed(ActionEvent e) {
+		ListarReporteAsesores("", "");
+		comboBox_mesAsesor.setSelectedIndex(0);
+		comboBox_asesorAsesor.setSelectedIndex(0);
+	}
+	
+	public void ListarReporteGeneral(String mesFiltro, String sedeFiltro) {
+		DefaultTableModel modelo = new DefaultTableModel();
+		modelo.addColumn("MES");
+		modelo.addColumn("SEDE");
+		modelo.addColumn("ASESOR DESTACADO");
+		modelo.addColumn("PROFESOR DESTACADO");
+		modelo.addColumn("ARTE MARCIAL POPULAR");
+		modelo.addColumn("INGRESO TOTAL");
+
+		try {
+			java.sql.Connection cn = utils.Conexion.conectar();
+			java.sql.CallableStatement csta = cn.prepareCall("{call SP_REPORTE_GENERAL(?)}");
+			csta.setInt(1, VentanaLogin.idSedeLogueada); 
+			java.sql.ResultSet rs = csta.executeQuery();
+			while(rs.next()) {
+				String mesBD = rs.getString("MES");
+				String sedeBD = rs.getString("SEDE");
+				boolean pasaFiltro = true;
+				
+				if (!mesFiltro.contains("Seleccione") && !mesFiltro.equals("") && !mesBD.equalsIgnoreCase(mesFiltro)) {
+					pasaFiltro = false;
+				}
+				if (!sedeFiltro.contains("Seleccione") && !sedeFiltro.equals("") && !sedeBD.equalsIgnoreCase(sedeFiltro)) {
+					pasaFiltro = false;
+				}
+				if (pasaFiltro) {
+					Object[] fila = {
+						mesBD,
+						sedeBD,
+						rs.getString("ASESOR_DESTACADO"),
+						rs.getString("PROFESOR_DESTACADO"),
+						rs.getString("ARTE_MARCIAL_POPULAR"),
+						"S/. " + rs.getDouble("INGRESO_TOTAL")
+					};
+					modelo.addRow(fila);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error en Reporte General: " + e.getMessage());
+		}
+		
+		tbReporteGeneral.setModel(modelo); 
+	}
+	protected void do_btnFiltrarGENERAL_actionPerformed(ActionEvent e) {
+		String mes = comboBox_mesGeneral.getSelectedItem().toString();
+		String sede = comboBox_sedeGeneral.getSelectedItem().toString();
+		ListarReporteGeneral(mes, sede);
+	}
 }
