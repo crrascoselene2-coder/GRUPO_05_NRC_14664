@@ -182,6 +182,9 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	private JTable tbTabla;
 	private JScrollPane scrollPane_5;
 	private JTable tbReporteProfesores;
+	private JButton btnProgramadores;
+	private JButton btnSaldarDeuda;
+	private JButton btnLimpiarVentas;
 
 	/**
 	 * Launch the application.
@@ -203,7 +206,13 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	 * Create the frame.
 	 */
 	public MenuPrincipal() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		if (VentanaLogin.idUsuarioLogueado == 0) {
+	        JOptionPane.showMessageDialog(null, "¡Acceso denegado! Debe iniciar sesión primero.");
+	        System.exit(0); // Cierra el programa al instante
+	    }
+		
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1397, 809);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(139, 0, 0));
@@ -266,6 +275,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnModificar = new JButton("MODIFICAR");
+					btnModificar.addActionListener(this);
 					btnModificar.setBackground(new Color(192, 192, 192));
 					btnModificar.setFont(new Font("Tahoma", Font.BOLD, 14));
 					btnModificar.setBounds(472, 592, 129, 48);
@@ -615,12 +625,13 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					btnProcesarVenta = new JButton("PROCESAR");
 					btnProcesarVenta.addActionListener(this);
 					btnProcesarVenta.setFont(new Font("Tahoma", Font.BOLD, 14));
-					btnProcesarVenta.setBounds(362, 596, 175, 41);
+					btnProcesarVenta.setBounds(133, 596, 175, 41);
 					moduloVentas.add(btnProcesarVenta);
 				}
 				{
 					btnAnularVenta = new JButton("ANULAR");
-					btnAnularVenta.setBounds(584, 596, 175, 41);
+					btnAnularVenta.addActionListener(this);
+					btnAnularVenta.setBounds(369, 596, 175, 41);
 					moduloVentas.add(btnAnularVenta);
 					btnAnularVenta.setFont(new Font("Tahoma", Font.BOLD, 14));
 				}
@@ -754,6 +765,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnModificarClase = new JButton("MODIFICAR");
+					btnModificarClase.addActionListener(this);
 					btnModificarClase.setFont(new Font("Tahoma", Font.BOLD, 14));
 					btnModificarClase.setBounds(110, 378, 175, 41);
 					moduloClases.add(btnModificarClase);
@@ -810,6 +822,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnMostrarTodoClases = new JButton("MOSTRAR TODO");
+					btnMostrarTodoClases.addActionListener(this);
 					btnMostrarTodoClases.setFont(new Font("Tahoma", Font.BOLD, 11));
 					btnMostrarTodoClases.setBounds(740, 105, 135, 23);
 					moduloClases.add(btnMostrarTodoClases);
@@ -828,6 +841,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					btnBuscarClase = new JButton("BUSCAR");
+					btnBuscarClase.addActionListener(this);
 					btnBuscarClase.setFont(new Font("Tahoma", Font.BOLD, 11));
 					btnBuscarClase.setBounds(764, 71, 89, 23);
 					moduloClases.add(btnBuscarClase);
@@ -1127,7 +1141,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				btnAlumnos.addActionListener(this);
 				btnAlumnos.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnAlumnos.setBackground(new Color(112, 128, 144));
-				btnAlumnos.setBounds(23, 48, 182, 81);
+				btnAlumnos.setBounds(23, 21, 182, 81);
 				panel.add(btnAlumnos);
 			}
 			{
@@ -1135,7 +1149,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				btnVenta.addActionListener(this);
 				btnVenta.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnVenta.setBackground(new Color(112, 128, 144));
-				btnVenta.setBounds(23, 170, 182, 81);
+				btnVenta.setBounds(23, 130, 182, 81);
 				panel.add(btnVenta);
 			}
 			{
@@ -1143,7 +1157,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				btnClases.addActionListener(this);
 				btnClases.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnClases.setBackground(new Color(112, 128, 144));
-				btnClases.setBounds(23, 291, 182, 81);
+				btnClases.setBounds(23, 235, 182, 81);
 				panel.add(btnClases);
 			}
 			{
@@ -1151,7 +1165,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				btnReporte.addActionListener(this);
 				btnReporte.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnReporte.setBackground(new Color(112, 128, 144));
-				btnReporte.setBounds(23, 417, 182, 81);
+				btnReporte.setBounds(23, 347, 182, 81);
 				panel.add(btnReporte);
 			}
 			{
@@ -1159,8 +1173,15 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				btnCerrarSesión.addActionListener(this);
 				btnCerrarSesión.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnCerrarSesión.setBackground(new Color(112, 128, 144));
-				btnCerrarSesión.setBounds(23, 541, 182, 81);
+				btnCerrarSesión.setBounds(23, 570, 182, 81);
 				panel.add(btnCerrarSesión);
+			}
+			{
+				btnProgramadores = new JButton("PROGRAMADORES");
+				btnProgramadores.setFont(new Font("SansSerif", Font.BOLD, 15));
+				btnProgramadores.setBackground(new Color(112, 128, 144));
+				btnProgramadores.setBounds(23, 460, 182, 81);
+				panel.add(btnProgramadores);
 			}
 		}
 		{
@@ -1181,6 +1202,20 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
     
  		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Plan - 1 Mes", "Plan - 2 Meses", "Plan - 3 Meses", "Plan - 6 Meses", "Plan - 12 Meses"}));
  		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Efectivo", "Tarjeta", "Yape/Plin", "Mixto"}));
+ 		{
+ 			btnSaldarDeuda = new JButton("SALDAR DEUDA");
+ 			btnSaldarDeuda.addActionListener(this);
+ 			btnSaldarDeuda.setFont(new Font("Tahoma", Font.BOLD, 14));
+ 			btnSaldarDeuda.setBounds(610, 596, 175, 41);
+ 			moduloVentas.add(btnSaldarDeuda);
+ 		}
+ 		{
+ 			btnLimpiarVentas = new JButton("LIMPIAR");
+ 			btnLimpiarVentas.addActionListener(this);
+ 			btnLimpiarVentas.setFont(new Font("Tahoma", Font.BOLD, 14));
+ 			btnLimpiarVentas.setBounds(839, 596, 175, 41);
+ 			moduloVentas.add(btnLimpiarVentas);
+ 		}
  			comboBox_arteMarcial.setModel(new DefaultComboBoxModel(new String[] {"Boxeo", "Muay Thai", "MMA", "Lucha Olímpica", "Luta Livre"}));
  			comboBox_profesor.setModel(new DefaultComboBoxModel(new String[] {"Danny Rosales", "Jordan Pacheco", "William Gómez"}));
  			comboBox_turno.setModel(new DefaultComboBoxModel(new String[] {"Mañana", "Tarde", "Noche"}));
@@ -1193,6 +1228,27 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  			comboBox_profesorReporte.setModel(new DefaultComboBoxModel(new String[] {"Danny Rosales", "Jordan", "William" , "José" , "Marcos","Juan","Katty","Paco","Diego","Enzo"}));
 	}
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnLimpiarVentas) {
+			do_btnLimpiarVentas_actionPerformed(e);
+		}
+		if (e.getSource() == btnSaldarDeuda) {
+			do_btnSaldarDeuda_actionPerformed(e);
+		}
+		if (e.getSource() == btnBuscarClase) {
+			do_btnBuscarClase_actionPerformed(e);
+		}
+		if (e.getSource() == btnMostrarTodoClases) {
+			do_btnMostrarTodoClases_actionPerformed(e);
+		}
+		if (e.getSource() == btnModificarClase) {
+			do_btnModificarClase_actionPerformed(e);
+		}
+		if (e.getSource() == btnAnularVenta) {
+			do_btnAnularVenta_actionPerformed(e);
+		}
+		if (e.getSource() == btnModificar) {
+			do_btnModificar_actionPerformed(e);
+		}
 		if (e.getSource() == btnFiltrarGENERAL) {
 			do_btnFiltrarGENERAL_actionPerformed(e);
 		}
@@ -1554,38 +1610,48 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 
 		//--------------------------------------------------------------------------------------------------------
 		//Módulo Ventas-------------------------------------------------------------------------------------------
+		
 		public void listarVentas(String dniBuscar) {
-				DefaultTableModel modelo = new DefaultTableModel();
-				modelo.addColumn("CÓDIGO VENTA");
-				modelo.addColumn("FECHA");
-				modelo.addColumn("DNI ALUMNO");
-				modelo.addColumn("PLAN");
-				modelo.addColumn("MÉTODO DE PAGO");
-				modelo.addColumn("TOTAL PAGADO");
+		    DefaultTableModel modelo = new DefaultTableModel();
+		    modelo.addColumn("CÓDIGO");
+		    modelo.addColumn("FECHA");
+		    modelo.addColumn("DNI ALUMNO");
+		    modelo.addColumn("PLAN");
+		    modelo.addColumn("MÉTODO");
+		    modelo.addColumn("TOTAL PLAN");
+		    modelo.addColumn("SALDO PEND."); 
+		    modelo.addColumn("VENCIMIENTO"); 
+		    modelo.addColumn("ESTADO");      
 
-				try {
-					java.sql.Connection cn = utils.Conexion.conectar();
-					java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_VENTAS_SEDE(?,?)}");
-					csta.setString(1, dniBuscar);
-					csta.setInt(2, VentanaLogin.idSedeLogueada); 
-					
-					java.sql.ResultSet rs = csta.executeQuery();
-					while(rs.next()) {
-						Object[] fila = {
-							rs.getInt(1),     // codigo_venta
-							rs.getString(2),  // fecha_venta
-							rs.getString(3),  // dni (traído del JOIN)
-							rs.getString(4),  // nombre_plan (traído del JOIN)
-							rs.getString(5),  // metodo_pago
-							"S/. " + rs.getDouble(6) // total_pagado
-						};
-						modelo.addRow(fila);
-					}
-				} catch (Exception e) {
-					System.out.println("Error en Listar Ventas: " + e.getMessage());
-				}
-				tbTablaVentas.setModel(modelo); 
-			}
+		    try {
+		        java.sql.Connection cn = utils.Conexion.conectar();
+		        java.sql.CallableStatement csta = cn.prepareCall("{call SP_LISTAR_VENTAS_SEDE(?,?)}");
+		        csta.setString(1, dniBuscar);
+		        csta.setInt(2, VentanaLogin.idSedeLogueada); 
+		        
+		        java.sql.ResultSet rs = csta.executeQuery();
+		        while(rs.next()) {
+		            String fechaVenc = rs.getString(8); // Lee la fecha de vencimiento
+		            if(fechaVenc == null) fechaVenc = "-"; // Si está pagado (no hay fecha), pone un guión
+		            
+		            Object[] fila = {
+		                rs.getInt(1),     
+		                rs.getString(2),  
+		                rs.getString(3),  
+		                rs.getString(4),  
+		                rs.getString(5),  
+		                "S/. " + rs.getDouble(6),
+		                "S/. " + rs.getDouble(7), // Saldo Pendiente
+		                fechaVenc,                // Fecha Vencimiento
+		                rs.getString(9)           // Estado
+		            };
+		            modelo.addRow(fila);
+		        }
+		    } catch (Exception e) {
+		        System.out.println("Error en Listar Ventas: " + e.getMessage());
+		    }
+		    tbTablaVentas.setModel(modelo); 
+		}
 
 		protected void do_btnVenta_actionPerformed(ActionEvent e) {
 			moduloAlumnos.setVisible(false);
@@ -1595,22 +1661,15 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 
 		protected void do_btnBuscarDniVenta1_actionPerformed(ActionEvent e) {
-			String dni = txtBuscarDniVenta1.getText().trim();
-			if (dni.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar.");
-				return;
-			}
-			
-			arreglo.ArregloAlumno arrAlumno = new arreglo.ArregloAlumno();
-			java.util.ArrayList<clases.Alumno> lista = arrAlumno.ConsultarAlumno(dni);
-			
-			if (lista.size() > 0) {
-				
-				textField_7.setText(lista.get(0).getNom() + " " + lista.get(0).getApellidos());
-			} else {
-				JOptionPane.showMessageDialog(null, "Alumno no encontrado. Debe matricularlo primero.");
-				textField_7.setText("");
-			}
+		    String dni = txtBuscarDniVenta1.getText().trim();
+		    		   
+		    if (dni.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "Ingrese un DNI para buscar en la tabla.");
+		        listarVentas(""); 
+		        return;
+		    }
+		    
+		    listarVentas(dni);
 		}
 
 		protected void do_btnBuscarDniVenta2_actionPerformed(ActionEvent e) {
@@ -1634,66 +1693,112 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 
 		protected void do_btnProcesarVenta_actionPerformed(ActionEvent e) {
-			String dni = txtBuscarDniVenta2.getText().trim();
-			if (dni.isEmpty() || textField_7.getText().isEmpty()) {
-				JOptionPane.showMessageDialog(null, "Primero busque y seleccione un alumno válido.");
-				return;
+
+			    String dni = txtBuscarDniVenta2.getText().trim();
+			    if (dni.isEmpty() || textField_7.getText().isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Primero busque y seleccione un alumno válido.");
+			        return;
+			    }
+
+			    try {
+			        int idPlan = comboBox.getSelectedIndex() + 1; 
+			        String metodoPago = comboBox_1.getSelectedItem().toString();
+			        
+			        double total = textField_8.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_8.getText());
+			        if (total <= 0) {
+			            JOptionPane.showMessageDialog(null, "Seleccione un plan válido.");
+			            return;
+			        }
+
+			        double efectivo = 0.0;
+			        double digital = 0.0;
+
+			        if (metodoPago.equals("Mixto")) {
+			            efectivo = textField_10.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_10.getText());
+			            digital = textField_11.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_11.getText());
+			        } else if (metodoPago.equals("Efectivo")) {
+			            efectivo = textField_10.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_10.getText());
+			        } else { 
+			            digital = textField_11.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_11.getText());
+			        }
+
+			        double sumaPagada = efectivo + digital;
+			        double saldoPendiente = 0.0;
+			        String fechaVencimiento = null;
+			        String estado = "Cancelado";
+
+			        // LÓGICA 1: Si falta dinero (Generar Deuda)
+			        if (sumaPagada < total) {
+			            saldoPendiente = total - sumaPagada;
+			            int respuesta = JOptionPane.showConfirmDialog(null, 
+			                "Falta S/ " + String.format(java.util.Locale.US, "%.2f", saldoPendiente) + " para completar el pago. ¿Desea generar un saldo pendiente?", 
+			                "Aviso de Saldo", JOptionPane.YES_NO_OPTION);
+			            
+			            if (respuesta == JOptionPane.YES_OPTION) {
+			                
+			                // --- INICIO DEL CÓDIGO JCALENDAR ---
+			                com.toedter.calendar.JDateChooser dateChooser = new com.toedter.calendar.JDateChooser();
+			                dateChooser.setDateFormatString("yyyy-MM-dd"); // Formato exacto para MySQL
+			                
+			                Object[] mensaje = {
+			                    "Seleccione la fecha límite de pago en el calendario:", 
+			                    dateChooser
+			                };
+			                
+			                int opcion = JOptionPane.showConfirmDialog(null, mensaje, "Fecha de Vencimiento", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			                
+			                if (opcion == JOptionPane.OK_OPTION && dateChooser.getDate() != null) {
+			                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+			                    fechaVencimiento = sdf.format(dateChooser.getDate());
+			                    estado = "Pendiente";
+			                } else {
+			                    JOptionPane.showMessageDialog(null, "Operación cancelada. Debe seleccionar una fecha.");
+			                    return;
+			                }
+			                // --- FIN DEL CÓDIGO JCALENDAR ---
+			                
+			            } else {
+			                return; // Si dice que NO, se cancela el proceso para que siga editando las cajitas
+			            }
+			        } 
+			        // LÓGICA 2: Si sobra dinero (Dar Vuelto)
+			        else if (sumaPagada > total) {
+			            double vuelto = sumaPagada - total;
+			            JOptionPane.showMessageDialog(null, "Pago exitoso. Entregar vuelto de: S/ " + String.format(java.util.Locale.US, "%.2f", vuelto));
+			            
+			            // Ajustamos lo que se guarda en la BD para que cuadre exacto con el plan
+			            if (metodoPago.equals("Efectivo") || metodoPago.equals("Mixto")) {
+			                efectivo = efectivo - vuelto; 
+			            }
+			        }
+
+			        // Registrar en BD
+			        arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
+			        arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, saldoPendiente, fechaVencimiento, estado, VentanaLogin.idSedeLogueada, VentanaLogin.idUsuarioLogueado);				
+			        
+			        if (estado.equals("Cancelado")) {
+			            JOptionPane.showMessageDialog(null, "¡Venta registrada y cancelada con éxito!");
+			        } else {
+			            JOptionPane.showMessageDialog(null, "¡Venta registrada con Saldo Pendiente!");
+			        }
+			        
+			        // Limpiar cajas
+			        txtBuscarDniVenta2.setText("");
+			        textField_7.setText("");
+			        textField_8.setText("");
+			        textField_10.setText("");
+			        textField_11.setText("");
+			        comboBox.setSelectedIndex(0);
+			        comboBox_1.setSelectedIndex(0);
+			        
+			        listarVentas("");
+			        
+			    } catch (Exception ex) {
+			        JOptionPane.showMessageDialog(null, "Error: Revise los montos ingresados.");
+			    }
 			}
 
-			try {
-				int idPlan = comboBox.getSelectedIndex() + 1; 
-				String metodoPago = comboBox_1.getSelectedItem().toString();
-				
-				
-				double total = textField_8.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_8.getText());
-				if (total <= 0) {
-					JOptionPane.showMessageDialog(null, "Seleccione un plan válido.");
-					return;
-				}
 
-				double efectivo = 0.0;
-				double digital = 0.0;
-
-				if (metodoPago.equals("Mixto")) {
-					efectivo = textField_10.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_10.getText());
-					digital = textField_11.getText().isEmpty() ? 0.0 : Double.parseDouble(textField_11.getText());
-					
-					
-					if (Math.abs((efectivo + digital) - total) > 0.1) {
-						JOptionPane.showMessageDialog(null, "Error: En método Mixto, la suma exacta debe ser " + total);
-						return;
-					}
-				} else if (metodoPago.equals("Efectivo")) {
-					efectivo = total; 
-					digital = 0.0;
-				} else { 
-					
-					efectivo = 0.0;
-					digital = total; 
-				}
-
-			
-				arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
-				System.out.println("DEBUG: Estoy intentando registrar con la Sede ID: " + VentanaLogin.idSedeLogueada);
-				arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, VentanaLogin.idSedeLogueada, VentanaLogin.idUsuarioLogueado);				
-				JOptionPane.showMessageDialog(null, "¡Venta registrada con éxito en el sistema!");
-				
-			
-				txtBuscarDniVenta2.setText("");
-				textField_7.setText("");
-				textField_8.setText("");
-				textField_10.setText("");
-				textField_11.setText("");
-				comboBox.setSelectedIndex(0);
-				comboBox_1.setSelectedIndex(0);
-				
-				
-				listarVentas("");
-				
-			} catch (Exception ex) {
-				JOptionPane.showMessageDialog(null, "Error: Revise los montos ingresados.");
-			}
-		}
 
 		protected void do_btnMostrarTodoVentas_actionPerformed(ActionEvent e) {
 			listarVentas(""); 
@@ -1720,22 +1825,29 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 
 		protected void do_comboBox_1_actionPerformed(ActionEvent e) {
-			String metodo = comboBox_1.getSelectedItem().toString();
-			
-			if (metodo.equals("Mixto")) {
-				
-				textField_10.setEditable(true);
-				textField_11.setEditable(false); 
-				textField_10.setText("");
-				textField_11.setText("");
-				textField_10.requestFocus(); 
-			} else {
-				
-				textField_10.setEditable(false);
-				textField_11.setEditable(false);
-				textField_10.setText("");
-				textField_11.setText("");
-			}
+		    String metodo = comboBox_1.getSelectedItem().toString();
+		    
+		    if (metodo.equals("Mixto")) {
+		        textField_10.setEditable(true);
+		        textField_11.setEditable(true); 
+		        textField_10.setText("");
+		        textField_11.setText("");
+		        textField_10.requestFocus(); 
+		        
+		    } else if (metodo.equals("Efectivo")) {
+		        textField_10.setEditable(true);
+		        textField_11.setEditable(false);
+		        textField_10.setText("");
+		        textField_11.setText("");
+		        textField_10.requestFocus();
+		        
+		    } else {
+		        textField_10.setEditable(false);
+		        textField_11.setEditable(true);
+		        textField_10.setText("");
+		        textField_11.setText("");
+		        textField_11.requestFocus();
+		    }
 		}
 
 		protected void do_textField_10_keyReleased(KeyEvent e) {
@@ -1986,5 +2098,100 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 		public void keyTyped(KeyEvent e) {
 		}
+	protected void do_btnModificar_actionPerformed(ActionEvent e) {
+	}
+	protected void do_btnAnularVenta_actionPerformed(ActionEvent e) {
+	    int fila = tbTablaVentas.getSelectedRow();    
+	    if (fila == -1) {
+	        JOptionPane.showMessageDialog(null, "Primero debe seleccionar la venta que desea anular de la tabla.");
+	        return;
+	    }
+	    
+	    String estadoActual = tbTablaVentas.getValueAt(fila, 8).toString();
+	    if (estadoActual.equals("Anulado")) {
+	        JOptionPane.showMessageDialog(null, "Esta venta ya se encuentra anulada en el sistema.");
+	        return;
+	    }
+	    
+	    int primeraConfirmacion = JOptionPane.showConfirmDialog(null, 
+	            "¿Está completamente seguro de que desea ANULAR esta venta?\nEsta acción dejará los montos de la transacción en S/. 0.00.", 
+	            "Confirmación de Anulación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);	
+	    
+	    if (primeraConfirmacion == JOptionPane.YES_OPTION) {
+	        int segundaConfirmacion = JOptionPane.showConfirmDialog(null, 
+	                "¡ALTO! Al confirmar, la venta cambiará permanentemente a estado 'Anulado'.\n¿Desea proceder?", 
+	                "Última Advertencia", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+	        
+	        if (segundaConfirmacion == JOptionPane.YES_OPTION) {
+	            int codigoVenta = Integer.parseInt(tbTablaVentas.getValueAt(fila, 0).toString());
+	            arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
+	            arrVenta.AnularVenta(codigoVenta);	            
+	            JOptionPane.showMessageDialog(null, "¡La venta ha sido anulada exitosamente!\nPor favor, proceda a generar la nueva transacción corregida si es necesario.");	          
+	            listarVentas(""); 
+	        }
+	    }
+	}
+	
+	protected void do_btnModificarClase_actionPerformed(ActionEvent e) {
+	}
+	protected void do_btnMostrarTodoClases_actionPerformed(ActionEvent e) {
+	}
+	protected void do_btnBuscarClase_actionPerformed(ActionEvent e) {
+	}
+	protected void do_btnSaldarDeuda_actionPerformed(ActionEvent e) {
+	    int fila = tbTablaVentas.getSelectedRow();
+	    if (fila == -1) {
+	        JOptionPane.showMessageDialog(null, "Primero seleccione una venta de la tabla.");
+	        return;
+	    }
+	    String estado = tbTablaVentas.getValueAt(fila, 8).toString();	    
+	    if (estado.equals("Cancelado")) {
+	        JOptionPane.showMessageDialog(null, "Esta venta ya se encuentra pagada en su totalidad.");
+	        return;
+	    }	    
+	    String saldoStr = tbTablaVentas.getValueAt(fila, 6).toString().replace("S/. ", "");
+	    double saldo = Double.parseDouble(saldoStr);	    
+	    String[] opciones = {"Efectivo", "Digital (Yape/Tarjeta)", "Mixto"};
+	    int seleccion = JOptionPane.showOptionDialog(null, 
+	            "El alumno debe saldar: S/. " + saldo + "\n¿Con qué método está pagando esta deuda?", 
+	            "Saldar Deuda", 
+	            JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);	           
+	    double pagoEfectivo = 0.0;
+	    double pagoDigital = 0.0;	    
+	    if (seleccion == 0) {
+	        pagoEfectivo = saldo; 
+	    } else if (seleccion == 1) {
+	        pagoDigital = saldo;
+	    } else if (seleccion == 2) {	 
+	        String montoEf = JOptionPane.showInputDialog("Ingrese el monto que está entregando en EFECTIVO:");
+	        if (montoEf == null || montoEf.trim().isEmpty()) return; 	        
+	        try {
+	            pagoEfectivo = Double.parseDouble(montoEf);
+	            pagoDigital = saldo - pagoEfectivo;
+	            
+	            if (pagoDigital < 0) {
+	                 JOptionPane.showMessageDialog(null, "Error: El monto en efectivo ingresado supera la deuda.");
+	                 return;
+	            }
+	            JOptionPane.showMessageDialog(null, "El monto digital restante a cobrar es: S/. " + String.format(java.util.Locale.US, "%.2f", pagoDigital));
+	        } catch (Exception ex) {
+	            JOptionPane.showMessageDialog(null, "Monto inválido.");
+	            return;
+	        }
+	    } else {
+	        return; 
+	    }
+	    int codigoVenta = Integer.parseInt(tbTablaVentas.getValueAt(fila, 0).toString());
+	    arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
+	    arrVenta.SaldarDeuda(codigoVenta, pagoEfectivo, pagoDigital);	    
+	    JOptionPane.showMessageDialog(null, "¡Deuda saldada e ingresos actualizados correctamente!");
+	    listarVentas(""); 
+	}
+	protected void do_btnLimpiarVentas_actionPerformed(ActionEvent e) {
+		txtBuscarDniVenta2.setText("");
+		textField_7.setText("");
+		textField_8.setText("");
+		textField_10.setText("");
+	}
 	}
 

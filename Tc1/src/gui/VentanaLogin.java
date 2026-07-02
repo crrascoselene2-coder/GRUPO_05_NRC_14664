@@ -134,7 +134,7 @@ public class VentanaLogin extends JFrame implements ActionListener {
 		    	} else {
 		    	    idSedeLogueada = sedeDB; 
 		    	}
-		        JOptionPane.showMessageDialog(null, "¡Bienvenid@ " + nombre + "!\nHas ingresado como: " + rol);
+		        JOptionPane.showMessageDialog(null, "¡Bienvenid@ " + nombre + "!\nIngresaste como: " + rol);
 		        MenuPrincipal menu = new MenuPrincipal();
 		        menu.setVisible(true);
 		        this.dispose();
