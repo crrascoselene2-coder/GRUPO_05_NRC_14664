@@ -190,6 +190,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	 * Launch the application.
 	 */
 	int idClaseSeleccionada = -1; // -1 significa que no hay nada seleccionado
+	int codigoAlumnoSeleccionado = -1;
 	private JDateChooser FechaAlumno;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -1223,7 +1224,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  			moduloVentas.add(btnLimpiarVentas);
  		}
  			comboBox_arteMarcial.setModel(new DefaultComboBoxModel(new String[] {"Boxeo", "Muay Thai", "MMA", "Lucha Olímpica", "Luta Livre"}));
- 			comboBox_profesor.setModel(new DefaultComboBoxModel(new String[] {"Danny", "Jordan", "William"}));
+ 			comboBox_profesor.setModel(new DefaultComboBoxModel(new String[] {"Danny", "Jordan", "William", "José", "Marcos", "Juan", "Katty", "Paco", "Diego", "Enzo"}));
  			comboBox_turno.setModel(new DefaultComboBoxModel(new String[] {"Mañana", "Tarde", "Noche"}));
  			{
  				BFecha_Clases = new JDateChooser();
@@ -1524,24 +1525,73 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			    JOptionPane.showMessageDialog(null, "Ocurrió un error al guardar: " + ex.getMessage());
 			}
 		}
+		protected void do_btnModificar_actionPerformed(ActionEvent e) {
+			// 1. Validar que hayan tocado la tabla
+		    if (codigoAlumnoSeleccionado == -1) {
+		        JOptionPane.showMessageDialog(null, "Por favor, selecciona un alumno de la tabla primero.");
+		        return;
+		    }
 
+		    String dni = txtDniAlumno.getText().trim();
+		    String nombres = txtNombresAlumno.getText().trim();
+		    String apellidos = txtApellidosAlumno.getText().trim();
+		    String celular = txtCelularAlumno.getText().trim();
+
+		    // 2. Validamos que no haya campos vacíos
+		    if (dni.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || FechaAlumno.getDate() == null) {
+		        JOptionPane.showMessageDialog(null, "Por favor, no deje campos obligatorios vacíos.");
+		        return;
+		    }
+
+		    // 3. Formateamos la fecha del JDateChooser para MySQL
+		    java.text.SimpleDateFormat formatoBD = new java.text.SimpleDateFormat("yyyy-MM-dd");
+		    String fechaParaMySQL = formatoBD.format(FechaAlumno.getDate());
+
+		    // 4. Enviamos todo a MySQL
+		    try {
+		        java.sql.Connection cn = utils.Conexion.conectar();
+		        java.sql.CallableStatement csta = cn.prepareCall("{call SP_MODIFICAR_ALUMNO(?,?,?,?,?,?)}");
+		        
+		        csta.setInt(1, codigoAlumnoSeleccionado);
+		        csta.setString(2, dni);
+		        csta.setString(3, nombres);
+		        csta.setString(4, apellidos);
+		        csta.setString(5, celular);
+		        csta.setString(6, fechaParaMySQL);
+
+		        csta.executeUpdate();
+
+		        JOptionPane.showMessageDialog(null, "¡Datos del alumno modificados con éxito!");
+		        
+		        // Limpiamos y refrescamos
+		        codigoAlumnoSeleccionado = -1; // Reseteamos la selección
+		        LimpiarAlumnos();
+		        Listar(""); 
+		        
+		    } catch (Exception ex) {
+		        JOptionPane.showMessageDialog(null, "Error al modificar: " + ex.getMessage());
+		    }
+		}
 		protected void do_tbTabla_mouseClicked(MouseEvent e) {
 			int fila = tbTabla.getSelectedRow();
-			
 			if (fila >= 0) {
-				
-				txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
-				txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
-				txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 3)));
-				txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
-				try {
-				    String fechaTabla = String.valueOf(tbTabla.getValueAt(fila, 5));
-				    java.util.Date fechaParsed = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(fechaTabla);
-				    FechaAlumno.setDate(fechaParsed);
-				} catch (Exception ex) {
-				    FechaAlumno.setDate(null);
-				}		
-			
+				// 1. GUARDAMOS EL CÓDIGO DEL ALUMNO (¡ESTA ES LA LÍNEA NUEVA!)
+		        codigoAlumnoSeleccionado = Integer.parseInt(String.valueOf(tbTabla.getValueAt(fila, 0)));
+		        
+		        // 2. Llenamos los txt (Esto ya lo tenías)
+		        txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
+		        txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
+		        txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 3)));
+		        txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
+		        
+		        // 3. Llenamos el JDateChooser (Lo que hicimos en el paso anterior)
+		        try {
+		            String fechaTabla = String.valueOf(tbTabla.getValueAt(fila, 5));
+		            java.util.Date fechaParsed = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(fechaTabla);
+		            FechaAlumno.setDate(fechaParsed);
+		        } catch (Exception ex) {
+		            FechaAlumno.setDate(null);
+		        }
 				if (e.getClickCount() == 2) {
 					
 					int codigoAlumno = Integer.parseInt(String.valueOf(tbTabla.getValueAt(fila, 0)));
@@ -1550,7 +1600,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					mostrarApoderado(codigoAlumno, nombreAlumno);
 				}
 			}
-		}
+		  }
 
 		//---------------------------------------------------------------------------------------------------------
 		//Módulo Clases-------------------------------------------------------------------------------------------
@@ -2258,8 +2308,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				do_txtNombresAlumno_keyTyped(e);
 			}
 		}
-	protected void do_btnModificar_actionPerformed(ActionEvent e) {
-	}
+
 	protected void do_btnAnularVenta_actionPerformed(ActionEvent e) {
 	    int fila = tbTablaVentas.getSelectedRow();    
 	    if (fila == -1) {
@@ -2368,6 +2417,10 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		if(Character.isLetter(validarNumero)) {
 			e.consume();
 			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+			if (txtDniAlumno.getText().length() >= 8) {
+		        e.consume();
+		        JOptionPane.showMessageDialog(this, "El DNI como máximo se ingresan 8 dígitos");
+		    }
 		}
 	}
 	protected void do_txtCelularAlumno_keyTyped(KeyEvent e) {
@@ -2376,6 +2429,10 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			e.consume();
 			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
 		}
+		if (txtCelularApoderado.getText().length() >= 9) {
+	        e.consume();
+	        JOptionPane.showMessageDialog(this, "El teléfono como máximo se ingresan 9 dígitos");
+	    }
 	}
 	protected void do_txtDniApoderado_keyTyped(KeyEvent e) {
 		char validarNumero=e.getKeyChar();
@@ -2383,6 +2440,10 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			e.consume();
 			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
 		}
+		if (txtDniApoderado.getText().length() >= 8) {
+	        e.consume();
+	        JOptionPane.showMessageDialog(this, "El DNI como máximo se ingresan 8 dígitos");
+	    }
 	}
 	protected void do_txtNombresApoderado_keyTyped(KeyEvent e) {
 		char validarNumero=e.getKeyChar();
@@ -2404,6 +2465,10 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			e.consume();
 			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
 		}
+		if (txtCelularApoderado.getText().length() >= 9) {
+	        e.consume();
+	        JOptionPane.showMessageDialog(this, "El teléfono como máximo se ingresan 9 dígitos");
+	    }
 	}
 	protected void do_txtBuscarDniAlumno_keyTyped(KeyEvent e) {
 		char validarNumero=e.getKeyChar();
