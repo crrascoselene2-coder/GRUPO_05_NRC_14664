@@ -39,6 +39,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.ImageIcon;
 
 public class MenuPrincipal extends JFrame implements ActionListener, MouseListener, KeyListener {
 
@@ -81,7 +82,6 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	private JTextField txtNombresApoderado;
 	private JTextField txtApellidosApoderado;
 	private JTextField txtCelularApoderado;
-	private JTextField txtParentescoApoderado;
 	private JButton btnMatricular;
 	private JButton btnModificar;
 	private JButton btnLimpiar;
@@ -193,6 +193,29 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	int codigoAlumnoSeleccionado = -1;
 	private JDateChooser FechaAlumno;
 	private JPanel moduloProgramadores;
+	private JPanel panel_9;
+	private JLabel lblNewLabel_17;
+	private JLabel lblNewLabel_18;
+	private JLabel lblNewLabel_19;
+	private JLabel lblNewLabel_20;
+	private JLabel lblNewLabel_21;
+	private JLabel lblNewLabel_22;
+	private JLabel lblNewLabel_23;
+	private JLabel lblNewLabel_24;
+	private JLabel lblNewLabel_25;
+	private JLabel lblNewLabel_26;
+	private JLabel lblNewLabel_27;
+	private JLabel lblNewLabel_28;
+	private JLabel lblNewLabel_29;
+	private JLabel lblNewLabel_30;
+	private JLabel lblNewLabel_31;
+	private JLabel lblNewLabel_32;
+	private JLabel lblNewLabel_33;
+	private JLabel lblNewLabel_34;
+	private JLabel lblNewLabel_35;
+	private JLabel lblNewLabel_36;
+	private JLabel lblNewLabel_37;
+	private JTextField txtParentescoApoderado;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -442,9 +465,10 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						txtParentescoApoderado = new JTextField();
-						txtParentescoApoderado.setBounds(152, 215, 377, 24);
-						panel_3.add(txtParentescoApoderado);
+						txtParentescoApoderado.addKeyListener(this);
 						txtParentescoApoderado.setColumns(10);
+						txtParentescoApoderado.setBounds(147, 215, 382, 24);
+						panel_3.add(txtParentescoApoderado);
 					}
 				}
 				{
@@ -474,6 +498,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						txtBuscarDniVenta2 = new JTextField();
+						txtBuscarDniVenta2.addKeyListener(this);
 						txtBuscarDniVenta2.setColumns(10);
 						txtBuscarDniVenta2.setBounds(127, 59, 164, 20);
 						panel_1.add(txtBuscarDniVenta2);
@@ -560,6 +585,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						textField_11 = new JTextField();
+						textField_11.addKeyListener(this);
 						textField_11.setColumns(10);
 						textField_11.setBounds(916, 153, 164, 20);
 						panel_1.add(textField_11);
@@ -616,6 +642,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				}
 				{
 					txtBuscarDniVenta1 = new JTextField();
+					txtBuscarDniVenta1.addKeyListener(this);
 					txtBuscarDniVenta1.setColumns(10);
 					txtBuscarDniVenta1.setBounds(133, 61, 324, 20);
 					moduloVentas.add(txtBuscarDniVenta1);
@@ -713,6 +740,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					}
 					{
 						txtNdeAlumnos = new JTextField();
+						txtNdeAlumnos.addKeyListener(this);
 						txtNdeAlumnos.setBounds(158, 204, 120, 20);
 						panel_4.add(txtNdeAlumnos);
 						txtNdeAlumnos.setColumns(10);
@@ -1186,6 +1214,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			}
 			{
 				btnProgramadores = new JButton("PROGRAMADORES");
+				btnProgramadores.addActionListener(this);
 				btnProgramadores.setFont(new Font("SansSerif", Font.BOLD, 15));
 				btnProgramadores.setBackground(new Color(112, 128, 144));
 				btnProgramadores.setBounds(23, 460, 182, 81);
@@ -1242,6 +1271,139 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  				moduloProgramadores = new JPanel();
  				panelCentral.add(moduloProgramadores, "name_4645653087400");
  				moduloProgramadores.setLayout(null);
+ 				{
+ 					panel_9 = new JPanel();
+ 					panel_9.setBackground(Color.WHITE);
+ 					panel_9.setBounds(0, 0, 1152, 674);
+ 					moduloProgramadores.add(panel_9);
+ 					panel_9.setLayout(null);
+ 					{
+ 						lblNewLabel_17 = new JLabel("New label");
+ 						lblNewLabel_17.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/imagenes/ashley4.png")));
+ 						lblNewLabel_17.setBounds(123, 133, 92, 124);
+ 						panel_9.add(lblNewLabel_17);
+ 					}
+ 					{
+ 						lblNewLabel_18 = new JLabel("New label");
+ 						lblNewLabel_18.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/imagenes/gabriel2.png")));
+ 						lblNewLabel_18.setBounds(585, 137, 92, 116);
+ 						panel_9.add(lblNewLabel_18);
+ 					}
+ 					{
+ 						lblNewLabel_19 = new JLabel("New label");
+ 						lblNewLabel_19.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/imagenes/miguel1.png")));
+ 						lblNewLabel_19.setBounds(585, 285, 92, 124);
+ 						panel_9.add(lblNewLabel_19);
+ 					}
+ 					{
+ 						lblNewLabel_20 = new JLabel("New label");
+ 						lblNewLabel_20.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/imagenes/selene3.png")));
+ 						lblNewLabel_20.setBounds(123, 281, 92, 132);
+ 						panel_9.add(lblNewLabel_20);
+ 					}
+ 					{
+ 						lblNewLabel_21 = new JLabel("PROGRAMADORES");
+ 						lblNewLabel_21.setFont(new Font("Verdana", Font.BOLD, 40));
+ 						lblNewLabel_21.setBounds(123, 62, 428, 71);
+ 						panel_9.add(lblNewLabel_21);
+ 					}
+ 					{
+ 						lblNewLabel_22 = new JLabel("Ashley Carim Pisfil Ballesteros");
+ 						lblNewLabel_22.setFont(new Font("Verdana", Font.BOLD, 15));
+ 						lblNewLabel_22.setBounds(239, 154, 367, 26);
+ 						panel_9.add(lblNewLabel_22);
+ 					}
+ 					{
+ 						lblNewLabel_23 = new JLabel("N00427750@upn.pe");
+ 						lblNewLabel_23.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_23.setBounds(239, 191, 367, 26);
+ 						panel_9.add(lblNewLabel_23);
+ 					}
+ 					{
+ 						lblNewLabel_24 = new JLabel("ashepisfil@gmail.com");
+ 						lblNewLabel_24.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_24.setBounds(239, 210, 367, 26);
+ 						panel_9.add(lblNewLabel_24);
+ 					}
+ 					{
+ 						lblNewLabel_25 = new JLabel("Selene Jacqueline Carrasco Hernández");
+ 						lblNewLabel_25.setFont(new Font("Verdana", Font.BOLD, 15));
+ 						lblNewLabel_25.setBounds(239, 316, 367, 26);
+ 						panel_9.add(lblNewLabel_25);
+ 					}
+ 					{
+ 						lblNewLabel_26 = new JLabel("N00420472@upn.pe");
+ 						lblNewLabel_26.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_26.setBounds(239, 348, 367, 26);
+ 						panel_9.add(lblNewLabel_26);
+ 					}
+ 					{
+ 						lblNewLabel_27 = new JLabel("Selenechern@gmail.com");
+ 						lblNewLabel_27.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_27.setBounds(239, 371, 367, 26);
+ 						panel_9.add(lblNewLabel_27);
+ 					}
+ 					{
+ 						lblNewLabel_28 = new JLabel("Gabriel Enrique Villarreal Samame");
+ 						lblNewLabel_28.setFont(new Font("Verdana", Font.BOLD, 15));
+ 						lblNewLabel_28.setBounds(704, 154, 367, 26);
+ 						panel_9.add(lblNewLabel_28);
+ 					}
+ 					{
+ 						lblNewLabel_29 = new JLabel("N00427750@upn.pe");
+ 						lblNewLabel_29.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_29.setBounds(704, 191, 367, 26);
+ 						panel_9.add(lblNewLabel_29);
+ 					}
+ 					{
+ 						lblNewLabel_30 = new JLabel("ashepisfil@gmail.com");
+ 						lblNewLabel_30.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_30.setBounds(704, 210, 367, 26);
+ 						panel_9.add(lblNewLabel_30);
+ 					}
+ 					{
+ 						lblNewLabel_31 = new JLabel("Miguel Zaid Cruz Moran");
+ 						lblNewLabel_31.setFont(new Font("Verdana", Font.BOLD, 15));
+ 						lblNewLabel_31.setBounds(704, 316, 367, 26);
+ 						panel_9.add(lblNewLabel_31);
+ 					}
+ 					{
+ 						lblNewLabel_32 = new JLabel("N00444459@upn.pe");
+ 						lblNewLabel_32.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_32.setBounds(704, 348, 367, 26);
+ 						panel_9.add(lblNewLabel_32);
+ 					}
+ 					{
+ 						lblNewLabel_33 = new JLabel("miguelzaid2018@gmail.com");
+ 						lblNewLabel_33.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_33.setBounds(704, 371, 367, 26);
+ 						panel_9.add(lblNewLabel_33);
+ 					}
+ 					{
+ 						lblNewLabel_34 = new JLabel("Ashley Samantha Fierro Moscoso");
+ 						lblNewLabel_34.setFont(new Font("Verdana", Font.BOLD, 15));
+ 						lblNewLabel_34.setBounds(239, 478, 367, 26);
+ 						panel_9.add(lblNewLabel_34);
+ 					}
+ 					{
+ 						lblNewLabel_35 = new JLabel("N00415389@upn.pe");
+ 						lblNewLabel_35.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_35.setBounds(239, 515, 367, 26);
+ 						panel_9.add(lblNewLabel_35);
+ 					}
+ 					{
+ 						lblNewLabel_36 = new JLabel("ashleyfierro1@gmail.com");
+ 						lblNewLabel_36.setFont(new Font("Verdana", Font.PLAIN, 15));
+ 						lblNewLabel_36.setBounds(239, 539, 367, 26);
+ 						panel_9.add(lblNewLabel_36);
+ 					}
+ 					{
+ 						lblNewLabel_37 = new JLabel("New label");
+ 						lblNewLabel_37.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/imagenes/samantha5.png")));
+ 						lblNewLabel_37.setBounds(123, 460, 92, 116);
+ 						panel_9.add(lblNewLabel_37);
+ 					}
+ 				}
  			}
  		// =========================================================
  			// --- RESTRICCIONES DE SEGURIDAD SEGÚN EL ROL (NUEVO) ---
@@ -1258,6 +1420,9 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  			}
 	}
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnProgramadores) {
+			do_btnProgramadores_actionPerformed(e);
+		}
 		if (e.getSource() == btnLimpiarVentas) {
 			do_btnLimpiarVentas_actionPerformed(e);
 		}
@@ -1350,7 +1515,13 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		//--------------------------------------------------------------------------------------------------------
 		//Módulo Alumnos------------------------------------------------------------------------------------------
 		public void Listar(String nom) {
-			DefaultTableModel modelo = new DefaultTableModel();
+			
+			DefaultTableModel modelo = new DefaultTableModel() {
+			    @Override
+			    public boolean isCellEditable(int row, int column) {
+			        return false; 
+			    }
+			};
 			modelo.addColumn("Código");
 			modelo.addColumn("DNI");
 			modelo.addColumn("Nombres");
@@ -1609,7 +1780,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		public void ListarClases(String fecha, int idSedeFiltro) {
 		    
 			// 1. Creamos las 7 columnas directamente desde el código
-		    DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel() {
+			    @Override
+			    public boolean isCellEditable(int row, int column) {
+			        return false; 
+			    }
+			};   
 		    modelo.addColumn("ID");             // Columna 0 (Se ocultará)
 		    modelo.addColumn("FECHA");          // Columna 1
 		    modelo.addColumn("ARTE MARCIAL");   // Columna 2
@@ -1792,7 +1968,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		//Módulo Ventas-------------------------------------------------------------------------------------------
 		
 		public void listarVentas(String dniBuscar) {
-		    DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel() {
+			    @Override
+			    public boolean isCellEditable(int row, int column) {
+			        return false; 
+			    }
+			};
 		    modelo.addColumn("CÓDIGO");
 		    modelo.addColumn("FECHA");
 		    modelo.addColumn("DNI ALUMNO");
@@ -2059,7 +2240,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		//--------------------------------------------------------------------------------------------------------
 		//Módulo Reporte------------------------------------------------------------------------------------------
 		public void ListarProfesores(String mesFiltro, String profesorFiltro) {
-			DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel() {
+			    @Override
+			    public boolean isCellEditable(int row, int column) {
+			        return false; 
+			    }
+			};
 			ArregloProfesor acce = new ArregloProfesor();
 			
 			ArrayList<ReporteProfesor> lista = acce.ListarTodosProfesores();
@@ -2114,7 +2300,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 
 		public void ListarReporteAsesores(String mesFiltro, String asesorFiltro) {
-			DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel() {
+			    @Override
+			    public boolean isCellEditable(int row, int column) {
+			        return false; 
+			    }
+			};
 			modelo.addColumn("MES");
 			modelo.addColumn("SEDE");
 			modelo.addColumn("ASESOR");
@@ -2161,7 +2352,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 
 		public void ListarReporteGeneral(String mesFiltro, String sedeFiltro) {
-			DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel() {
+			    @Override
+			    public boolean isCellEditable(int row, int column) {
+			        return false; 
+			    }
+			};
 			modelo.addColumn("MES");
 			modelo.addColumn("SEDE");
 			modelo.addColumn("ASESOR DESTACADO");
@@ -2290,6 +2486,21 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			}
 		}
 		public void keyTyped(KeyEvent e) {
+			if (e.getSource() == txtNdeAlumnos) {
+				do_txtNdeAlumnos_keyTyped(e);
+			}
+			if (e.getSource() == textField_11) {
+				do_textField_11_keyTyped(e);
+			}
+			if (e.getSource() == txtBuscarDniVenta2) {
+				do_txtBuscarDniVenta2_keyTyped(e);
+			}
+			if (e.getSource() == txtBuscarDniVenta1) {
+				do_txtBuscarDniVenta1_keyTyped(e);
+			}
+			if (e.getSource() == txtParentescoApoderado) {
+				do_txtParentescoApoderado_keyTyped(e);
+			}
 			if (e.getSource() == txtBuscarDniAlumno) {
 				do_txtBuscarDniAlumno_keyTyped(e);
 			}
@@ -2317,6 +2528,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			if (e.getSource() == txtNombresAlumno) {
 				do_txtNombresAlumno_keyTyped(e);
 			}
+			
 		}
 
 	protected void do_btnAnularVenta_actionPerformed(ActionEvent e) {
@@ -2427,23 +2639,27 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		if(Character.isLetter(validarNumero)) {
 			e.consume();
 			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+		}
 			if (txtDniAlumno.getText().length() >= 8) {
 		        e.consume();
 		        JOptionPane.showMessageDialog(this, "El DNI como máximo se ingresan 8 dígitos");
 		    }
-		}
+		
 	}
 	protected void do_txtCelularAlumno_keyTyped(KeyEvent e) {
-		char validarNumero=e.getKeyChar();
-		if(Character.isLetter(validarNumero)) {
-			e.consume();
-			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+		
+			char validarNumero=e.getKeyChar();
+			if(Character.isLetter(validarNumero)) {
+				e.consume();
+				JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+			}
+			if (txtCelularAlumno.getText().length() >= 9) {
+		        e.consume();
+		        JOptionPane.showMessageDialog(this, "El teléfono como máximo se ingresan 9 dígitos");
+		    }
 		}
-		if (txtCelularApoderado.getText().length() >= 9) {
-	        e.consume();
-	        JOptionPane.showMessageDialog(this, "El teléfono como máximo se ingresan 9 dígitos");
-	    }
-	}
+		
+	
 	protected void do_txtDniApoderado_keyTyped(KeyEvent e) {
 		char validarNumero=e.getKeyChar();
 		if(Character.isLetter(validarNumero)) {
@@ -2491,5 +2707,55 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	        JOptionPane.showMessageDialog(this, "El DNI como máximo se ingresan 8 dígitos");
 	    }
 	}
+	protected void do_btnProgramadores_actionPerformed(ActionEvent e) {
+		moduloAlumnos.setVisible(false);
+		moduloClases.setVisible(false);
+		moduloReporte.setVisible(false);
+		moduloVentas.setVisible(false);
+		moduloProgramadores.setVisible(true);
 	}
+	protected void do_txtParentescoApoderado_keyTyped(KeyEvent e) {
+		char validarNumero=e.getKeyChar();
+		if(Character.isDigit(validarNumero)) {
+			e.consume();
+			JOptionPane.showMessageDialog(this, "Solamente se ingresa letras");
+	}
+	}
+	protected void do_txtBuscarDniVenta1_keyTyped(KeyEvent e) {
+		char validarNumero=e.getKeyChar();
+		if(Character.isLetter(validarNumero)) {
+			e.consume();
+			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+		}
+		if (txtBuscarDniVenta1.getText().length() >= 8) {
+	        e.consume();
+	        JOptionPane.showMessageDialog(this, "El DNI como máximo se ingresan 8 dígitos");
+	    }
+	}
+	protected void do_txtBuscarDniVenta2_keyTyped(KeyEvent e) {
+		char validarNumero=e.getKeyChar();
+		if(Character.isLetter(validarNumero)) {
+			e.consume();
+			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+		}
+		if (txtBuscarDniVenta2.getText().length() >= 8) {
+	        e.consume();
+	        JOptionPane.showMessageDialog(this, "El DNI como máximo se ingresan 8 dígitos");
+	    }
+	}
+	protected void do_textField_11_keyTyped(KeyEvent e) {
+		char validarNumero=e.getKeyChar();
+		if(Character.isLetter(validarNumero)) {
+			e.consume();
+			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+		}
+	}
+	protected void do_txtNdeAlumnos_keyTyped(KeyEvent e) {
+		char validarNumero=e.getKeyChar();
+		if(Character.isLetter(validarNumero)) {
+			e.consume();
+			JOptionPane.showMessageDialog(this, "Solamente se ingresa números");
+		}
+	}
+}
 

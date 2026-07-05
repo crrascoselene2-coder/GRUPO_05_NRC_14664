@@ -97,7 +97,6 @@ public class VentanaLogin extends JFrame implements ActionListener {
 		}
 	}
 	protected void do_btnInicioSesion_actionPerformed(ActionEvent e) {
-<<<<<<< HEAD
 	    
 	    String usuario = txtUsuario.getText();
 	    String clave = new String(txtContrasena.getPassword());
@@ -164,49 +163,8 @@ public class VentanaLogin extends JFrame implements ActionListener {
 	        
 	    } catch (Exception e1) {
 	        JOptionPane.showMessageDialog(null, "Error del sistema: " + e1.getMessage());
-	    }	
-=======
-		String usuario = txtUsuario.getText();
-		String clave = new String(txtContrasena.getPassword());
-		if (usuario.isEmpty() || clave.isEmpty()) {
-		    JOptionPane.showMessageDialog(null, "Por favor, ingresa tu usuario y contraseña.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
-		    return;
-		}
-		try {
-		    Connection cn = Conexion.conectar();
-		    String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
-		    PreparedStatement pst = cn.prepareStatement(sql);
-		    pst.setString(1, usuario);
-		    pst.setString(2, clave);
-		    ResultSet rs = pst.executeQuery();
-		    if (rs.next()) {
-		        
-		    	String rol = rs.getString("rol");
-		    	String nombre = rs.getString("nombres");
-		    	int sedeDB = rs.getInt("id_sede");
-		    	int idUsuarioDB = rs.getInt("id_usuario"); // <-- CAPTURAMOS EL ID DEL USUARIO
-		    	rolUsuario = rol; 
-		    	VentanaLogin.idUsuarioLogueado = idUsuarioDB; // <-- LO GUARDAMOS EN LA VARIABLE GLOBAL
-		    	if (rol.equals("Jefa")) {
-		    	    idSedeLogueada = 0; 
-		    	} else {
-		    	    idSedeLogueada = sedeDB; 
-		    	}
-		        JOptionPane.showMessageDialog(null, "¡Bienvenid@ " + nombre + "!\nIngresaste como: " + rol);
-		        MenuPrincipal menu = new MenuPrincipal();
-		        menu.setVisible(true);
-		        this.dispose();
-		    } else {
-		        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
-		    }
-		    
-		    cn.close();
-		    
-		} catch (Exception e1) {
-		    JOptionPane.showMessageDialog(null, "Error del sistema: " + e1.getMessage());
-		}
-		
-		
->>>>>>> 9d1aa6fbef41a7921b1bac4d3201c863d83ff8d0
+	    }
 	}
+	
 }
+
