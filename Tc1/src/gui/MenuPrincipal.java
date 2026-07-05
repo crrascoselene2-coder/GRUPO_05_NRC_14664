@@ -192,6 +192,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 	int idClaseSeleccionada = -1; // -1 significa que no hay nada seleccionado
 	int codigoAlumnoSeleccionado = -1;
 	private JDateChooser FechaAlumno;
+	private JPanel moduloProgramadores;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -1237,6 +1238,11 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  			comboBox_asesorAsesor.setModel(new DefaultComboBoxModel(new String[] {"Axel", "Fabio", "Jimena", "Kiara"}));
  			comboBox_mesProfesor.setModel(new DefaultComboBoxModel(new String[] {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"}));
  			comboBox_profesorReporte.setModel(new DefaultComboBoxModel(new String[] {"Danny Rosales", "Jordan", "William" , "José" , "Marcos","Juan","Katty","Paco","Diego","Enzo"}));
+ 			{
+ 				moduloProgramadores = new JPanel();
+ 				panelCentral.add(moduloProgramadores, "name_4645653087400");
+ 				moduloProgramadores.setLayout(null);
+ 			}
  		// =========================================================
  			// --- RESTRICCIONES DE SEGURIDAD SEGÚN EL ROL (NUEVO) ---
  			// =========================================================

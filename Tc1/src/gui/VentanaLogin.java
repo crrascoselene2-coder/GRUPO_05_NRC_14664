@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class VentanaLogin extends JFrame implements ActionListener {
+	int intentos = 0;
 	public static int idSedeLogueada = 0; 
 	public static String rolUsuario = "";
 	public static int idUsuarioLogueado;
@@ -51,6 +52,7 @@ public class VentanaLogin extends JFrame implements ActionListener {
 	 * Create the frame.
 	 */
 	public VentanaLogin() {
+	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 439, 279);
 		contentPane = new JPanel();
@@ -97,58 +99,72 @@ public class VentanaLogin extends JFrame implements ActionListener {
 
 
 	protected void do_btnInicioSesion_actionPerformed(ActionEvent e) {
-		
-		String usuario = txtUsuario.getText();
-		String clave = new String(txtContrasena.getPassword());
+	    
+	    String usuario = txtUsuario.getText();
+	    String clave = new String(txtContrasena.getPassword());
 
-		
-		if (usuario.isEmpty() || clave.isEmpty()) {
-		    JOptionPane.showMessageDialog(null, "Por favor, ingresa tu usuario y contraseña.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
-		    return;
-		}
+	    if (usuario.isEmpty() || clave.isEmpty()) {
+	        JOptionPane.showMessageDialog(null, "Por favor, ingresa tu usuario y contraseña.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
+	        return;
+	    }
 
-		try {
-		  
-		    Connection cn = Conexion.conectar();
-		    
-		    
-		    String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
-		    PreparedStatement pst = cn.prepareStatement(sql);
-		    pst.setString(1, usuario);
-		    pst.setString(2, clave);
-		    
-		 
-		    ResultSet rs = pst.executeQuery();
-		    
-		
-		    if (rs.next()) {
-		        
-		    	String rol = rs.getString("rol");
-		    	String nombre = rs.getString("nombres");
-		    	int sedeDB = rs.getInt("id_sede");
-		    	int idUsuarioDB = rs.getInt("id_usuario"); // <-- CAPTURAMOS EL ID DEL USUARIO
-		    	rolUsuario = rol; 
-		    	VentanaLogin.idUsuarioLogueado = idUsuarioDB; // <-- LO GUARDAMOS EN LA VARIABLE GLOBAL
-		    	if (rol.equals("Jefa")) {
-		    	    idSedeLogueada = 0; 
-		    	} else {
-		    	    idSedeLogueada = sedeDB; 
-		    	}
-		        JOptionPane.showMessageDialog(null, "¡Bienvenid@ " + nombre + "!\nIngresaste como: " + rol);
-		        MenuPrincipal menu = new MenuPrincipal();
-		        menu.setVisible(true);
-		        this.dispose();
-		    } else {
-		        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
-		    }
-		    
-	
-		    cn.close();
-		    
-		} catch (Exception e1) {
-		    JOptionPane.showMessageDialog(null, "Error del sistema: " + e1.getMessage());
-		}
-		
-		
+	    try {
+	        Connection cn = Conexion.conectar();
+	        
+	        String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
+	        PreparedStatement pst = cn.prepareStatement(sql);
+	        pst.setString(1, usuario);
+	        pst.setString(2, clave);
+	        
+	        ResultSet rs = pst.executeQuery();
+	        
+	        if (rs.next()) {
+	            
+	            String rol = rs.getString("rol");
+	            String nombre = rs.getString("nombres");
+	            int sedeDB = rs.getInt("id_sede");
+	            int idUsuarioDB = rs.getInt("id_usuario"); // <-- CAPTURAMOS EL ID DEL USUARIO
+	            rolUsuario = rol; 
+	            VentanaLogin.idUsuarioLogueado = idUsuarioDB; // <-- LO GUARDAMOS EN LA VARIABLE GLOBAL
+	            
+	            if (rol.equals("Jefa")) {
+	                idSedeLogueada = 0; 
+	            } else {
+	                idSedeLogueada = sedeDB; 
+	            }
+	            
+	            JOptionPane.showMessageDialog(null, "¡Bienvenid@ " + nombre + "!\nIngresaste como: " + rol);
+	            MenuPrincipal menu = new MenuPrincipal();
+	            menu.setVisible(true);
+	            this.dispose();
+	            
+	        } else {
+	            // --- INICIO DE LA LÓGICA DE 3 INTENTOS ---
+	            intentos++; // Sumamos 1 error
+	            
+	            if (intentos >= 3) {
+	                JOptionPane.showMessageDialog(null, 
+	                    "¡Acceso bloqueado! Ha superado el límite de 3 intentos fallidos por seguridad.", 
+	                    "Alerta de Seguridad", 
+	                    JOptionPane.ERROR_MESSAGE);
+	                System.exit(0); // Cierra el sistema por seguridad
+	            } else {
+	                JOptionPane.showMessageDialog(null, 
+	                    "Usuario o contraseña incorrectos. Le quedan " + (3 - intentos) + " intentos.", 
+	                    "Acceso Denegado", 
+	                    JOptionPane.WARNING_MESSAGE);
+	                
+	                // Limpiamos la contraseña para que vuelva a intentar
+	                txtContrasena.setText("");
+	                txtContrasena.requestFocus();
+	            }
+	            // --- FIN DE LA LÓGICA ---
+	        }
+	        
+	        cn.close();
+	        
+	    } catch (Exception e1) {
+	        JOptionPane.showMessageDialog(null, "Error del sistema: " + e1.getMessage());
+	    }	
 	}
 }
