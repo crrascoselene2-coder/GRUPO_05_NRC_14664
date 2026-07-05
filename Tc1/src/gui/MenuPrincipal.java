@@ -1241,7 +1241,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  			// --- RESTRICCIONES DE SEGURIDAD SEGÚN EL ROL (NUEVO) ---
  			// =========================================================
  			if (VentanaLogin.idSedeLogueada != 0) { // Si NO es la Jefa
- 			    
+ 				
  			    // 1. Bloqueamos el ComboBox de la Sede en el módulo Clases
  			    comboBox_SedeClase.setEnabled(false);
  			    if (VentanaLogin.idSedeLogueada == 1) {
@@ -1249,9 +1249,6 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  			    } else if (VentanaLogin.idSedeLogueada == 2) {
  			        comboBox_SedeClase.setSelectedItem("Sede Pilares");
  			    }
- 			    
- 			    // 2. Ocultamos el botón de Reportes para que los asesores no lo vean
- 			    btnReporte.setVisible(false); 
  			}
 	}
 	public void actionPerformed(ActionEvent e) {
@@ -1908,7 +1905,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			        if (sumaPagada < total) {
 			            saldoPendiente = total - sumaPagada;
 			            int respuesta = JOptionPane.showConfirmDialog(null, 
-			                "Falta S/ " + String.format(java.util.Locale.US, "%.2f", saldoPendiente) + " para completar el pago. ¿Desea generar un saldo pendiente?", 
+			                "Falta S/ " + String.format(java.util.Locale.US, "%.2f", saldoPendiente) + "para completar el pago. ¿Desea generar un saldo pendiente?", 
 			                "Aviso de Saldo", JOptionPane.YES_NO_OPTION);
 			            
 			            if (respuesta == JOptionPane.YES_OPTION) {
@@ -2202,6 +2199,13 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		}
 
 		protected void do_btnReporte_actionPerformed(ActionEvent e) {
+			if (VentanaLogin.idSedeLogueada != 0) {
+		        JOptionPane.showMessageDialog(null, 
+		            "¡Acceso denegado! Solo la Jefa de la academia tiene permisos para visualizar los reportes financieros.", 
+		            "Permisos insuficientes", 
+		            JOptionPane.WARNING_MESSAGE);		       
+		    }
+			else {
 			moduloAlumnos.setVisible(false);
 			moduloClases.setVisible(false);
 			moduloReporte.setVisible(true);
@@ -2209,6 +2213,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			ListarProfesores("", "");
 			ListarReporteAsesores("", "");
 			ListarReporteGeneral("", "");
+			}
 		}
 
 		protected void do_btnFiltrarPROFESOR_actionPerformed(ActionEvent e) {

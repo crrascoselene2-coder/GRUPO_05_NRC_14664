@@ -94,33 +94,20 @@ public class VentanaLogin extends JFrame implements ActionListener {
 			do_btnInicioSesion_actionPerformed(e);
 		}
 	}
-
-
 	protected void do_btnInicioSesion_actionPerformed(ActionEvent e) {
-		
 		String usuario = txtUsuario.getText();
 		String clave = new String(txtContrasena.getPassword());
-
-		
 		if (usuario.isEmpty() || clave.isEmpty()) {
 		    JOptionPane.showMessageDialog(null, "Por favor, ingresa tu usuario y contraseña.", "Campos vacíos", JOptionPane.WARNING_MESSAGE);
 		    return;
 		}
-
 		try {
-		  
 		    Connection cn = Conexion.conectar();
-		    
-		    
 		    String sql = "SELECT * FROM usuarios WHERE username = ? AND password = ?";
 		    PreparedStatement pst = cn.prepareStatement(sql);
 		    pst.setString(1, usuario);
 		    pst.setString(2, clave);
-		    
-		 
 		    ResultSet rs = pst.executeQuery();
-		    
-		
 		    if (rs.next()) {
 		        
 		    	String rol = rs.getString("rol");
@@ -142,7 +129,6 @@ public class VentanaLogin extends JFrame implements ActionListener {
 		        JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.", "Acceso Denegado", JOptionPane.ERROR_MESSAGE);
 		    }
 		    
-	
 		    cn.close();
 		    
 		} catch (Exception e1) {
