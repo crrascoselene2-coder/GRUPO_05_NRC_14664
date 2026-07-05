@@ -6,34 +6,33 @@ import javax.swing.JOptionPane;
 
 public class ArregloVenta {
     
-    public void InsertarVenta(String dni, int idPlan, String metodo, double efectivo, double digital, double total, double saldoPendiente, String fechaVencimiento, String estado, int idSede, int idUsuario) {
-        try {
-            java.sql.Connection cn = utils.Conexion.conectar();
-            java.sql.CallableStatement csta = cn.prepareCall("{call SP_INSERTAR_VENTA(?,?,?,?,?,?,?,?,?,?,?)}");
-            
-            csta.setString(1, dni);
-            csta.setInt(2, idPlan);
-            csta.setString(3, metodo);
-            csta.setDouble(4, efectivo);
-            csta.setDouble(5, digital);
-            csta.setDouble(6, total);
-            csta.setDouble(7, saldoPendiente);
-            
-            // Si la fecha viene nula (porque no hay deuda), mandamos nulo a MySQL
-            if(fechaVencimiento == null) {
-                csta.setNull(8, java.sql.Types.DATE);
-            } else {
-                csta.setString(8, fechaVencimiento);
-            }
-            
-            csta.setString(9, estado);
-            csta.setInt(10, idSede); 
-            csta.setInt(11, idUsuario);
-            
-            csta.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Error al insertar venta: " + e.getMessage());
-        }
+	public void InsertarVenta(clases.Venta obj) {
+	    try {
+	        java.sql.Connection cn = utils.Conexion.conectar();
+	        java.sql.CallableStatement csta = cn.prepareCall("{call SP_INSERTAR_VENTA(?,?,?,?,?,?,?,?,?,?,?)}");
+	        
+	        csta.setString(1, obj.getDniAlumno());
+	        csta.setInt(2, obj.getIdPlan());
+	        csta.setString(3, obj.getMetodoPago());
+	        csta.setDouble(4, obj.getMontoEfectivo());
+	        csta.setDouble(5, obj.getMontoDigital());
+	        csta.setDouble(6, obj.getTotalPagado());
+	        csta.setDouble(7, obj.getSaldoPendiente());
+	        
+	        if(obj.getFechaVencimiento() == null) {
+	            csta.setNull(8, java.sql.Types.DATE);
+	        } else {
+	            csta.setString(8, obj.getFechaVencimiento());
+	        }
+	        
+	        csta.setString(9, obj.getEstado());
+	        csta.setInt(10, obj.getIdSede()); 
+	        csta.setInt(11, obj.getIdUsuario());
+	        
+	        csta.executeUpdate();
+	    } catch (Exception e) {
+	        System.out.println("Error al insertar venta: " + e.getMessage());
+	    }
     }
 
     public void SaldarDeuda(int codigoVenta, double pagoEfectivo, double pagoDigital) {

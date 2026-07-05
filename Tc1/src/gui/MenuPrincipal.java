@@ -1849,17 +1849,9 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 				else if (numAlumnos >= 12) calificacion = "Normal";
 				else calificacion = "Bajo";
 
-				// Conexión y envío a MySQL
-				java.sql.Connection cn = utils.Conexion.conectar();
-				java.sql.CallableStatement csta = cn.prepareCall("{call SP_INSERTAR_CLASE(?,?,?,?,?,?)}");
-				csta.setString(1, turno);
-				csta.setInt(2, numAlumnos);
-				csta.setString(3, calificacion);
-				csta.setInt(4, idProfesor);
-				csta.setInt(5, idDisciplina);
-				csta.setInt(6, VentanaLogin.idSedeLogueada);
+				arreglo.ArregloClases arrClase = new arreglo.ArregloClases();
+				arrClase.InsertarClase(turno, numAlumnos, calificacion, idProfesor, idDisciplina, VentanaLogin.idSedeLogueada);
 
-				csta.executeUpdate();
 
 	            JOptionPane.showMessageDialog(null, "¡Clase registrada con calificación: " + calificacion + "!");
 	            txtNdeAlumnos.setText(""); 
@@ -1905,16 +1897,8 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		        else calificacion = "Bajo";
 
 		        // Conexión y envío al SP_MODIFICAR
-		        java.sql.Connection cn = utils.Conexion.conectar();
-		        java.sql.CallableStatement csta = cn.prepareCall("{call SP_MODIFICAR_CLASE(?,?,?,?,?,?)}");
-		        csta.setInt(1, idClaseSeleccionada); // Nuestro ID global
-		        csta.setString(2, turno);
-		        csta.setInt(3, numAlumnos);
-		        csta.setString(4, calificacion);
-		        csta.setInt(5, idProfesor);
-		        csta.setInt(6, idDisciplina);
-
-		        csta.executeUpdate();
+		        arreglo.ArregloClases arrClase = new arreglo.ArregloClases();
+		        arrClase.ModificarClase(idClaseSeleccionada, turno, numAlumnos, calificacion, idProfesor, idDisciplina);
 
 		        JOptionPane.showMessageDialog(null, "¡Clase modificada con éxito!");
 		        
@@ -2133,15 +2117,13 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			            }
 			        }
 
-			        // Registrar en BD
-			        arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
-			        arrVenta.InsertarVenta(dni, idPlan, metodoPago, efectivo, digital, total, saldoPendiente, fechaVencimiento, estado, VentanaLogin.idSedeLogueada, VentanaLogin.idUsuarioLogueado);				
 			        
-			        if (estado.equals("Cancelado")) {
-			            JOptionPane.showMessageDialog(null, "¡Venta registrada y cancelada con éxito!");
-			        } else {
-			            JOptionPane.showMessageDialog(null, "¡Venta registrada con Saldo Pendiente!");
-			        }
+			     // Creamos el objeto empaquetado
+			        clases.Venta nuevaVenta = new clases.Venta(dni, idPlan, metodoPago, efectivo, digital, total, saldoPendiente, fechaVencimiento, estado, VentanaLogin.idSedeLogueada, VentanaLogin.idUsuarioLogueado);
+
+			        // Se lo mandamos al arreglo
+			        arreglo.ArregloVenta arrVenta = new arreglo.ArregloVenta();
+			        arrVenta.InsertarVenta(nuevaVenta);
 			        
 			        // Limpiar cajas
 			        txtBuscarDniVenta2.setText("");
