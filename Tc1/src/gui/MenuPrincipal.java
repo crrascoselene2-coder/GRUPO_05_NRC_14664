@@ -1474,21 +1474,20 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			String apellidos = txtApellidosAlumno.getText().trim();
 			String celular = txtCelularAlumno.getText().trim();
 
-			// 1. Verificamos que no falten datos, incluyendo que el calendario no esté vacío
 			if (dni.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || FechaAlumno.getDate() == null) {
 			    JOptionPane.showMessageDialog(null, "Por favor, completa todos los datos obligatorios del alumno.");
 			    return;
 			}
-			// 2. Extraemos la fecha del JDateChooser
+
 			java.util.Date fechaSeleccionada = FechaAlumno.getDate();
-			// 3. Calculamos la edad (convertimos a LocalDate para poder restarle a la fecha de hoy)
+
 			java.time.LocalDate fechaNac = fechaSeleccionada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
 			java.time.LocalDate hoy = java.time.LocalDate.now();
 			int edad = java.time.Period.between(fechaNac, hoy).getYears();
-			// 4. Formateamos la fecha para MySQL (AÑO-MES-DÍA)
+
 			java.text.SimpleDateFormat formatoBD = new java.text.SimpleDateFormat("yyyy-MM-dd");
 			String fechaParaMySQL = formatoBD.format(fechaSeleccionada);
-			// 5. Insertamos directamente en la Base de Datos 
+
 			try {
 			    clases.Alumno alu = new clases.Alumno(dni, nombres, apellidos, celular, fechaParaMySQL, "Activo");
 			    String dniApo = "";
