@@ -11,7 +11,7 @@ public class Conexion {
     private static final String USUARIO = "root";
     
     // ¡OJO! Cambia el texto entre comillas por tu contraseña de MySQL
-    private static final String CLAVE = "Ash0306*"; 
+    private static final String CLAVE = "Princesa2208@"; 
     
     // 2. Método mágico para abrir la puerta a la base de datos
     public static Connection conectar() {

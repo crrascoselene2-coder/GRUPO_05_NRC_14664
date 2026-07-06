@@ -1356,7 +1356,7 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
  						panel_9.add(lblNewLabel_29);
  					}
  					{
- 						lblNewLabel_30 = new JLabel("ashepisfil@gmail.com");
+ 						lblNewLabel_30 = new JLabel("gevs0783@gmail.com");
  						lblNewLabel_30.setFont(new Font("Verdana", Font.PLAIN, 15));
  						lblNewLabel_30.setBounds(704, 210, 367, 26);
  						panel_9.add(lblNewLabel_30);
@@ -1573,11 +1573,12 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 					String apellidosApo = rs.getString("apellidos");
 					String celularApo = rs.getString("celular");
 					String relacion = rs.getString("parentesco"); 
-					
+					String dni = rs.getString("dni_apoderado"); 
 				
 					String mensaje = "Información del Apoderado de: " + nombreAlumno + "\n"
 							       + "--------------------------------------------------\n"
 							       + "Nombres: " + nombresApo + " " + apellidosApo + "\n"
+							       + "Dni: "+dni+"\n"
 							       + "Parentesco: " + relacion + "\n"
 							       + "Celular: " + celularApo;
 					
@@ -1589,6 +1590,38 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 			} catch (Exception ex) {
 				System.out.println("Error al buscar apoderado: " + ex.getMessage());
 			}
+		}
+		public void cargarDatosApoderado(int codigoAlumno) {
+		    try {
+		        java.sql.Connection cn = utils.Conexion.conectar();
+		        
+		        // Buscamos al apoderado asociado a este alumno
+		        String sql = "SELECT * FROM apoderados WHERE codigo_alumno = ?"; 
+		        java.sql.PreparedStatement pst = cn.prepareStatement(sql);
+		        pst.setInt(1, codigoAlumno);
+		        
+		        java.sql.ResultSet rs = pst.executeQuery();
+		        
+		        if (rs.next()) {
+		            // Si el alumno SÍ tiene apoderado, pintamos los datos en las cajas
+		            txtDniApoderado.setText(rs.getString("dni_apoderado")); // Asumiendo que la columna en MySQL se llama "dni"
+		            txtNombresApoderado.setText(rs.getString("nombres"));
+		            txtApellidosApoderado.setText(rs.getString("apellidos"));
+		            txtCelularApoderado.setText(rs.getString("celular"));
+		            txtParentescoApoderado.setText(rs.getString("parentesco"));
+		        } else {
+		            txtDniApoderado.setText("");
+		            txtNombresApoderado.setText("");
+		            txtApellidosApoderado.setText("");
+		            txtCelularApoderado.setText("");
+		            txtParentescoApoderado.setText("");
+		        }
+		        
+		        cn.close();
+		        
+		    } catch (Exception ex) {
+		        System.out.println("Error al cargar los datos del apoderado: " + ex.getMessage());
+		    }
 		}
 
 		protected void do_btnAlumnos_actionPerformed(ActionEvent e) {
@@ -1731,9 +1764,25 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		        csta.setString(4, apellidos);
 		        csta.setString(5, celular);
 		        csta.setString(6, fechaParaMySQL);
-
 		        csta.executeUpdate();
 
+		        String dniApo = txtDniApoderado.getText().trim();
+		        if (!dniApo.isEmpty()) { 
+		            String nomApo = txtNombresApoderado.getText().trim();
+		            String apeApo = txtApellidosApoderado.getText().trim();
+		            String celApo = txtCelularApoderado.getText().trim();
+		            String parentesco = txtParentescoApoderado.getText().trim();
+		            
+		            java.sql.CallableStatement cstaApo = cn.prepareCall("{call SP_MODIFICAR_APODERADO(?,?,?,?,?,?)}");
+		            cstaApo.setInt(1, codigoAlumnoSeleccionado); // Usamos el mismo código del alumno como llave
+		            cstaApo.setString(2, dniApo);
+		            cstaApo.setString(3, nomApo);
+		            cstaApo.setString(4, apeApo);
+		            cstaApo.setString(5, celApo);
+		            cstaApo.setString(6, parentesco);
+		            
+		            cstaApo.executeUpdate();
+		        }
 		        JOptionPane.showMessageDialog(null, "¡Datos del alumno modificados con éxito!");
 		        
 		        // Limpiamos y refrescamos
@@ -1748,16 +1797,16 @@ public class MenuPrincipal extends JFrame implements ActionListener, MouseListen
 		protected void do_tbTabla_mouseClicked(MouseEvent e) {
 			int fila = tbTabla.getSelectedRow();
 			if (fila >= 0) {
-				// 1. GUARDAMOS EL CÓDIGO DEL ALUMNO (¡ESTA ES LA LÍNEA NUEVA!)
+				// 1. GUARDAMOS EL CÓDIGO DEL ALUMNO 
 		        codigoAlumnoSeleccionado = Integer.parseInt(String.valueOf(tbTabla.getValueAt(fila, 0)));
 		        
-		        // 2. Llenamos los txt (Esto ya lo tenías)
+		        // 2. Llenamos los txt 
 		        txtDniAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 1)));
 		        txtNombresAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 2)));
 		        txtApellidosAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 3)));
 		        txtCelularAlumno.setText(String.valueOf(tbTabla.getValueAt(fila, 4)));
-		        
-		        // 3. Llenamos el JDateChooser (Lo que hicimos en el paso anterior)
+		        cargarDatosApoderado(codigoAlumnoSeleccionado);
+		        // 3. Llenamos el JDateChooser
 		        try {
 		            String fechaTabla = String.valueOf(tbTabla.getValueAt(fila, 5));
 		            java.util.Date fechaParsed = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(fechaTabla);
