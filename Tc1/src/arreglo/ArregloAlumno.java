@@ -41,6 +41,7 @@ public boolean InsertarAlumno(clases.Alumno alu, int idSede) {
 	return exito;
 }
 
+
 public void InsertarApoderado(String dniAlumno, String dniApo, String nom, String ape, String cel, String parentesco) { 
     try {
         Connection cnx = utils.Conexion.conectar();
